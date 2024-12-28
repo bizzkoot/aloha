@@ -83,14 +83,29 @@ class ArithmeticGame {
         const operators = Array.from(document.querySelectorAll('.operators-selection input:checked')).map(inp => inp.value);
         const count = parseInt(document.getElementById('questionCount').value);
 
-        this.questions = Array(count).fill().map(() => {
-            const num1 = Math.floor(Math.random() * range);
-            const num2 = Math.floor(Math.random() * range);
-            const operator = operators[Math.floor(Math.random() * operators.length)];
-            return { num1, num2, operator };
-        });
+        this.questions = [];
+        for (let i = 0; i < count; i++) {
+            let num1, num2, operator;
+            let validQuestion = false;
+            
+            while (!validQuestion) {
+                num1 = Math.floor(Math.random() * range);
+                num2 = Math.floor(Math.random() * range);
+                operator = operators[Math.floor(Math.random() * operators.length)];
+                
+                // Validate the question
+                if (operator === '-') {
+                    validQuestion = num1 >= num2;
+                } else if (operator === '/') {
+                    validQuestion = num2 !== 0 && num1 % num2 === 0;
+                } else {
+                    validQuestion = true;
+                }
+            }
+            
+            this.questions.push({ num1, num2, operator });
+        }
     }
-
     checkAnswer() {
         const currentValue = window.abacus.value;
         const question = this.questions[this.currentQuestionIndex];
