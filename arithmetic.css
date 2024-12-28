@@ -1,0 +1,40 @@
+.arithmetic-section {
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+.arithmetic-content {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.arithmetic-content input,
+.arithmetic-content select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.expected-result {
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+    color: #2f1810;
+}
+
+.mental-process {
+    color: #8b4513;
+    font-style: italic;
+    background-color: rgba(139, 69, 19, 0.1);
+    padding: 2px 5px;
+    border-radius: 3px;
+}

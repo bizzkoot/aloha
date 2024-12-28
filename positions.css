@@ -1,0 +1,25 @@
+/* Top bead positioning */
+.top-bead {
+    top: 0px;
+}
+
+.top-bead.active {
+    transform: translateY(30px);
+}
+
+/* Bottom beads rest positions */
+.bottom-bead-1 { top: 268px; }
+.bottom-bead-2 { top: 222px; }
+.bottom-bead-3 { top: 176px; }
+.bottom-bead-4 { top: 130px; }
+
+/* Bottom beads active positions */
+.bottom-bead-1.active { transform: translateY(-40px); }
+.bottom-bead-2.active { transform: translateY(-40px); }
+.bottom-bead-3.active { transform: translateY(-40px); }
+.bottom-bead-4.active { transform: translateY(-40px); }
+
+/* Bar position */
+.bar {
+    top: calc(40% - 39px);
+}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Japanese Abacus (Soroban)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="tutorial.css">
+    <link rel="stylesheet" href="arithmetic.css">
+    <link rel="stylesheet" href="game.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Soroban (Japanese Abacus)</h1>
+        <div class="abacus">
+            <div class="bar"></div>
+            <div class="column" data-place="10000"></div>
+            <div class="column" data-place="1000"></div>
+            <div class="column" data-place="100"></div>
+            <div class="column" data-place="10"></div>
+            <div class="column" data-place="1"></div>
+        </div>
+        <div class="value">Current Value: <span id="currentValue">0</span></div>
+    </div>
+    <script src="movements.js"></script>
+    <script src="script.js"></script>
+    <script src="tutorial.js"></script>
+    <script src="arithmetic.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>

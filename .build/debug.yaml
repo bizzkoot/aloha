@@ -1,0 +1,81 @@
+client:
+  name: basic
+  file-system: device-agnostic
+tools: {}
+targets:
+  "PackageStructure": ["<PackageStructure>"]
+  "SorobanLearner-arm64-apple-macosx14.0-debug.exe": ["<SorobanLearner-arm64-apple-macosx14.0-debug.exe>"]
+  "SorobanLearner-arm64-apple-macosx14.0-debug.module": ["<SorobanLearner-arm64-apple-macosx14.0-debug.module>"]
+  "main": ["<SorobanLearner-arm64-apple-macosx14.0-debug.exe>","<SorobanLearner-arm64-apple-macosx14.0-debug.module>"]
+  "test": ["<SorobanLearner-arm64-apple-macosx14.0-debug.exe>","<SorobanLearner-arm64-apple-macosx14.0-debug.module>"]
+default: "main"
+nodes:
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner":
+    is-mutated: true
+commands:
+  "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner-entitlement.plist":
+    tool: write-auxiliary-file
+    inputs: ["<entitlement-plist>","<com.apple.security.get-task-allow>"]
+    outputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner-entitlement.plist"]
+    description: "Write auxiliary file /Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner-entitlement.plist"
+
+  "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources":
+    tool: write-auxiliary-file
+    inputs: ["<sources-file-list>","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/App.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/AppDelegate.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/ContentView.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Soroban.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Tutorial.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/SorobanApp.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/ContentView.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanBoardView.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanView.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/main.swift"]
+    outputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources"]
+    description: "Write auxiliary file /Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources"
+
+  "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.product/Objects.LinkFileList":
+    tool: write-auxiliary-file
+    inputs: ["<link-file-list>","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swift.o"]
+    outputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.product/Objects.LinkFileList"]
+    description: "Write auxiliary file /Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.product/Objects.LinkFileList"
+
+  "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt":
+    tool: write-auxiliary-file
+    inputs: ["<swift-get-version>","/Library/Developer/CommandLineTools/usr/bin/swiftc"]
+    outputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt"]
+    always-out-of-date: "true"
+    description: "Write auxiliary file /Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt"
+
+  "<SorobanLearner-arm64-apple-macosx14.0-debug.exe>":
+    tool: phony
+    inputs: ["<SorobanLearner-arm64-apple-macosx14.0-debug.exe-CodeSigning>"]
+    outputs: ["<SorobanLearner-arm64-apple-macosx14.0-debug.exe>"]
+
+  "<SorobanLearner-arm64-apple-macosx14.0-debug.module>":
+    tool: phony
+    inputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules/SorobanLearner.swiftmodule"]
+    outputs: ["<SorobanLearner-arm64-apple-macosx14.0-debug.module>"]
+
+  "C.SorobanLearner-arm64-apple-macosx14.0-debug.exe":
+    tool: shell
+    inputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.product/Objects.LinkFileList"]
+    outputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner"]
+    description: "Linking ./.build/arm64-apple-macosx/debug/SorobanLearner"
+    args: ["/Library/Developer/CommandLineTools/usr/bin/swiftc","-L","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug","-o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner","-module-name","SorobanLearner","-Xlinker","-no_warn_duplicate_libraries","-emit-executable","-Xlinker","-alias","-Xlinker","_SorobanLearner_main","-Xlinker","_main","-Xlinker","-rpath","-Xlinker","@loader_path","@/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.product/Objects.LinkFileList","-target","arm64-apple-macosx12.0","-Xlinker","-add_ast_path","-Xlinker","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules/SorobanLearner.swiftmodule","-F","/Library/Developer/CommandLineTools/Library/Developer/Frameworks","-sdk","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk","-g","-Xlinker","-rpath","-Xlinker","/Library/Developer/CommandLineTools/Library/Developer/Frameworks"]
+
+  "C.SorobanLearner-arm64-apple-macosx14.0-debug.exe-entitlements":
+    tool: shell
+    inputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner-entitlement.plist"]
+    outputs: ["<SorobanLearner-arm64-apple-macosx14.0-debug.exe-CodeSigning>"]
+    description: "Applying debug entitlements to ./.build/arm64-apple-macosx/debug/SorobanLearner"
+    args: ["codesign","--force","--sign","-","--entitlements","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner-entitlement.plist","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner"]
+
+  "C.SorobanLearner-arm64-apple-macosx14.0-debug.module":
+    tool: shell
+    inputs: ["/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/App.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/AppDelegate.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/ContentView.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Soroban.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Tutorial.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/SorobanApp.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/ContentView.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanBoardView.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanView.swift","/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/main.swift","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources"]
+    outputs: ["/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swift.o","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules/SorobanLearner.swiftmodule"]
+    description: "Compiling Swift Module 'SorobanLearner' (10 sources)"
+    args: ["/Library/Developer/CommandLineTools/usr/bin/swiftc","-module-name","SorobanLearner","-emit-dependencies","-emit-module","-emit-module-path","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules/SorobanLearner.swiftmodule","-output-file-map","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/output-file-map.json","-incremental","-c","@/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources","-I","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules","-target","arm64-apple-macosx12.0","-enable-batch-mode","-index-store-path","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/index/store","-Onone","-enable-testing","-j8","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/ModuleCache","-parseable-output","-Xfrontend","-entry-point-function-name","-Xfrontend","SorobanLearner_main","-color-diagnostics","-swift-version","5","-F","/Library/Developer/CommandLineTools/Library/Developer/Frameworks","-sdk","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk","-g","-Xcc","-isysroot","-Xcc","/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk","-Xcc","-fPIC","-Xcc","-g"]
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/","/Users/muhammadfaiz/Custom APP/Abacus/Package.swift","/Users/muhammadfaiz/Custom APP/Abacus/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

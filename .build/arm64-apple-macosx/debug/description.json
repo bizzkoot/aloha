@@ -1,0 +1,388 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.SorobanLearner-arm64-apple-macosx14.0-debug.module" : {
+      "executable" : "/Library/Developer/CommandLineTools/usr/bin/swiftc",
+      "fileList" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources",
+      "importPath" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/App.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/AppDelegate.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Soroban.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Tutorial.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/SorobanApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanBoardView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/main.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources"
+        }
+      ],
+      "isLibrary" : false,
+      "moduleName" : "SorobanLearner",
+      "moduleOutputPath" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules/SorobanLearner.swiftmodule",
+      "objects" : [
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swift.o",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx12.0",
+        "-enable-batch-mode",
+        "-index-store-path",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j8",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-module-cache-path",
+        "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-Xfrontend",
+        "-entry-point-function-name",
+        "-Xfrontend",
+        "SorobanLearner_main",
+        "-color-diagnostics",
+        "-swift-version",
+        "5",
+        "-F",
+        "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
+        "-sdk",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g"
+      ],
+      "outputFileMapPath" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules/SorobanLearner.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/App.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/AppDelegate.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/ContentView.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Soroban.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Tutorial.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/SorobanApp.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/ContentView.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanBoardView.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanView.swift",
+        "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/main.swift"
+      ],
+      "tempsPath" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "SorobanLearner" : [
+      "/Library/Developer/CommandLineTools/usr/bin/swiftc",
+      "-module-name",
+      "SorobanLearner",
+      "-incremental",
+      "-c",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/App.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/AppDelegate.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/ContentView.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Soroban.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Tutorial.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/SorobanApp.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/ContentView.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanBoardView.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanView.swift",
+      "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/main.swift",
+      "-I",
+      "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx12.0",
+      "-enable-batch-mode",
+      "-index-store-path",
+      "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j8",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-module-cache-path",
+      "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-Xfrontend",
+      "-entry-point-function-name",
+      "-Xfrontend",
+      "SorobanLearner_main",
+      "-color-diagnostics",
+      "-swift-version",
+      "5",
+      "-F",
+      "/Library/Developer/CommandLineTools/Library/Developer/Frameworks",
+      "-sdk",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-driver-use-frontend-path",
+      "/Library/Developer/CommandLineTools/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "SorobanLearner" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "writeCommands" : {
+    "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner-entitlement.plist" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<entitlement-plist>"
+        },
+        {
+          "kind" : "virtual",
+          "name" : "<com.apple.security.get-task-allow>"
+        }
+      ],
+      "outputFilePath" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner-entitlement.plist"
+    },
+    "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/App.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/AppDelegate.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Soroban.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Tutorial.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/SorobanApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanBoardView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/main.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/sources"
+    },
+    "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.product/Objects.LinkFileList"
+    },
+    "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Library/Developer/CommandLineTools/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/swift-version--1AB21518FC5DEDBE.txt"
+    }
+  }
+}

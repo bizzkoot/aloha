@@ -1,0 +1,65 @@
+{
+  "": {
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/master.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/App.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/App.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/AppDelegate.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/AppDelegate.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/ContentView.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Soroban.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Soroban.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Models/Tutorial.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/Tutorial.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/SorobanApp.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanApp.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/ContentView.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/ContentView.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanBoardView.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanBoardView.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/Views/SorobanView.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/SorobanView.swiftdeps"
+  },
+  "/Users/muhammadfaiz/Custom APP/Abacus/Sources/SorobanLearner/main.swift": {
+    "dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.d",
+    "object": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swift.o",
+    "swiftmodule": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main~partial.swiftmodule",
+    "swift-dependencies": "/Users/muhammadfaiz/Custom APP/Abacus/.build/arm64-apple-macosx/debug/SorobanLearner.build/main.swiftdeps"
+  }
+}

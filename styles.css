@@ -1,0 +1,93 @@
+@import url('positions.css');
+
+.container {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.abacus {
+    background: #d4a373;
+    padding: 40px 20px;
+    display: inline-flex;
+    gap: 30px;
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.bar {
+    position: absolute;
+    background: #8b4513;
+    height: 8px;
+    width: calc(100% - 20px);
+    left: 10px;
+    z-index: 2;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    width: 40px;
+    height: 300px;
+    position: relative;
+}
+
+.bead {
+    width: 36px;
+    height: 36px;
+    background: #2f1810;
+    border-radius: 50%;
+    position: absolute;
+    left: 2px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.bead:hover {
+    background: #4a2618;
+}
+
+.rod {
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    background: #8b4513;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    border-radius: 3px;
+}
+
+.value {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2f1810;
+}
+
+/* Common button styles */
+.button-common {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #8b4513;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.button-common:hover {
+    background-color: #6b3410;
+}
+
+.button-group {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
