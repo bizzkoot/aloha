@@ -27,7 +27,7 @@ class AbacusTutorial {
                 title: "Bottom Beads (Value: 1 each)",
                 content: "Each bottom bead represents 1 unit. We start from the bead closest to the bar.",
                 highlight: ".bottom-bead-4, .bottom-bead-3",
-                position: "left",
+                position: "right",
                 demo: () => {
                     const rightmostColumn = document.querySelector('.column:last-child');
                     BeadMovements.setValue(rightmostColumn, 1);
@@ -46,7 +46,7 @@ class AbacusTutorial {
                 title: "Making Numbers",
                 content: "Let's make the number 7! We'll use one top bead (5) and two bottom beads (1+1).",
                 highlight: ".column:last-child .top-bead, .column:last-child .bottom-bead-4, .column:last-child .bottom-bead-3",
-                position: "left",
+                position: "right",
                 demo: () => {
                     const rightmostColumn = document.querySelector('.column:last-child');
                     BeadMovements.setValue(rightmostColumn, 7);
@@ -56,10 +56,104 @@ class AbacusTutorial {
                         window.abacus.calculateValue();
                     }, 3000);
                 }
-            }        ];
-        this.setupTutorial();
-    }
+            },
+            {
+                title: "Addition Mental Math",
+                content: "Let's learn how to add numbers efficiently using complements.",
+                position: "right"
+            },
+            {
+                title: "Addition Example: 7 + 8",
+                content: "When adding 8: Since 8 is close to 10, we can think: 10 - 8 = 2. So subtract 2 and add 10.",
+                position: "right",
+                highlight: ".column:last-child .top-bead, .column:last-child .bottom-bead-4, .column:last-child .bottom-bead-3",
+                demo: () => {
+                    const rightmostColumn = document.querySelector('.column:last-child');
+                    const tensColumn = document.querySelector('.column:nth-last-child(2)');
 
+                    // Show 7 (5 + 2)
+                    BeadMovements.setValue(rightmostColumn, 7);
+                    window.abacus.calculateValue();
+                    document.querySelector('.column:last-child .top-bead').classList.add('tutorial-highlight');
+                    document.querySelectorAll('.column:last-child .bottom-bead-4, .column:last-child .bottom-bead-3').forEach(bead => bead.classList.add('tutorial-highlight'));
+
+                    // Show transition to 15 (10 + 5)
+                    setTimeout(() => {
+                        // Highlight beads that need to move to rest
+                        document.querySelectorAll('.column:last-child .bottom-bead-4, .column:last-child .bottom-bead-3').forEach(bead => bead.classList.add('tutorial-highlight'));
+                    
+                        BeadMovements.setValue(tensColumn, 1);
+                        BeadMovements.setValue(rightmostColumn, 5);
+                        window.abacus.calculateValue();
+                    
+                        // Highlight new active beads
+                        document.querySelector('.column:nth-last-child(2) .bottom-bead-4').classList.add('tutorial-highlight');
+                        document.querySelector('.column:last-child .top-bead').classList.add('tutorial-highlight');
+                    }, 2000);
+
+                    // Reset with highlights
+                    setTimeout(() => {
+                        // Highlight beads that will move to rest
+                        document.querySelector('.column:nth-last-child(2) .bottom-bead-4').classList.add('tutorial-highlight');
+                        document.querySelector('.column:last-child .top-bead').classList.add('tutorial-highlight');
+                    
+                        BeadMovements.setValue(tensColumn, 0);
+                        BeadMovements.setValue(rightmostColumn, 0);
+                        window.abacus.calculateValue();
+                    }, 4000);
+                }
+            },
+            {
+                title: "Subtraction Mental Math",
+                content: "Now let's learn subtraction using complements.",
+                position: "right"
+            },
+            {
+                title: "Subtraction Example: 15 - 7",
+                content: "When subtracting 7: Since 7 is less than 10, we can think: 10 - 7 = 3. So remove 10 and add 3.",
+                position: "right",
+                highlight: ".column:nth-last-child(2) .bottom-bead-4, .column:last-child .top-bead",
+                demo: () => {
+                    const rightmostColumn = document.querySelector('.column:last-child');
+                    const tensColumn = document.querySelector('.column:nth-last-child(2)');
+
+                    // Show 15 (10 + 5)
+                    BeadMovements.setValue(tensColumn, 1);
+                    BeadMovements.setValue(rightmostColumn, 5);
+                    window.abacus.calculateValue();
+                    document.querySelector('.column:nth-last-child(2) .bottom-bead-4').classList.add('tutorial-highlight');
+                    document.querySelector('.column:last-child .top-bead').classList.add('tutorial-highlight');
+
+                    // Show transition to 8
+                    setTimeout(() => {
+                        // Highlight beads that need to move to rest
+                        document.querySelector('.column:nth-last-child(2) .bottom-bead-4').classList.add('tutorial-highlight');
+                        document.querySelector('.column:last-child .top-bead').classList.add('tutorial-highlight');
+                    
+                        BeadMovements.setValue(tensColumn, 0);
+                        BeadMovements.setValue(rightmostColumn, 8);
+                        window.abacus.calculateValue();
+                    
+                        // Highlight new active beads
+                        document.querySelector('.column:last-child .top-bead').classList.add('tutorial-highlight');
+                        document.querySelectorAll('.column:last-child .bottom-bead-4, .column:last-child .bottom-bead-3, .column:last-child .bottom-bead-2').forEach(bead => bead.classList.add('tutorial-highlight'));
+                    }, 2000);
+
+                    // Reset with highlights
+                    setTimeout(() => {
+                        // Highlight beads that will move to rest
+                        document.querySelector('.column:last-child .top-bead').classList.add('tutorial-highlight');
+                        document.querySelectorAll('.column:last-child .bottom-bead-4, .column:last-child .bottom-bead-3, .column:last-child .bottom-bead-2').forEach(bead => bead.classList.add('tutorial-highlight'));
+                    
+                        BeadMovements.setValue(tensColumn, 0);
+                        BeadMovements.setValue(rightmostColumn, 0);
+                        window.abacus.calculateValue();
+                    }, 4000);
+                }
+            }
+        ];
+            this.setupTutorial();
+        }
     setupTutorial() {
         this.createTutorialButton();
         this.createTutorialContainer();
@@ -78,6 +172,10 @@ class AbacusTutorial {
         container.className = 'tutorial-container';
         container.style.display = 'none';
         container.innerHTML = `
+            <div class="tutorial-header">
+                <span class="tutorial-drag-handle">≡</span>
+                <h2 class="tutorial-title">Soroban Tutorial</h2>
+            </div>
             <div class="tutorial-content"></div>
             <div class="tutorial-navigation">
                 <button class="tutorial-prev">Previous</button>
@@ -88,9 +186,50 @@ class AbacusTutorial {
         `;
         document.body.appendChild(container);
 
+        this.makeDraggable(container);
+
         container.querySelector('.tutorial-prev').onclick = () => this.previousStep();
         container.querySelector('.tutorial-next').onclick = () => this.nextStep();
         container.querySelector('.tutorial-repeat').onclick = () => this.repeatStep();
+    }
+
+    makeDraggable(element) {
+        const header = element.querySelector('.tutorial-header');
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        header.addEventListener('mousedown', startDragging);
+
+        function startDragging(e) {
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+            isDragging = true;
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDragging);
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - initialX;
+                currentY = e.clientY - initialY;
+                xOffset = currentX;
+                yOffset = currentY;
+
+                element.style.transform = `translate(${currentX}px, ${currentY}px)`;
+            }
+        }
+
+        function stopDragging() {
+            isDragging = false;
+            document.removeEventListener('mousemove', drag);
+            document.removeEventListener('mouseup', stopDragging);
+        }
     }
 
     repeatStep() {
@@ -100,7 +239,7 @@ class AbacusTutorial {
             this.removeHighlight();
             BeadMovements.setValue(document.querySelector('.column:last-child'), 0);
             window.abacus.calculateValue();
-            
+
             // Reapply highlight and run demo
             if (step.highlight) {
                 document.querySelectorAll(step.highlight).forEach(el => {
@@ -110,6 +249,7 @@ class AbacusTutorial {
             step.demo();
         }
     }
+
     startTutorial() {
         this.currentStep = 0;
         this.showTutorial();
@@ -128,32 +268,32 @@ class AbacusTutorial {
     updateContent() {
         const step = this.steps[this.currentStep];
         const container = document.querySelector('.tutorial-container');
-        
+
         // Update position
         container.className = `tutorial-container tutorial-${step.position || 'right'}`;
-        
+
         // Update content
         container.querySelector('.tutorial-content').innerHTML = `
             <h2>${step.title}</h2>
             <p>${step.content}</p>
         `;
-        
+
         // Update progress
         const progress = container.querySelector('.tutorial-progress');
         progress.innerHTML = `Step ${this.currentStep + 1} of ${this.steps.length}`;
-        
+
         // Clear previous highlights
         document.querySelectorAll('.tutorial-highlight').forEach(el => {
             el.classList.remove('tutorial-highlight');
         });
-        
+
         // Add new highlight
         if (step.highlight) {
             document.querySelectorAll(step.highlight).forEach(el => {
                 el.classList.add('tutorial-highlight');
             });
         }
-        
+
         // Run demo if available
         if (step.demo) {
             step.demo(this);
@@ -181,7 +321,9 @@ class AbacusTutorial {
             this.updateContent();
         }
     }
-}// Initialize tutorial
+}
+
+// Initialize tutorial
 document.addEventListener('DOMContentLoaded', () => {
     window.tutorial = new AbacusTutorial();
 });
