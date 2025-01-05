@@ -49,7 +49,7 @@ This project is structured into multiple components:
 
 This application was 100% built using:
 
--   [<img src="https://about.sourcegraph.com/brand/sourcegraph-logo-dark.svg" alt="Sourcegraph Cody" width="150"/>](https://about.sourcegraph.com/cody) - Sourcegraph Cody, an AI coding assistant.
+-   [<img src="https://sourcegraph.com/sourcegraph-logo.svg" alt="Sourcegraph Cody" width="150"/>](https://about.sourcegraph.com/cody) - Sourcegraph Cody, an AI coding assistant.
 -   [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/2048px-Visual_Studio_Code_1.35_icon.svg.png" alt="Visual Studio Code" width="30" />](https://code.visualstudio.com/) - Visual Studio Code, a source code editor.
 
 ## 🌐 Live Demo
