@@ -5,7 +5,12 @@ class LanguageSelectionModal {
     }
 
     async create() {
-        await window.translationService?.ready;
+        // Wait for translation service to be available and ready
+        while (!window.translationService) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        await window.translationService.ready;
+        
         const modal = document.createElement('div');
         modal.className = 'language-select-modal';
         modal.innerHTML = `
