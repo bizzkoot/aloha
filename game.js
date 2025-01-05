@@ -8,12 +8,10 @@ console.log('Dependencies check:', {
 
 class ArithmeticGame {
     constructor() {
-        // Add a check to prevent multiple initializations
         if (window.gameInstance) {
             return window.gameInstance;
         }
         window.gameInstance = this;
-        
         console.log('Initializing ArithmeticGame');
         this.translations = JSON.parse(localStorage.getItem('gameTranslations')) || {};
         this.questions = [];
@@ -21,29 +19,42 @@ class ArithmeticGame {
         this.userAnswers = [];
         this.guidedQuestions = new Set();
         this.ready = this.init();
-    
-        document.addEventListener('languageChanged', async (e) => {
-            console.log('Language changed to:', e.detail.language);
-            // Clear translations cache when language changes
-            this.translations = {};
-            localStorage.removeItem('gameTranslations');
-            
-            // Update all game UI elements
-            await this.updateLanguage(e.detail.language);
-            
-            // Refresh current game state
-            if (this.questions.length > 0) {
-                if (this.currentQuestionIndex >= this.questions.length) {
-                    await this.showResults();
-                } else {
-                    await this.showCurrentQuestion();
-                }
-            }
-        });
     }
 
+    // Add the new method here
+    async checkDependencies() {
+        let attempts = 0;
+        const maxAttempts = 10;
+        
+        while (attempts < maxAttempts) {
+            const dependencies = {
+                translationService: !!window.translationService,
+                abacus: !!window.abacus,
+                Addition: typeof Addition !== 'undefined',
+                Subtraction: typeof Subtraction !== 'undefined'
+            };
+            
+            console.log("Dependencies check:", dependencies);
+            
+            if (dependencies.translationService && dependencies.abacus) {
+                return true;
+            }
+            
+            await new Promise(resolve => setTimeout(resolve, 500));
+            attempts++;
+        }
+        
+        return false;
+    }
+
+    // Modify the init method to use checkDependencies
     async init() {
         try {
+            const dependenciesLoaded = await this.checkDependencies();
+            if (!dependenciesLoaded) {
+                throw new Error("Required services not available after timeout");
+            }
+            
             await Promise.all([
                 window.translationService.ready,
                 new Promise(resolve => {
