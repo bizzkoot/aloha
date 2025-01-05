@@ -507,35 +507,36 @@ class ArithmeticGame {
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Waiting for services...');
     try {
-        // First wait for translation service
-        await new Promise(resolve => {
-            if (window.translationService) {
-                resolve();
-            } else {
-                const checkInterval = setInterval(() => {
-                    if (window.translationService) {
-                        clearInterval(checkInterval);
-                        resolve();
-                    }
-                }, 100);
-            }
-        });
+        // Enhanced service check with parallel loading
+        await Promise.all([
+            // Translation service check
+            new Promise(resolve => {
+                if (window.translationService?.ready) {
+                    resolve();
+                } else {
+                    const checkInterval = setInterval(() => {
+                        if (window.translationService?.ready) {
+                            clearInterval(checkInterval);
+                            resolve();
+                        }
+                    }, 50);
+                }
+            }),
+            // Abacus check
+            new Promise(resolve => {
+                if (window.abacus) {
+                    resolve();
+                } else {
+                    const checkInterval = setInterval(() => {
+                        if (window.abacus) {
+                            clearInterval(checkInterval);
+                            resolve();
+                        }
+                    }, 50);
+                }
+            })
+        ]);
 
-        // Then wait for abacus
-        await new Promise(resolve => {
-            if (window.abacus) {
-                resolve();
-            } else {
-                const checkInterval = setInterval(() => {
-                    if (window.abacus) {
-                        clearInterval(checkInterval);
-                        resolve();
-                    }
-                }, 100);
-            }
-        });
-
-        // Finally initialize game
         window.game = new ArithmeticGame();
         await window.game.ready;
         console.log('Game fully initialized');
