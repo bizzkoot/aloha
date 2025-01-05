@@ -1,3 +1,15 @@
+window.initializeCore = async () => {
+    window.translationService = new LocalTranslationService();
+    window.abacus = new Abacus();
+    
+    await window.translationService.ready;
+    
+    window.game = new ArithmeticGame();
+    await window.game.ready;
+};
+
+window.initializeCore();
+
 // Language Selection Modal Handler
 class LanguageSelectionModal {
     constructor() {
