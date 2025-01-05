@@ -41,7 +41,24 @@
     cursor: default;
     user-select: none;
 }
+.tutorial-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.tutorial-close:hover {
+    color: #ff0000;
+}
+
 .tutorial-header {
+    position: relative;
     background: #8b4513;
     color: white;
     padding: 12px 15px;
@@ -51,7 +68,6 @@
     align-items: center;
     border-radius: 10px 10px 0 0;
 }
-
 .tutorial-drag-handle {
     font-size: 20px;
     margin-right: 15px;

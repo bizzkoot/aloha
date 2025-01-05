@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Language</title>
+    <style>
+        body {
+            font-family: 'Noto Sans', sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .multilingual-title {
+            display: grid;
+            gap: 0.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="language-select-container">
+        <div class="multilingual-title">
+            <span>Select Language</span>
+            <span>Pilih Bahasa</span>
+            <span>Language</span>
+            <span>Language</span>
+        </div>
+        <div class="language-options">
+            <button data-lang="en">English</button>
+            <button data-lang="ms">Bahasa Melayu</button>
+            <button data-lang="zh">Mandarin</button>
+            <button data-lang="ta">Tamil</button>
+        </div>
+        <button id="confirmLanguage">Continue</button>
+    </div>
+</body>
+</html>

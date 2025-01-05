@@ -1,0 +1,174 @@
+English,MS (Bahasa Melayu),ZH (Mandarin),TA (Tamil),Notes
+Reset Abacus,Reset Abacus,重置算盘,அபேக்கஸ் மீட்டமைக்கவும்,Button to reset abacus state
+Start Tutorial,Mulakan Tutorial,开始教程,பயிற்சியை தொடங்கவும்,Button to begin tutorial
+Arithmetic Practice,Latihan Aritmetik,算术练习,கணித பயிற்சி,Button to open arithmetic practice modal
+Practice Game,Permainan Latihan,练习游戏,பயிற்சி விளையாட்டு,Button to open practice game
+First number,Nombor pertama,第一个数字,முதல் எண்,Placeholder for first number input
+Second number,Nombor kedua,第二个数字,இரண்டாவது எண்,Placeholder for second number input
+Calculate,Kira,计算,கணக்கிடவும்,Button to perform calculation
+Guide Me,Kaedah Kiraan,引导我,என்னை வழிகாட்டவும்,Button to show step-by-step guidance
+Game Settings,Tetapan Permainan,游戏设置,விளையாட்டு அமைப்புகள்,Title for game configuration modal
+Start Game,Mulakan Permainan,开始游戏,விளையாட்டை தொடங்கவும்,Button to begin game
+Check Answer,Semak Jawapan,检查答案,பதில் சரிபார்க்கவும்,Button to verify user's answer
+Next Question,Soalan Seterusnya,下一个问题,அடுத்த கேள்வி,Button to proceed to next question
+Results,Keputusan,结果,முடிவுகள்,Title for game results section
+Tutorial Step Titles,Tajuk Langkah Tutorial,教程步骤标题,பயிற்சி படி தலைப்புகள்,Tutorial Step Titles
+Welcome to Soroban,Selamat datang ke Soroban,欢迎来到算盘,சோரோபானில் உங்களை வரவேற்கிறேன்,First tutorial step title
+Top Bead (Value: 5),Manik Atas (Nilai: 5),顶部珠子（值：5）,மேல் முத்து (மதிப்பு: 5),Tutorial step explaining top bead
+Bottom Beads (Value: 1 each),Manik Bawah (Nilai: 1 setiap satu),底部珠子（值：1每个）,கீழ் முத்துகள் (மதிப்பு: 1 ஒவ்வொன்றுக்கும்),Tutorial step explaining bottom beads
+Making Numbers,Membuat Nombor,制作数字,எண்களை உருவாக்குதல்,Tutorial step about number formation
+Addition Mental Math,Pengiraan Mental Tambah,加法心算,கூட்டல் மனக்கணக்கு,Tutorial section about addition
+Subtraction Mental Math,Pengiraan Mental Tolak,减法心算,கழித்தல் மனக்கணக்கு,Tutorial section about subtraction
+Tutorial Step Contents,Kandungan Langkah Tutorial,教程步骤内容,பயிற்சி படி உள்ளடக்கம்,Tutorial Step Contents
+Let's learn how to use the Japanese Abacus (Soroban).,Mari kita belajar cara menggunakan Abacus Jepun (Soroban).,让我们学习如何使用日本算盘（Soroban）。,ஜப்பானிய அபேக்கஸ் (சோரோபான்) ஐ எப்படி பயன்படுத்துவது என்பதை நாம் கற்றுக்கொள்வோம்.,First tutorial step description
+Watch this top bead. It represents 5 units when moved down.,Perhatikan manik atas ini. Ia mewakili 5 unit apabila dipindahkan ke bawah.,观察这个顶部珠子。它向下移动时代表5个单位。,இந்த மேல்முத்தை கவனிக்கவும். இது கீழே நகரும்போது 5 அலகுகளை பிரதிநிதித்துவம் செய்கிறது.,Description of top bead functionality
+Each bottom bead represents 1 unit. We start from the bead closest to the bar.,Setiap manik bawah mewakili 1 unit. Kita bermula dari manik yang paling dekat dengan bar.,每个底部珠子代表1个单位。我们从离杆子最近的珠子开始。,ஒவ்வொரு கீழ்முத்தும் 1 அலகை பிரதிநிதித்துவம் செய்கிறது. நாங்கள் கம்பத்திற்கு அருகிலுள்ள முத்திலிருந்து தொடங்குகிறோம்.,Description of bottom beads
+Let's make the number 7! We'll use one top bead (5) and two bottom beads (1+1).,Mari kita buat nombor 7! Kita akan menggunakan satu manik atas (5) dan dua manik bawah (1+1).,让我们制作数字7！我们将使用一个顶部珠子（5）和两个底部珠子（1+1）。,எண்ணை 7 உருவாக்குவோம்! நாங்கள் ஒரு மேல்முத்து (5) மற்றும் இரண்டு கீழ்முத்துகளை (1+1) பயன்படுத்துவோம்.,Example of number formation
+Let's learn how to add numbers efficiently using complements and place values.,Mari kita belajar cara menambah nombor dengan cekap menggunakan pelengkap dan nilai tempat.,让我们学习如何有效地使用补数和位值来加法。,பூரணங்கள் மற்றும் இட மதிப்புகளைப் பயன்படுத்தி எண்களை திறமையாக கூட்டுவது எப்படி என்பதை நாம் கற்றுக்கொள்வோம்.,Introduction to addition strategy
+Now let's learn subtraction using complements.,Sekarang mari kita belajar tolak menggunakan pelengkap.,现在让我们学习使用补数进行减法。,இப்போது பூரணங்களைப் பயன்படுத்தி கழிப்பது எப்படி என்பதை கற்றுக்கொள்வோம்.,Introduction to subtraction strategy
+Game Configuration Options,Pilihan Konfigurasi Permainan,游戏配置选项,விளையாட்டு கட்டமைப்பு விருப்பங்கள்,Game Configuration Options
+Single Digit (0-9),Digit Tunggal (0-9),单个数字（0-9）,ஒற்றை இலக்கம் (0-9),Game difficulty option
+Double Digits (0-99),Digit Berganda (0-99),双位数字（0-99）,இரட்டை இலக்கங்கள் (0-99),Game difficulty option
+Triple Digits (0-999),Digit Tiga (0-999),三位数字（0-999）,மூன்று இலக்கங்கள் (0-999),Game difficulty option
+5 Questions,5 Soalan,5个问题,5 கேள்விகள்,Number of questions option
+10 Questions,10 Soalan,10个问题,10 கேள்விகள்,Number of questions option
+20 Questions,20 Soalan,20个问题,20 கேள்விகள்,Number of questions option
+Arithmetic Operators,Pengendali Aritmetik,算术运算符,கணித செயலிகள்,Arithmetic Operators
+Addition,Penambahan,加法,கூட்டல்,Arithmetic operation
+Subtraction,Pengurangan,减法,கழித்தல்,Arithmetic operation
+Multiplication,Pendaraban,乘法,மூலக்கூறு,Arithmetic operation
+Division,Pembahagian,除法,பகுப்பு,Arithmetic operation
+Previous,Sebelumnya,上一个,முந்தைய,Tutorial navigation button
+Repeat,Ulang,重复,மீண்டும்,Tutorial repeat button
+Step,Langkah,步骤,படி,Step indicator prefix
+of,dari,的,இல்,Step indicator connector
+Tutorial Complete,Tutorial Selesai,教程完成,பயிற்சி முடிந்தது,Tutorial completion message
+Click to continue,Klik untuk teruskan,点击继续,தொடர கிளிக் செய்யவும்,Tutorial progression prompt
+In,Dalam,在,இல்,Arithmetic operation context
+Since,Oleh kerana,因为,ஏனெனில்,Arithmetic explanation
+remove,buang,移除,அகற்று,Arithmetic operation
+add,tambah,添加,கூட்டு,Arithmetic operation
+now,sekarang,现在,இப்போது,Time indicator
+subtract,tolak,减去,கழி,Arithmetic operation
+directly,secara langsung,直接,நேரடியாக,Operation method
+to reach,untuk mencapai,达到,அடைய,Operation goal
+Expected Result:,Jumlah:,预期结果：,எதிர்பார்க்கப்படும் முடிவு:,Result indicator
+Show Movement,Tunjuk Pergerakan,显示移动,இயக்கத்தைக் காட்டு,Movement demonstration button
+Score:,Skor:,分数：,மதிப்பெண்:,Game score indicator
+Questions solved with guidance:,Soalan diselesaikan dengan bimbingan:,在指导下解决的问题：,வழிகாட்டுதலுடன் தீர்க்கப்பட்ட கேள்விகள்:,Guided solutions counter
+Start New Game,Mulakan Permainan Baru,开始新游戏,புதிய விளையாட்டைத் தொடங்கு,New game button
+Question,Soalan,问题,கேள்வி,Question indicator
+Your answer:,Jawapan anda:,你的答案：,உங்கள் பதில்:,Answer indicator
+Correct!,Betul!,正确！,சரி!,Correct answer feedback
+Incorrect - Expected:,Salah - Dijangka:,错误-预期：,தவறு - எதிர்பார்க்கப்பட்டது:,Incorrect answer feedback
+Guided,Dibimbing,有指导的,வழிகாட்டப்பட்டது,Guided solution indicator
+Soroban Tutorial,Tutorial Soroban,算盘教程,சோரோபன் பயிற்சி,Tutorial header title
+Addition Example: 7 + 8 = 15,Contoh Penambahan: 7 + 8 = 15,加法示例：7 + 8 = 15,கூட்டல் எடுத்துக்காட்டு: 7 + 8 = 15,Tutorial step title
+First we show 7 (5+2). To add 8: Since 8 is close to 10 we think '10-8=2'. So we add 10 (move up in tens column) and subtract 2 from 7 giving us 15 (10+5).,Pertama kita tunjukkan 7 (5+2). Untuk menambah 8: Oleh kerana 8 hampir dengan 10 kita fikir '10-8=2'. Jadi kita tambah 10 (naik dalam lajur puluhan) dan tolak 2 dari 7 memberikan kita 15 (10+5).,首先显示7（5+2）。加8：因为8接近10，我们想'10-8=2'。所以我们加10（在十位上移动）并从7中减去2，得到15（10+5）。,முதலில் நாம் 7 ஐக் காட்டுகிறோம் (5+2). 8 ஐச் சேர்க்க: 8 ஆனது 10க்கு அருகில் உள்ளதால் '10-8=2' என்று நினைக்கிறோம். எனவே 10ஐச் சேர்த்து (பத்தாம் நிரலில் மேலே நகர்த்தி) 7இல் இருந்து 2ஐக் கழித்து 15 (10+5) கிடைக்கிறது.,Tutorial step explanation
+Addition Example: 23 + 38 = 61,Contoh Penambahan: 23 + 38 = 61,加法示例：23 + 38 = 61,கூட்டல் எடுத்துக்காட்டு: 23 + 38 = 61,Tutorial step title
+Starting with 23 first add 30 by moving tens column from 2 to 5. Then for +8: Since 3+8=11 we add 1 to tens column (making 6) and keep 1 in ones column giving us 61.,Bermula dengan 23 tambah 30 dengan menggerakkan lajur puluhan dari 2 ke 5. Kemudian untuk +8: Oleh kerana 3+8=11 kita tambah 1 ke lajur puluhan (menjadi 6) dan simpan 1 dalam lajur unit memberikan kita 61.,从23开始，通过将十位从2移到5来加30。然后对于+8：因为3+8=11，我们在十位加1（变成6）并在个位保留1，得到61。,23இல் தொடங்கி, பத்தாம் நிரலை 2இல் இருந்து 5க்கு நகர்த்தி 30ஐச் சேர்க்கவும். பின்னர் +8க்கு: 3+8=11 ஆகையால் பத்தாம் நிரலில் 1ஐச் சேர்த்து (6 ஆக்கி) ஒன்றாம் நிரலில் 1ஐ வைத்து 61 கிடைக்கிறது.,Tutorial step explanation
+Subtraction Example: 15 - 7,Contoh Penolakan: 15 - 7,减法示例：15 - 7,கழித்தல் எடுத்துக்காட்டு: 15 - 7,Tutorial step title
+When subtracting 7: Since 7 is less than 10 we can think: 10 - 7 = 3. So remove 10 and add 3.,Apabila menolak 7: Oleh kerana 7 kurang dari 10 kita boleh fikir: 10 - 7 = 3. Jadi buang 10 dan tambah 3.,减去7时：因为7小于10，我们可以想：10 - 7 = 3。所以去掉10并加3。,7ஐக் கழிக்கும்போது: 7 ஆனது 10ஐ விட குறைவாக இருப்பதால் நாம் 10 - 7 = 3 என்று நினைக்கலாம். எனவே 10ஐ அகற்றி 3ஐச் சேர்க்கவும்.,Tutorial step explanation
+≡,≡,≡,≡,Drag handle symbol
+Next,Seterusnya,下一步,அடுத்து,Tutorial navigation button
+Set first number,Tetapkan nombor pertama,设置第一个数字,முதல் எண்ணை அமைக்கவும்,Step instruction
+Multiply by,Darab dengan,乘以,பெருக்க,Operation instruction
+Divide by,Bahagi dengan,除以,வகுக்க,Operation instruction
+Next Step,Langkah Seterusnya,下一步,அடுத்த படி,Navigation button
+ones,satu,个位,ஒன்றுகள்,Position name for ones place
+tens,puluh,十位,பத்துகள்,Position name for tens place
+hundreds,ratus,百位,நூறுகள்,Position name for hundreds place
+thousands,ribu,千位,ஆயிரங்கள்,Position name for thousands place
+Current value:,Nilai semasa:,当前值：,தற்போதைய மதிப்பு:,Status indicator for current value
+Step,Langkah,步骤,படி,Step prefix
+and,dan,和,மற்றும்,Conjunction
+do,lakukan,做,செய்,Action verb
+For adding,Untuk menambah,加,கூட்டுவதற்கு,Addition operation prefix
+add,tambah,加,கூட்டு,Addition verb
+minus,tolak,减,கழி,Subtraction verb
+position,kedudukan,位置,நிலை,Position indicator
+but,tetapi,但是,ஆனால்,Conjunction for comparisons
+do,lakukan,做,செய்,Action verb
+greater than or equal to,lebih besar atau sama dengan,大于或等于,அதிகமாக அல்லது சமமாக,Comparison operator
+less than,kurang dari,小于,குறைவாக,Comparison operator
+In,Dalam,在,இல்,Position indicator
+For subtracting,Untuk menolak,用于减去,கழிப்பதற்கு,Subtraction operation prefix
+Soroban cannot perform negative number calculations. Please enter a first number larger than the second number.,Soroban tidak boleh melakukan pengiraan nombor negatif. Sila masukkan nombor pertama lebih besar daripada nombor kedua.,算盘不能进行负数计算。请输入大于第二个数的第一个数。,சோரோபன் எதிர்மறை எண் கணக்கீடுகளை செய்ய முடியாது. முதல் எண்ணை இரண்டாவது எண்ணை விட பெரியதாக உள்ளிடவும்.,Error message for negative number prevention
+Close,Tutup,关闭,மூடு,Button to close modal or tutorial
+Next Step,Langkah Seterusnya,下一步,அடுத்த படி,Button for tutorial navigation
+Question,Soalan,问题,கேள்வி,Question indicator prefix
+Your answer,Jawapan anda,你的答案,உங்கள் பதில்,Answer indicator prefix
+Expected,Dijangka,预期,எதிர்பார்க்கப்பட்டது,Expected value indicator
+Score,Skor,分数,மதிப்பெண்,Game score display text
+Your answer,Jawapan anda,你的答案,உங்கள் பதில்,User input answer label
+Start New Game,Mulakan Permainan Baru,开始新游戏,புதிய விளையாட்டைத் தொடங்கு,Button to start a new game
+Question,Soalan,问题,கேள்வி,Question label
+Incorrect,Salah,错误,தவறு,Incorrect answer feedback
+direct addition,tambahan langsung,直接加法,நேரடி கூட்டல்,Addition method description
+do,buat,做,செய்,Action verb
+but,tetapi,但是,ஆனால்,Conjunction word
+We borrow 10 from the Left,Kita pinjam 10 dari Kiri,我们从左边借10,நாம் இடதிலிருந்து 10 ஐ கடன் வாங்குகிறோம்,Subtraction instruction
+Then,Kemudian,然后,பின்னர்,Sequential instruction
+So we add,Jadi kita tambah,所以我们加,எனவே நாம் கூட்டுகிறோம்,Addition instruction
+Direct subtraction,Penolakan langsung,直接减法,நேரடி கழித்தல்,Subtraction method
+equals,sama dengan,等于,சமம்,Equality operator
+greater than,lebih besar dari,大于,அதிகமாக,Comparison operator
+minus,tolak,减,கழி,Arithmetic operation
+equalTo,sama dengan,等于,சமமாக,Comparison operator
+afterRemoving,selepas membuang,移除后,அகற்றிய பிறகு,Operation sequence
+Initial number,Nombor awal,初始数字,ஆரம்ப எண்,Starting value label
+Borrow from next column and add complement,Pinjam dari lajur seterusnya dan tambah pelengkap,从下一列借位并添加补数,அடுத்த நிரலில் இருந்து கடன் வாங்கி பூரணத்தை சேர்க்கவும்,Subtraction instruction
+Subtract from position,Tolak dari kedudukan,从位置减去,நிலையில் இருந்து கழிக்கவும்,Subtraction position instruction
+In position,Dalam kedudukan,在位置,நிலையில்,Tutorial step position indicator
+equals,sama dengan,等于,சமமாக,Text shown when numbers are equal
+direct subtraction,tolak terus,直接减法,நேரடி கழித்தல்,Describes immediate subtraction method
+after removing,selepas membuang,移除后,அகற்றிய பிறகு,Used in subtraction steps
+subtract directly,tolak terus,直接减去,நேரடியாக கழி,Used in subtraction steps when numbers are equal
+In position,Dalam kedudukan,在位置,நிலையில்,Position indicator for tutorial steps
+Question,Soalan,问题,கேள்வி,Question indicator prefix
+Your answer,Jawapan anda,你的答案,உங்கள் பதில்,User input answer label
+Incorrect,Salah,错误,தவறு,Incorrect answer feedback
+Expected,Dijangka,预期,எதிர்பார்க்கப்பட்டது,Expected value indicator
+Correct,Betul,正确,சரி,Correct answer feedback
+Questions solved with guidance:,Soalan diselesaikan dengan bimbingan:,在指导下解决的问题：,வழிகாட்டுதலுடன் தீர்க்கப்பட்ட கேள்விகள்:,Guided solutions counter
+Change Language,Tukar Bahasa,更改语言,மொழி மாற்றம்,Button to change interface language
+Select Language,Pilih Bahasa,选择语言,மொழியைத் தேர்வுசெய்க,Language selection modal title
+Starting with smallest digit,Bermula dengan digit terkecil,从最小位开始,மிகச் சிறிய இலக்கத்தில் தொடங்கி
+Processing ones position first,Memproses kedudukan unit dahulu,首先处理个位,முதலில் ஒன்றாம் நிலையை செயலாக்குகிறது
+Then moving to tens,Kemudian ke kedudukan puluhan,然后移至十位,பின்னர் பத்தாம் நிலைக்கு செல்கிறது
+Since the sum is,Oleh kerana jumlahnya ialah,因为总和是,கூட்டுத்தொகை என்பதால்,Explanation for sum
+less than 5,kurang daripada 5,小于 5,5 ஐ விட குறைவானது,Explanation for sum less than 5
+greater than or equal to 5,lebih besar daripada atau sama dengan 5,大于或等于 5,5 அல்லது அதற்கு சமம்,Explanation for sum greater or equal to 5
+we use the 5's complement (5 - Y),kita menggunakan pelengkap 5 (5 - Y),我们使用 5 的补数 (5 - Y),5 இன் நிரப்பியைப் பயன்படுத்துகிறோம் (5 - Y),Explanation for 5's complement
+We calculate,Kita mengira,我们计算,நாம் கணக்கிடுகிறோம்,Action of calculation
+This means we add 5 and subtract 2,Ini bermakna kita menambah 5 dan menolak 2,这意味着我们加 5 并减去 2,இதன் பொருள் நாம் 5 ஐச் சேர்த்து 2 ஐக் கழிக்கிறோம்,Explanation for adding 5 and subtracting 2
+we use the 10's complement (10 - Y),kita menggunakan pelengkap 10 (10 - Y),我们使用 10 的补数 (10 - Y),10 இன் நிரப்பியைப் பயன்படுத்துகிறோம் (10 - Y),Explanation for 10's complement
+This means we add 10 and subtract,Ini bermakna kita menambah 10 dan menolak,这意味着我们加 10 并减去,இதன் பொருள் நாம் 10 ஐச் சேர்த்து கழிக்கிறோம்,Explanation for adding 10 and subtracting
+we can add directly,kita boleh menambah secara langsung,我们可以直接添加,நாம் நேரடியாக சேர்க்கலாம்,Explanation for direct addition
+and X is,dan X ialah,并且 X 是,மற்றும் X என்பது,Explanation for X value
+less than 5 and the sum is less than 10,kurang daripada 5 dan jumlahnya kurang daripada 10,小于 5 且总和小于 10,5 ஐ விடக் குறைவானது மற்றும் கூட்டுத்தொகை 10 ஐ விடக் குறைவானது,Explanation for X less than 5 and sum less than 10
+and we have enough bottom beads to subtract directly.,dan kita mempunyai manik bawah yang mencukupi untuk menolak secara langsung.,并且我们有足够的底部珠子可以直接减去。,மேலும், நேரடியாகக் கழிப்பதற்கு எங்களிடம் போதுமான கீழ் மணிகள் உள்ளன.,Explanation for direct subtraction with enough beads
+but we need to use the complement of 5 because we are subtracting from,tetapi kita perlu menggunakan pelengkap 5 kerana kita menolak dari,但是我们需要使用 5 的补数，因为我们是从,ஆனால் நாம் 5 இன் நிரப்பியைப் பயன்படுத்த வேண்டும், ஏனெனில் நாம் கழிப்பது,Explanation for complement of 5 usage
+Since Y < 5, we use the complement of 5.,Oleh kerana Y < 5, kita menggunakan pelengkap 5.,由于 Y < 5，我们使用 5 的补数。,Y < 5 என்பதால், நாம் 5 இன் நிரப்பியைப் பயன்படுத்துகிறோம்.,Explanation for using complement of 5
+Remove 5 and add,Buang 5 dan tambah,移除 5 并添加,5 ஐ அகற்றி சேர்க்கவும்,Instruction for removing 5 and adding complement
+Since Y >= 5, we use the complement of 10.,Oleh kerana Y >= 5, kita menggunakan pelengkap 10.,由于 Y >= 5，我们使用 10 的补数。,Y >= 5 என்பதால், நாம் 10 இன் நிரப்பியைப் பயன்படுத்துகிறோம்.,Explanation for using complement of 10
+Add,Tambah,加,கூட்டு,Instruction to add
+we need to borrow 10.,kita perlu meminjam 10.,我们需要借 10。,நாம் 10 ஐ கடன் வாங்க வேண்டும்.,Explanation for borrowing 10
+"Welcome to Soroban",Selamat datang ke Soroban,欢迎来到算盘,சோரோபானில் உங்களை வரவேற்கிறேன்,
+"Top Bead (Value: 5)",Manik Atas (Nilai: 5),顶部珠子（值：5）,மேல் முத்து (மதிப்பு: 5),
+"Bottom Beads (Value: 1 each)",Manik Bawah (Nilai: 1 setiap satu),底部珠子（值：1每个）,கீழ் முத்துகள் (மதிப்பு: 1 ஒவ்வொன்றுக்கும்),
+"Making Numbers",Membuat Nombor,制作数字,எண்களை உருவாக்குதல்,
+"Addition Mental Math",Pengiraan Mental Tambah,加法心算,கூட்டல் மனக்கணக்கு,
+"Addition Example: 7 + 8 = 15",Contoh Penambahan: 7 + 8 = 15,加法示例：7 + 8 = 15,கூட்டல் எடுத்துக்காட்டு: 7 + 8 = 15,
+"Addition Example: 23 + 38 = 61",Contoh Penambahan: 23 + 38 = 61,加法示例：23 + 38 = 61,கூட்டல் எடுத்துக்காட்டு: 23 + 38 = 61,
+"Subtraction Mental Math",Pengiraan Mental Tolak,减法心算,கழித்தல் மனக்கணக்கு,
+"Subtraction Example: 15 - 7",Contoh Penolakan: 15 - 7,减法示例：15 - 7,கழித்தல் எடுத்துக்காட்டு: 15 - 7,
+"Let's learn how to use the Japanese Abacus (Soroban).",Mari kita belajar cara menggunakan Abacus Jepun (Soroban).,让我们学习如何使用日本算盘（Soroban）。,ஜப்பானிய அபேக்கஸ் (சோரோபான்) ஐ எப்படி பயன்படுத்துவது என்பதை நாம் கற்றுக்கொள்வோம்.,
+"Watch this top bead. It represents 5 units when moved down.",Perhatikan manik atas ini. Ia mewakili 5 unit apabila dipindahkan ke bawah.,观察这个顶部珠子。它向下移动时代表5个单位。,இந்த மேல்முத்தை கவனிக்கவும். இது கீழே நகரும்போது 5 அலகுகளை பிரதிநிதித்துவம் செய்கிறது.,
+"Each bottom bead represents 1 unit. We start from the bead closest to the bar.",Setiap manik bawah mewakili 1 unit. Kita bermula dari manik yang paling dekat dengan bar.,每个底部珠子代表1个单位。我们从离杆子最近的珠子开始。,ஒவ்வொரு கீழ்முத்தும் 1 அலகை பிரதிநிதித்துவம் செய்கிறது. நாங்கள் கம்பத்திற்கு அருகிலுள்ள முத்திலிருந்து தொடங்குகிறோம்.,
+"Let's make the number 7! We'll use one top bead (5) and two bottom beads (1+1).",Mari kita buat nombor 7! Kita akan menggunakan satu manik atas (5) dan dua manik bawah (1+1).,让我们制作数字7！我们将使用一个顶部珠子（5）和两个底部珠子（1+1）。,எண்ணை 7 உருவாக்குவோம்! நாங்கள் ஒரு மேல்முத்து (5) மற்றும் இரண்டு கீழ்முத்துகளை (1+1) பயன்படுத்துவோம்.,
+"Let's learn how to add numbers efficiently using complements and place values.",Mari kita belajar cara menambah nombor dengan cekap menggunakan pelengkap dan nilai tempat.,让我们学习如何有效地使用补数和位值来加法。,பூரணங்கள் மற்றும் இட மதிப்புகளைப் பயன்படுத்தி எண்களை திறமையாக கூட்டுவது எப்படி என்பதை நாம் கற்றுக்கொள்வோம்.,
+"First we show 7 (5+2). To add 8: Since 8 is close to 10 we think '10-8=2'. So we add 10 (move up in tens column) and subtract 2 from 7 giving us 15 (10+5).",Pertama kita tunjukkan 7 (5+2). Untuk menambah 8: Oleh kerana 8 hampir dengan 10 kita fikir '10-8=2'. Jadi kita tambah 10 (naik dalam lajur puluhan) dan tolak 2 dari 7 memberikan kita 15 (10+5).,首先显示7（5+2）。加8：因为8接近10，我们想'10-8=2'。所以我们加10（在十位上移动）并从7中减去2，得到15（10+5）。,முதலில் நாம் 7 ஐக் காட்டுகிறோம் (5+2). 8 ஐச் சேர்க்க: 8 ஆனது 10க்கு அருகில் உள்ளதால் '10-8=2' என்று நினைக்கிறோம். எனவே 10ஐச் சேர்த்து (பத்தாம் நிரலில் மேலே நகர்த்தி) 7இல் இருந்து 2ஐக் கழித்து 15 (10+5) கிடைக்கிறது.,
+"Starting with 23 first add 30 by moving tens column from 2 to 5. Then for +8: Since 3+8=11 we add 1 to tens column (making 6) and keep 1 in ones column giving us 61.",Bermula dengan 23 tambah 30 dengan menggerakkan lajur puluhan dari 2 ke 5. Kemudian untuk +8: Oleh kerana 3+8=11 kita tambah 1 ke lajur puluhan (menjadi 6) dan simpan 1 dalam lajur unit memberikan kita 61.,从23开始，通过将十位从2移到5来加30。然后对于+8：因为3+8=11，我们在十位加1（变成6）并在个位保留1，得到61。,23இல் தொடங்கி, பத்தாம் நிரலை 2இல் இருந்து 5க்கு நகர்த்தி 30ஐச் சேர்க்கவும். பின்னர் +8க்கு: 3+8=11 ஆகையால் பத்தாம் நிரலில் 1ஐச் சேர்த்து (6 ஆக்கி) ஒன்றாம் நிரலில் 1ஐ வைத்து 61 கிடைக்கிறது.,
+"Now let's learn subtraction using complements.",Sekarang mari kita belajar tolak menggunakan pelengkap.,现在让我们学习使用补数进行减法。,இப்போது பூரணங்களைப் பயன்படுத்தி கழிப்பது எப்படி என்பதை கற்றுக்கொள்வோம்.,
+"When subtracting 7: Since 7 is less than 10 we can think: 10 - 7 = 3. So remove 10 and add 3.",Apabila menolak 7: Oleh kerana 7 kurang dari 10 kita boleh fikir: 10 - 7 = 3. Jadi buang 10 dan tambah 3.,减去7时：因为7小于10，我们可以想：10 - 7 = 3。所以去掉10并加3。,7ஐக் கழிக்கும்போது: 7 ஆனது 10ஐ விட குறைவாக இருப்பதால் நாம் 10 - 7 = 3 என்று நினைக்கலாம். எனவே 10ஐ அகற்றி 3ஐச் சேர்க்கவும்.,

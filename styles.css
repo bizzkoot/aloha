@@ -93,3 +93,114 @@
     gap: 10px;
     justify-content: center;
 }
+
+.language-selector {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.language-selector select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #8b4513;
+    background-color: white;
+    color: #2f1810;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.language-selector select:hover {
+    border-color: #6b3410;
+}
+
+.button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 20px 0;
+}
+.language-select-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.language-select-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+.language-options {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.lang-btn {
+    padding: 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border: 2px solid #d4a373;
+    border-radius: 4px;
+    background: white;
+    color: #2f1810;
+    transition: all 0.3s ease;
+}
+
+.lang-btn.selected {
+    background: #8b4513;
+    color: white;
+    border-color: #6b3410;
+}
+
+.lang-btn:hover {
+    background: #d4a373;
+    color: white;
+}
+
+#confirmLanguageBtn {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    background: #8b4513;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#confirmLanguageBtn:hover {
+    background: #6b3410;
+}
+
+/* Add these styles */
+.language-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    background-color: #8b4513;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.language-button:hover {
+    background-color: #6b3410;
+}
