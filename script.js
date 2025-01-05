@@ -5,6 +5,7 @@ class LanguageSelectionModal {
     }
 
     async create() {
+        await window.translationService?.ready;
         const modal = document.createElement('div');
         modal.className = 'language-select-modal';
         modal.innerHTML = `
