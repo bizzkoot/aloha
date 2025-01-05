@@ -115,6 +115,22 @@ class Abacus {
         this.value = 0;
         this.currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
         this.setupButtons();
+        this.updateCurrentValueLabel(); // Add this line
+    }
+
+    async updateCurrentValueLabel() {
+        const label = document.getElementById('currentValueLabel');
+        const translatedText = await window.translationService.translate('Current Value:', this.currentLanguage);
+        label.textContent = translatedText;
+    }    
+
+    async updateLanguage(newLanguage) {
+        this.currentLanguage = newLanguage;
+        await this.setupButtons();
+        await this.updateButtonTexts(newLanguage);
+        const label = document.getElementById('currentValueLabel');
+        const translatedText = await window.translationService.translate('Current Value:', newLanguage);
+        label.textContent = translatedText;
     }
 
     async setupButtons() {
@@ -162,11 +178,6 @@ class Abacus {
         for (let i = 0; i < buttons.length; i++) {
             buttons[i].textContent = await window.translationService.translate(texts[i], newLanguage);
         }
-    }
-
-    async updateLanguage(newLanguage) {
-        this.currentLanguage = newLanguage;
-        await this.setupButtons();
     }
 
     setupColumns() {

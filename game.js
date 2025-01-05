@@ -528,7 +528,7 @@ class ArithmeticGame {
                     bead.classList.remove('active', 'tutorial-highlight');
                 });
             });
-
+    
             // Set final number display
             let remaining = number;
             for (let i = 0; i < columns.length && remaining > 0; i++) {
@@ -540,6 +540,8 @@ class ArithmeticGame {
                     const topBead = column.querySelector('.top-bead');
                     if (topBead) {
                         topBead.classList.add('active', 'tutorial-highlight');
+                        // Update internal state
+                        BeadMovements.setValue(column, digit);
                     }
                 }
                 
@@ -549,15 +551,19 @@ class ArithmeticGame {
                     const bottomBead = column.querySelector(`.bottom-bead-${4-j}`);
                     if (bottomBead) {
                         bottomBead.classList.add('active', 'tutorial-highlight');
+                        // Update internal state
+                        BeadMovements.setValue(column, digit);
                     }
                 }
                 
                 remaining = Math.floor(remaining / 10);
             }
+            // Update the abacus value display
+            window.abacus.calculateValue();
         } catch (error) {
             console.error('Error in displayNumberWithHighlights:', error);
         }
-    }
+    }    
 
     // Add this method to ArithmeticGame class
     repeatComplementStep(complement, finalValue) {
