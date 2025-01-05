@@ -1,15 +1,3 @@
-window.initializeCore = async () => {
-    window.translationService = new LocalTranslationService();
-    window.abacus = new Abacus();
-    
-    await window.translationService.ready;
-    
-    window.game = new ArithmeticGame();
-    await window.game.ready;
-};
-
-window.initializeCore();
-
 // Language Selection Modal Handler
 class LanguageSelectionModal {
     constructor() {
@@ -275,6 +263,18 @@ async function updateAllUI(newLang) {
     await window.languageManager.changeLanguage(newLang);
     console.log('Language updated successfully:', newLang);
 }
+
+window.initializeCore = async () => {
+    window.translationService = new LocalTranslationService();
+    window.abacus = new Abacus();
+    
+    await window.translationService.ready;
+    
+    window.game = new ArithmeticGame();
+    await window.game.ready;
+};
+
+window.initializeCore();
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (!localStorage.getItem('selectedLanguage')) {

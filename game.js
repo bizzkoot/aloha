@@ -148,34 +148,36 @@ class ArithmeticGame {
             guideMeBtn.onclick = async () => {
                 const translatedTexts = {
                     nextStep: await this.translateText('Next Step'),
-                    close: await this.translateText('Close')
+                    close: await this.translateText('Close'),
+                    repeat: await this.translateText('Show Movement')
                 };
-
+            
                 await window.translationService.ready;
                 this.cleanupTutorial();
-
+            
                 const gameSection = document.querySelector('.game-question-section');
                 const tutorialModal = document.createElement('div');
                 tutorialModal.id = 'tutorialModal';
                 tutorialModal.className = 'modal tutorial-modal';
-
+            
                 const tutorialContent = document.createElement('div');
                 tutorialContent.id = 'tutorialContent';
-
+            
                 const controls = document.createElement('div');
                 controls.className = 'tutorial-controls';
                 controls.innerHTML = `
+                    <button class="tutorial-repeat">${translatedTexts.repeat}</button>
                     <button class="tutorial-next">${translatedTexts.nextStep}</button>
                     <button class="tutorial-close">${translatedTexts.close}</button>
                 `;
-
+            
                 tutorialModal.appendChild(tutorialContent);
                 tutorialModal.appendChild(controls);
                 gameSection.appendChild(tutorialModal);
-
+            
                 this.guidedQuestions.add(this.currentQuestionIndex);
                 const currentQuestion = this.questions[this.currentQuestionIndex];
-
+            
                 let steps;
                 switch (currentQuestion.operator) {
                     case '+':
@@ -185,26 +187,40 @@ class ArithmeticGame {
                         steps = await this.subtraction.generateSteps(currentQuestion.num1, currentQuestion.num2);
                         break;
                 }
-
+            
                 let currentStepIndex = 0;
                 tutorialContent.innerHTML = steps[currentStepIndex].message;
                 
+                // Display initial number
+                window.abacus.resetAbacus();
+                this.displayNumberWithHighlights(Array.from(document.querySelectorAll('.column')).reverse(), steps[currentStepIndex].value);
+            
+                const repeatBtn = tutorialModal.querySelector('.tutorial-repeat');
+                repeatBtn.onclick = () => {
+                    if (steps[currentStepIndex].isComplement) {
+                        this.repeatComplementStep(steps[currentStepIndex].complementValue, steps[currentStepIndex].value);
+                    } else {
+                        this.displayNumberWithHighlights(Array.from(document.querySelectorAll('.column')).reverse(), steps[currentStepIndex].value);
+                    }
+                };
+            
                 const nextBtn = tutorialModal.querySelector('.tutorial-next');
                 nextBtn.onclick = () => {
                     currentStepIndex++;
                     if (currentStepIndex < steps.length) {
                         tutorialContent.innerHTML = steps[currentStepIndex].message;
+                        this.displayNumberWithHighlights(Array.from(document.querySelectorAll('.column')).reverse(), steps[currentStepIndex].value);
                     } else {
                         nextBtn.disabled = true;
                     }
                 };
-
+            
                 const closeBtn = tutorialModal.querySelector('.tutorial-close');
                 closeBtn.onclick = () => {
                     tutorialModal.remove();
                     window.abacus.resetAbacus();
                 };
-            };
+            };            
         }
 
         if (nextQuestionBtn) {
@@ -502,6 +518,104 @@ class ArithmeticGame {
             return `<p>${answer.question.num1} ${answer.question.operator} ${answer.question.num2} = ${answer.userAnswer} (${expected}: ${answer.expectedAnswer}) - ${result}${guidanceText}</p>`;
         })).then(results => results.join(''));
     }
+
+    // Add this method to ArithmeticGame class in game.js
+    displayNumberWithHighlights(columns, number) {
+        try {
+            // Reset all beads and highlights
+            columns.forEach(column => {
+                column.querySelectorAll('.bead').forEach(bead => {
+                    bead.classList.remove('active', 'tutorial-highlight');
+                });
+            });
+
+            // Set final number display
+            let remaining = number;
+            for (let i = 0; i < columns.length && remaining > 0; i++) {
+                const digit = remaining % 10;
+                const column = columns[i];
+                
+                // Set top bead if needed
+                if (digit >= 5) {
+                    const topBead = column.querySelector('.top-bead');
+                    if (topBead) {
+                        topBead.classList.add('active', 'tutorial-highlight');
+                    }
+                }
+                
+                // Set bottom beads
+                const bottomCount = digit % 5;
+                for (let j = 0; j < bottomCount; j++) {
+                    const bottomBead = column.querySelector(`.bottom-bead-${4-j}`);
+                    if (bottomBead) {
+                        bottomBead.classList.add('active', 'tutorial-highlight');
+                    }
+                }
+                
+                remaining = Math.floor(remaining / 10);
+            }
+        } catch (error) {
+            console.error('Error in displayNumberWithHighlights:', error);
+        }
+    }
+
+    // Add this method to ArithmeticGame class
+    repeatComplementStep(complement, finalValue) {
+        const columns = Array.from(document.querySelectorAll('.column')).reverse();
+        const currentQuestion = this.questions[this.currentQuestionIndex];
+        const num1 = currentQuestion.num1;
+        const num2 = currentQuestion.num2;
+        
+        // Calculate all intermediate steps
+        const steps = [];
+        let currentValue = num1;
+        
+        // Convert numbers to arrays of digits
+        const num1Digits = String(num1).padStart(5, '0').split('').map(Number);
+        const num2Digits = String(num2).padStart(5, '0').split('').map(Number);
+        
+        // Start with initial number
+        steps.push({value: currentValue, desc: "Initial number"});
+        
+        // Process each digit from right to left
+        for(let i = 0; i < columns.length; i++) {
+            const placeValue = Math.pow(10, i);
+            const currentDigit = Math.floor((currentValue / placeValue) % 10);
+            const addDigit = Math.floor((num2 / placeValue) % 10);
+            
+            if(addDigit > 0) {
+                if(currentDigit + addDigit >= 10) {
+                    // Handle carry over
+                    const complement = 10 - addDigit;
+                    currentValue = currentValue + (placeValue * 10) - (complement * placeValue);
+                    steps.push({
+                        value: currentValue,
+                        desc: `Add 10 and subtract complement ${complement} in position ${i}`
+                    });
+                } else {
+                    // Direct addition
+                    currentValue += addDigit * placeValue;
+                    steps.push({
+                        value: currentValue,
+                        desc: `Add ${addDigit} in position ${i}`
+                    });
+                }
+            }
+        }
+        
+        let stepIndex = 0;
+        const animate = () => {
+            if (stepIndex < steps.length) {
+                this.displayNumberWithHighlights(columns, steps[stepIndex].value);
+                window.abacus.calculateValue();
+                stepIndex++;
+                setTimeout(() => requestAnimationFrame(animate), 2000);
+            }
+        };
+        
+        this.displayNumberWithHighlights(columns, num1);
+        requestAnimationFrame(animate);
+    }    
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
