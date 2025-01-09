@@ -1,0 +1,10 @@
+# macOS system files
+.DS_Store
+
+# IDE and editor files
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.bak

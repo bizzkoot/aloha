@@ -28,31 +28,38 @@ class Subtraction {
             equals: await window.translationService.translate('equals', window.tutorial.currentLanguage),
             afterRemoving: await window.translationService.translate('after removing', window.tutorial.currentLanguage),
             borrowFromNext: await window.translationService.translate('Borrow from next column and add complement', window.tutorial.currentLanguage),
-            minus: await window.translationService.translate('minus', window.tutorial.currentLanguage),
-            equalTo: await window.translationService.translate('equalTo', window.tutorial.currentLanguage),
-            directSubtraction: await window.translationService.translate('direct subtraction', window.tutorial.currentLanguage),
+            minus: '-', // Changed to symbol
+            equalTo: '=', // Changed to symbol
+            directSubtraction: await window.translationService.translate('Direct subtraction', window.tutorial.currentLanguage),
             enoughBottomBeads: await window.translationService.translate('and we have enough bottom beads to subtract directly.', window.tutorial.currentLanguage),
             complementOf5: await window.translationService.translate('but we need to use the complement of 5 because we are subtracting from', window.tutorial.currentLanguage),
-            useComplementOf5: await window.translationService.translate('Since Y < 5, we use the complement of 5.', window.tutorial.currentLanguage),
             remove5AndAdd: await window.translationService.translate('Remove 5 and add', window.tutorial.currentLanguage),
-            useComplementOf10: await window.translationService.translate('Since Y >= 5, we use the complement of 10.', window.tutorial.currentLanguage),
             addComplement: await window.translationService.translate('Add', window.tutorial.currentLanguage),
-            weNeedToBorrow: await window.translationService.translate('we need to borrow 10.', window.tutorial.currentLanguage)
+            weNeedToBorrow: await window.translationService.translate('we need to borrow 10.', window.tutorial.currentLanguage),
+            sinceYLessThan5: await window.translationService.translate('Since Y < 5, we use the complement of 5.', window.tutorial.currentLanguage),
+            sinceYGreaterThanOrEqual5: await window.translationService.translate('Since Y >= 5, we use the complement of 10.', window.tutorial.currentLanguage),
+            step: await window.translationService.translate('Step', window.tutorial.currentLanguage),
+            useComplementOf5: await window.translationService.translate('Use complement of 5:', window.tutorial.currentLanguage),
+            forSubtracting: await window.translationService.translate('For subtracting', window.tutorial.currentLanguage)
         };
     
         const placeValues = String(num2).split('').map(Number).reverse();
         let currentValue = num1;
-        let stepMessage = `${await window.translationService.translate('Step', window.tutorial.currentLanguage)} 2: ${await window.translationService.translate('For subtracting', window.tutorial.currentLanguage)} ${num2}:<br><br>`;
+        let stepMessage = `${translatedTexts.step} 2: ${translatedTexts.forSubtracting} ${num2}:<br><br>`;
     
         for (let index = 0; index < placeValues.length; index++) {
             const value = placeValues[index];
+            // Add this check right here
+            if (value === 0) {
+                continue; // Skip this iteration if we're subtracting 0
+            }
             const placeValueBase = Math.pow(10, index);
             const digit = value;
             const currentDigit = Math.floor((currentValue / placeValueBase) % 10);
             const nextDigit = Math.floor((currentValue / (placeValueBase * 10)) % 10);
             const nextPlaceValueBase = placeValueBase * 10;
             const positionName = await this.getPositionName(placeValueBase);
-        
+    
             if (currentDigit < digit) {
                 let borrow = 0;
                 if (nextDigit > 0) {
@@ -88,31 +95,39 @@ class Subtraction {
                 stepMessage += ` ${translatedTexts.currentValue} ${currentValue}<br><br>`;
             } else {
                 if (currentDigit >= 5 && digit < 5) {
-                    const complement5 = 5 - digit;
-                    currentValue -= 5 * placeValueBase;
-                    currentValue += complement5 * placeValueBase;
-                    stepMessage += `${index + 1}. ${translatedTexts.inPosition} ${positionName} X=${currentDigit}, Y=${digit}:<br>`;
-                    stepMessage += ` ${translatedTexts.since} X=${currentDigit} ${translatedTexts.greaterThan} Y=${digit}, ${translatedTexts.complementOf5} ${currentDigit} (5+${currentDigit % 5}).<br>`;
-                    stepMessage += ` <span class="mental-process">a. ${translatedTexts.useComplementOf5} ${translatedTexts.then} 5 ${translatedTexts.minus} ${digit} ${translatedTexts.equalTo} ${complement5}. ${translatedTexts.remove5AndAdd} ${complement5}</span><br>`;
-                    stepMessage += ` ${translatedTexts.currentValue} ${currentValue}<br><br>`;
+                    if (currentDigit - 5 >= digit) {
+                        // Direct subtraction if possible
+                        currentValue -= digit * placeValueBase;
+                        stepMessage += `${index + 1}. ${translatedTexts.inPosition} ${positionName} X=${currentDigit}, Y=${digit}:<br>`;
+                        stepMessage += ` ${translatedTexts.since} X=${currentDigit} ${translatedTexts.greaterThan} Y=${digit}, ${translatedTexts.enoughBottomBeads}<br>`;
+                        stepMessage += ` <span class="mental-process">a. ${translatedTexts.then} ${currentDigit} ${translatedTexts.minus} ${digit} ${translatedTexts.equalTo} ${currentDigit - digit}. ${translatedTexts.directSubtraction}</span><br>`;
+                        stepMessage += ` ${translatedTexts.currentValue} ${currentValue}<br><br>`;
+                    } else {
+                        const complement5 = 5 - digit;
+                        currentValue -= 5 * placeValueBase;
+                        currentValue += complement5 * placeValueBase;
+                        stepMessage += `${index + 1}. ${translatedTexts.inPosition} ${positionName} X=${currentDigit}, Y=${digit}:<br>`;
+                        stepMessage += ` ${translatedTexts.since} X=${currentDigit} ${translatedTexts.greaterThan} Y=${digit}, ${translatedTexts.complementOf5} ${currentDigit} (5+${currentDigit % 5}).<br>`;
+                        stepMessage += ` <span class="mental-process">a. ${translatedTexts.useComplementOf5} ${translatedTexts.then} 5 ${translatedTexts.minus} ${digit} ${translatedTexts.equalTo} ${complement5}. ${translatedTexts.remove5AndAdd} ${complement5}</span><br>`;
+                        stepMessage += ` ${translatedTexts.currentValue} ${currentValue}<br><br>`;
+                    }
                 } else {
                     stepMessage += `${index + 1}. ${translatedTexts.inPosition} ${positionName} X=${currentDigit}, Y=${digit}:<br>`;
-                    if (currentDigit > digit) {
+                    if (currentDigit >= digit) {
                         stepMessage += ` ${translatedTexts.since} X=${currentDigit} ${translatedTexts.greaterThan} Y=${digit}, ${translatedTexts.enoughBottomBeads}<br>`;
-                        stepMessage += ` <span class="mental-process">a. ${translatedTexts.then} ${currentDigit} ${translatedTexts.minus} ${digit} ${translatedTexts.equalTo} ${currentDigit-digit}. ${translatedTexts.directSubtraction}</span><br>`;
+                        stepMessage += ` <span class="mental-process">a. ${translatedTexts.then} ${currentDigit} ${translatedTexts.minus} ${digit} ${translatedTexts.equalTo} ${currentDigit - digit}. ${translatedTexts.directSubtraction}</span><br>`;
                     } else {
-                         stepMessage += ` ${translatedTexts.since} X=${currentDigit} ${translatedTexts.greaterThan} Y=${digit}, ${translatedTexts.complementOf5} ${currentDigit} (5+${currentDigit % 5}).<br>`;
-                         const complement5 = 5 - digit;
-                         currentValue -= 5 * placeValueBase;
-                         currentValue += complement5 * placeValueBase;
-                         stepMessage += ` <span class="mental-process">a. ${translatedTexts.useComplementOf5} ${translatedTexts.then} 5 ${translatedTexts.minus} ${digit} ${translatedTexts.equalTo} ${complement5}. ${translatedTexts.remove5AndAdd} ${complement5}</span><br>`;
+                        stepMessage += ` ${translatedTexts.since} X=${currentDigit} ${translatedTexts.greaterThan} Y=${digit}, ${translatedTexts.complementOf5} ${currentDigit} (5+${currentDigit % 5}).<br>`;
+                        const complement5 = 5 - digit;
+                        currentValue -= 5 * placeValueBase;
+                        currentValue += complement5 * placeValueBase;
+                        stepMessage += ` <span class="mental-process">a. ${translatedTexts.sinceYLessThan5} ${translatedTexts.then} 5 ${translatedTexts.minus} ${digit} ${translatedTexts.equalTo} ${complement5}. ${translatedTexts.remove5AndAdd} ${complement5}</span><br>`;
                     }
                     currentValue -= digit * placeValueBase;
                     stepMessage += ` ${translatedTexts.currentValue} ${currentValue}<br><br>`;
                 }
             }
         }
-        
     
         const steps = [{
             value: num1,
@@ -124,7 +139,7 @@ class Subtraction {
             complementValue: num2
         }];
         return steps;
-    }
+    }    
     
 
     async generateSteps(num1, num2) {
@@ -161,7 +176,7 @@ class Subtraction {
         }
     }
 
-    repeatComplementStep(complement, finalValue) {
+    async repeatComplementStep(complement, finalValue) {
         const columns = Array.from(document.querySelectorAll('.column')).reverse();
         const num1 = parseInt(document.getElementById('num1').value);
         const num2 = parseInt(document.getElementById('num2').value);
@@ -170,8 +185,14 @@ class Subtraction {
         const steps = [];
         let currentValue = num1;
         
+        const translatedTexts = {
+            initialNumber: await window.translationService.translate('Initial number', window.tutorial.currentLanguage),
+            borrowFromNext: await window.translationService.translate('Borrow from next column and add complement', window.tutorial.currentLanguage),
+            subtractFromPosition: await window.translationService.translate('Subtract from position', window.tutorial.currentLanguage)
+        };
+        
         // Start with initial number
-        steps.push({value: currentValue, desc: "Initial number"});
+        steps.push({value: currentValue, desc: translatedTexts.initialNumber});
         
         // Process each digit from right to left
         const num2Digits = String(num2).split('').map(Number).reverse();
@@ -186,14 +207,14 @@ class Subtraction {
                 currentValue = currentValue - Math.pow(10, i + 1) + (complement * placeValue);
                 steps.push({
                     value: currentValue,
-                    desc: `Borrow from next column and add complement ${complement}`
+                    desc: `${translatedTexts.borrowFromNext} ${complement}`
                 });
             } else {
                 // Direct subtraction
                 currentValue -= subtractDigit * placeValue;
                 steps.push({
                     value: currentValue,
-                    desc: `Subtract ${subtractDigit} from position ${i}`
+                    desc: `${translatedTexts.subtractFromPosition} ${subtractDigit} from position ${i}`
                 });
             }
         }
@@ -211,6 +232,7 @@ class Subtraction {
         this.displayNumberWithHighlights(columns, num1);
         requestAnimationFrame(animate);
     }
+
     
 
 

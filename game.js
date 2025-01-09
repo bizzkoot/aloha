@@ -1,11 +1,3 @@
-console.log('Loading game.js');
-console.log('Dependencies check:', {
-    translationService: !!window.translationService,
-    abacus: !!window.abacus,
-    Addition: typeof Addition !== 'undefined',
-    Subtraction: typeof Subtraction !== 'undefined'
-});
-
 class ArithmeticGame {
     constructor() {
         if (window.gameInstance) {
@@ -151,18 +143,18 @@ class ArithmeticGame {
                     close: await this.translateText('Close'),
                     repeat: await this.translateText('Show Movement')
                 };
-            
+        
                 await window.translationService.ready;
                 this.cleanupTutorial();
-            
+        
                 const gameSection = document.querySelector('.game-question-section');
                 const tutorialModal = document.createElement('div');
                 tutorialModal.id = 'tutorialModal';
                 tutorialModal.className = 'modal tutorial-modal';
-            
+        
                 const tutorialContent = document.createElement('div');
                 tutorialContent.id = 'tutorialContent';
-            
+        
                 const controls = document.createElement('div');
                 controls.className = 'tutorial-controls';
                 controls.innerHTML = `
@@ -170,58 +162,118 @@ class ArithmeticGame {
                     <button class="tutorial-next">${translatedTexts.nextStep}</button>
                     <button class="tutorial-close">${translatedTexts.close}</button>
                 `;
-            
+        
                 tutorialModal.appendChild(tutorialContent);
                 tutorialModal.appendChild(controls);
                 gameSection.appendChild(tutorialModal);
-            
+        
                 this.guidedQuestions.add(this.currentQuestionIndex);
+        
                 const currentQuestion = this.questions[this.currentQuestionIndex];
-            
+                console.log('Current question:', currentQuestion);
+                console.log('Subtraction instance:', this.subtraction);
+        
                 let steps;
-                switch (currentQuestion.operator) {
-                    case '+':
-                        steps = await this.addition.generateSteps(currentQuestion.num1, currentQuestion.num2);
-                        break;
-                    case '-':
-                        steps = await this.subtraction.generateSteps(currentQuestion.num1, currentQuestion.num2);
-                        break;
+                let operationInstance;
+                try {
+                    switch (currentQuestion.operator) {
+                        case '+':
+                            if (!this.addition) {
+                                this.addition = new Addition();
+                            }
+                            operationInstance = this.addition;
+                            steps = await this.addition.generateSteps(currentQuestion.num1, currentQuestion.num2);
+                            break;
+                        case '-':
+                            if (!this.subtraction) {
+                                this.subtraction = new Subtraction();
+                            }
+                            operationInstance = this.subtraction;
+                            steps = await this.subtraction.generateSteps(currentQuestion.num1, currentQuestion.num2);
+                            break;
+                    }
+                } catch (error) {
+                    console.error('Error generating steps:', error);
+                    return;
                 }
-            
+        
+                if (!steps || steps.length === 0) {
+                    console.log('Generating default steps');
+                    steps = [
+                        {
+                            value: currentQuestion.num1,
+                            message: await this.translateText(`Starting with ${currentQuestion.num1}`),
+                            isComplement: false
+                        },
+                        {
+                            value: this.calculateExpectedValue(currentQuestion),
+                            message: await this.translateText(`Final result: ${this.calculateExpectedValue(currentQuestion)}`),
+                            isComplement: false
+                        }
+                    ];
+                }
+        
+                console.log('Generated steps:', steps);
+        
                 let currentStepIndex = 0;
-                tutorialContent.innerHTML = steps[currentStepIndex].message;
                 
-                // Display initial number
-                window.abacus.resetAbacus();
-                this.displayNumberWithHighlights(Array.from(document.querySelectorAll('.column')).reverse(), steps[currentStepIndex].value);
-            
-                const repeatBtn = tutorialModal.querySelector('.tutorial-repeat');
-                repeatBtn.onclick = () => {
-                    if (steps[currentStepIndex].isComplement) {
-                        this.repeatComplementStep(steps[currentStepIndex].complementValue, steps[currentStepIndex].value);
-                    } else {
+                // Function to display the current step
+                const displayStep = async () => {
+                    if (!steps) {
+                        console.error('Steps array is undefined.');
+                        return;
+                    }
+                    if (currentStepIndex < 0 || currentStepIndex >= steps.length) {
+                        console.error('Invalid currentStepIndex:', currentStepIndex, 'steps length:', steps.length);
+                        return;
+                    }
+                    try {
+                        tutorialContent.innerHTML = steps[currentStepIndex].message;
+                        // Display initial number
+                        window.abacus.resetAbacus();
                         this.displayNumberWithHighlights(Array.from(document.querySelectorAll('.column')).reverse(), steps[currentStepIndex].value);
+                    } catch (error) {
+                        console.error('Error displaying step:', error);
                     }
                 };
-            
+        
+                // Initial display
+                await displayStep();
+        
+                const repeatBtn = tutorialModal.querySelector('.tutorial-repeat');
+                repeatBtn.onclick = async () => {
+                    if (steps && steps.length > 0 && currentStepIndex < steps.length) {
+                        const step = steps[currentStepIndex];
+                        if (step.isComplement) {
+                            await this.repeatComplementStep(step.complementValue, step.value);
+                        } else {
+                            await this.displayNumberWithHighlights(
+                                Array.from(document.querySelectorAll('.column')).reverse(),
+                                step.value
+                            );
+                        }
+                    }
+                };
+        
                 const nextBtn = tutorialModal.querySelector('.tutorial-next');
-                nextBtn.onclick = () => {
+                nextBtn.onclick = async () => {
                     currentStepIndex++;
+                    // Check if currentStepIndex is within bounds *before* calling displayStep
                     if (currentStepIndex < steps.length) {
-                        tutorialContent.innerHTML = steps[currentStepIndex].message;
-                        this.displayNumberWithHighlights(Array.from(document.querySelectorAll('.column')).reverse(), steps[currentStepIndex].value);
+                        await displayStep();
                     } else {
                         nextBtn.disabled = true;
                     }
                 };
-            
+        
                 const closeBtn = tutorialModal.querySelector('.tutorial-close');
                 closeBtn.onclick = () => {
                     tutorialModal.remove();
                     window.abacus.resetAbacus();
                 };
-            };            
-        }
+            };
+        }              
+               
 
         if (nextQuestionBtn) {
             nextQuestionBtn.onclick = () => {
@@ -466,24 +518,26 @@ class ArithmeticGame {
         }
     }
 
-    startGame() {
+    async startGame() {
         console.log('Starting game');
         const selectedOperators = Array.from(document.querySelectorAll('.operators-selection input:checked')).map(inp => inp.value);
+        
+        // Create instances directly since they don't require initialization
         if (selectedOperators.includes('+')) {
             this.addition = new Addition();
         }
         if (selectedOperators.includes('-')) {
             this.subtraction = new Subtraction();
         }
-
+    
         const setupContent = document.querySelector('.game-setup-content');
         const questionSection = document.querySelector('.game-question-section');
-
         setupContent.style.display = 'none';
         questionSection.style.display = 'block';
         this.currentQuestionIndex = 0;
         this.showCurrentQuestion();
     }
+    
 
     async showCurrentQuestion() {
         console.log('Showing question:', this.currentQuestionIndex + 1);
@@ -520,7 +574,7 @@ class ArithmeticGame {
     }
 
     // Add this method to ArithmeticGame class in game.js
-    displayNumberWithHighlights(columns, number) {
+    async displayNumberWithHighlights(columns, number, beadMovements) {
         try {
             // Reset all beads and highlights
             columns.forEach(column => {
@@ -529,99 +583,147 @@ class ArithmeticGame {
                 });
             });
     
+            // Handle sequential bead movements
+            if (beadMovements) {
+                beadMovements.forEach(movement => {
+                    const column = columns[movement.columnIndex];
+                    if (!column) return;
+    
+                    const bead = column.querySelector(`.${movement.beadType}`);
+                    if (bead) {
+                        // Set bead state
+                        const isActive = movement.direction === 'add';
+                        bead.classList.toggle('active', isActive);
+                        bead.classList.toggle('tutorial-highlight', isActive);
+                    }
+                });
+            }
+    
             // Set final number display
             let remaining = number;
             for (let i = 0; i < columns.length && remaining > 0; i++) {
                 const digit = remaining % 10;
                 const column = columns[i];
-                
+    
                 // Set top bead if needed
                 if (digit >= 5) {
                     const topBead = column.querySelector('.top-bead');
                     if (topBead) {
                         topBead.classList.add('active', 'tutorial-highlight');
-                        // Update internal state
-                        BeadMovements.setValue(column, digit);
                     }
                 }
-                
+    
                 // Set bottom beads
                 const bottomCount = digit % 5;
                 for (let j = 0; j < bottomCount; j++) {
-                    const bottomBead = column.querySelector(`.bottom-bead-${4-j}`);
+                    const bottomBead = column.querySelector(`.bottom-bead-${4 - j}`);
                     if (bottomBead) {
                         bottomBead.classList.add('active', 'tutorial-highlight');
-                        // Update internal state
-                        BeadMovements.setValue(column, digit);
                     }
                 }
-                
+    
                 remaining = Math.floor(remaining / 10);
             }
-            // Update the abacus value display
+            // Update abacus value
             window.abacus.calculateValue();
+    
+            // Return a promise that resolves when animations complete
+            return new Promise(resolve => setTimeout(resolve, 500));
         } catch (error) {
             console.error('Error in displayNumberWithHighlights:', error);
         }
-    }    
+    }
+
+      
 
     // Add this method to ArithmeticGame class
-    repeatComplementStep(complement, finalValue) {
+    async repeatComplementStep(complement, finalValue) {
         const columns = Array.from(document.querySelectorAll('.column')).reverse();
         const currentQuestion = this.questions[this.currentQuestionIndex];
         const num1 = currentQuestion.num1;
         const num2 = currentQuestion.num2;
-        
-        // Calculate all intermediate steps
+        const isSubtraction = currentQuestion.operator === '-';
+    
+        // Generate steps array with bead movements
         const steps = [];
         let currentValue = num1;
-        
-        // Convert numbers to arrays of digits
-        const num1Digits = String(num1).padStart(5, '0').split('').map(Number);
-        const num2Digits = String(num2).padStart(5, '0').split('').map(Number);
-        
-        // Start with initial number
-        steps.push({value: currentValue, desc: "Initial number"});
-        
+    
         // Process each digit from right to left
-        for(let i = 0; i < columns.length; i++) {
+        for (let i = 0; i < columns.length; i++) {
             const placeValue = Math.pow(10, i);
             const currentDigit = Math.floor((currentValue / placeValue) % 10);
-            const addDigit = Math.floor((num2 / placeValue) % 10);
-            
-            if(addDigit > 0) {
-                if(currentDigit + addDigit >= 10) {
-                    // Handle carry over
-                    const complement = 10 - addDigit;
-                    currentValue = currentValue + (placeValue * 10) - (complement * placeValue);
-                    steps.push({
-                        value: currentValue,
-                        desc: `Add 10 and subtract complement ${complement} in position ${i}`
-                    });
+            const operandDigit = Math.floor((num2 / placeValue) % 10);
+            const beadMovements = [];
+    
+            if (operandDigit > 0) {
+                if (isSubtraction) {
+                    if (currentDigit < operandDigit) {
+                        // Need to borrow
+                        const complement = 10 - operandDigit;
+                        currentValue = currentValue - Math.pow(10, i + 1) + (complement * placeValue);
+                        steps.push({
+                            value: currentValue,
+                            desc: `Borrow from next column and subtract ${operandDigit}`,
+                            beadMovements: beadMovements
+                        });
+                    } else {
+                        // Direct subtraction
+                        currentValue -= operandDigit * placeValue;
+                        // Generate bead movements for direct subtraction
+                        if (currentDigit >= 5) {
+                            beadMovements.push({columnIndex: i, beadType: 'top-bead', direction: 'remove'});
+                            for (let j = 0; j < operandDigit; j++) {
+                                beadMovements.push({columnIndex: i, beadType: `bottom-bead-${4-j}`, direction: 'remove'});
+                            }
+                        } else {
+                            for (let j = 0; j < operandDigit; j++) {
+                                beadMovements.push({columnIndex: i, beadType: `bottom-bead-${4-j}`, direction: 'remove'});
+                            }
+                        }
+                        steps.push({
+                            value: currentValue,
+                            desc: `Subtract ${operandDigit} directly`,
+                            beadMovements: beadMovements
+                        });
+                    }
                 } else {
-                    // Direct addition
-                    currentValue += addDigit * placeValue;
-                    steps.push({
-                        value: currentValue,
-                        desc: `Add ${addDigit} in position ${i}`
-                    });
+                    // Addition logic
+                    if (currentDigit + operandDigit >= 10) {
+                        const complement = 10 - operandDigit;
+                        currentValue = currentValue + (placeValue * 10) - (complement * placeValue);
+                        steps.push({
+                            value: currentValue,
+                            desc: `Add 10 and subtract complement ${complement}`,
+                            beadMovements: beadMovements
+                        });
+                    } else {
+                        currentValue += operandDigit * placeValue;
+                        steps.push({
+                            value: currentValue,
+                            desc: `Add ${operandDigit} directly`,
+                            beadMovements: beadMovements
+                        });
+                    }
                 }
             }
         }
-        
-        let stepIndex = 0;
-        const animate = () => {
-            if (stepIndex < steps.length) {
-                this.displayNumberWithHighlights(columns, steps[stepIndex].value);
-                window.abacus.calculateValue();
-                stepIndex++;
-                setTimeout(() => requestAnimationFrame(animate), 2000);
+    
+        // Animate the steps
+        const animateSteps = async () => {
+            window.abacus.resetAbacus();
+            // Show initial number
+            await this.displayNumberWithHighlights(columns, num1);
+    
+            // Animate each step
+            for (const step of steps) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                await this.displayNumberWithHighlights(columns, step.value, step.beadMovements);
             }
         };
-        
-        this.displayNumberWithHighlights(columns, num1);
-        requestAnimationFrame(animate);
-    }    
+    
+        await animateSteps();
+    }
+    
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

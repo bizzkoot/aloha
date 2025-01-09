@@ -20,7 +20,7 @@ class Addition {
             greaterOrEqual5: await window.translationService.translate('greater than or equal to 5', window.tutorial.currentLanguage),
             use5Complement: await window.translationService.translate('we use the 5\'s complement (5 - Y)', window.tutorial.currentLanguage),
             calculate: await window.translationService.translate('We calculate', window.tutorial.currentLanguage),
-            thisMeans: await window.translationService.translate('This means we add 5 and subtract 2', window.tutorial.currentLanguage),
+            thisMeans: await window.translationService.translate('This means we add 5 and subtract', window.tutorial.currentLanguage), // Modified this line
             use10Complement: await window.translationService.translate('we use the 10\'s complement (10 - Y)', window.tutorial.currentLanguage),
             add10Subtract: await window.translationService.translate('This means we add 10 and subtract', window.tutorial.currentLanguage),
             canAddDirectly: await window.translationService.translate('we can add directly', window.tutorial.currentLanguage),
@@ -59,7 +59,7 @@ class Addition {
                     processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.andXIs} ${X} ${translatedMessages.lessThan5AndSumLessThan10}, ${translatedMessages.canAddDirectly}`;
                 } else if (Y < 5) {
                     complement = 5 - Y;
-                    processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.greaterOrEqual5}, ${translatedMessages.use5Complement}. ${translatedMessages.calculate} 5 - ${Y} = ${complement}. ${translatedMessages.thisMeans} ${translatedMessages.add} 5 ${andText} ${translatedMessages.minus} ${complement}.`;
+                    processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.greaterOrEqual5}, ${translatedMessages.use5Complement}. ${translatedMessages.calculate} 5 - ${Y} = ${complement}. ${translatedMessages.thisMeans} ${complement}.`; // Removed andText
                 } else {
                     complement = 10 - Y;
                     processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.greaterOrEqual5}, ${translatedMessages.use10Complement}. ${translatedMessages.calculate} 10 - ${Y} = ${complement}. ${translatedMessages.add10Subtract} ${complement}.`;

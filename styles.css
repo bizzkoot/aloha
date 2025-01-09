@@ -204,3 +204,18 @@
 .language-button:hover {
     background-color: #6b3410;
 }
+
+.github-link {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 32px;
+    color: #333;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+}
+
+.github-link:hover {
+    transform: scale(1.1);
+    color: #666;
+}
