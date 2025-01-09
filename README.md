@@ -1,3 +1,15 @@
+<p align="center">
+  <img src="assets/soroban-icon.png" alt="Soroban Icon" width="150">
+</p>
+
+<p align="center">
+  🌐 Language:
+  <a href="README.md"> <img src="https://flagcdn.com/h20/us.png" alt="English" width="20"> English</a> |
+  <a href="README.ms.md"> <img src="https://flagcdn.com/h20/my.png" alt="Bahasa Melayu" width="20"> Bahasa Melayu</a> |
+  <a href="README.zh.md"> <img src="https://flagcdn.com/h20/cn.png" alt="Mandarin" width="20"> Mandarin</a> |
+  <a href="README.ta.md"> <img src="https://flagcdn.com/h20/in.png" alt="Tamil" width="20"> Tamil</a>
+</p>
+
 # 🧮 Japanese Abacus (Soroban) Learning Application
 
 An interactive web-based Japanese Abacus (Soroban) simulator designed to help users learn and practice arithmetic calculations using traditional Japanese methods.
@@ -49,11 +61,39 @@ This project is structured into multiple components:
 
 This application was 100% built using:
 
--   [<img src="https://sourcegraph.com/sourcegraph-logo.svg" alt="Sourcegraph Cody" width="150"/>](https://about.sourcegraph.com/cody) - Sourcegraph Cody, an AI coding assistant.
--   [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Visual_Studio_Code_1.35_icon.svg/2048px-Visual_Studio_Code_1.35_icon.svg.png" alt="Visual Studio Code" width="30" />](https://code.visualstudio.com/) - Visual Studio Code, a source code editor.
+-   [<img src="assets/cody.png" alt="Sourcegraph Cody" width="30"/>](https://about.sourcegraph.com/cody) - Sourcegraph Cody, an AI coding assistant.
+-   [<img src="assets/vscode.png" alt="Visual Studio Code" width="30" />](https://code.visualstudio.com/) - Visual Studio Code, a source code editor.
 
 ## 🌐 Live Demo
 
 Try it here: [https://bizzkoot.github.io/aloha/](https://bizzkoot.github.io/aloha/)
+
+## 📸 Screenshots
+
+Here are some screenshots of the application:
+
+### Main Screen
+<p align="center">
+  <img src="assets/main.png" alt="Main Screen" width="400">
+</p>
+<p align="center">
+  The main screen of the application, showing the interactive soroban.
+</p>
+
+### Arithmetic Practice
+<p align="center">
+  <img src="assets/arithmetic-practice.png" alt="Arithmetic Practice" width="400">
+</p>
+<p align="center">
+  A view of the arithmetic practice mode, where users can perform guided calculations.
+</p>
+
+### Practice Game
+<p align="center">
+  <img src="assets/practice-game.png" alt="Practice Game" width="400">
+</p>
+<p align="center">
+  The practice game mode, where users can test their skills with configurable difficulty levels.
+</p>
 
 # aloha
