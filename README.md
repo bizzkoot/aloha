@@ -27,6 +27,37 @@ An interactive web-based Japanese Abacus (Soroban) simulator designed to help us
   - Get immediate feedback and final scores
   - Option for guided assistance during practice
 
+<hr>
+
+## 📱 Progressive Web App Features
+
+### Installation
+
+You can install this app on your device:
+
+- 💻 **Desktop (Chrome/Edge)**: Click the install icon (⊕) in the address bar
+- 🤖 **Android**: Tap "Add to Home Screen" in browser menu
+- 🍎 **iOS**: Use Share button and select "Add to Home Screen"
+
+### Offline Capability
+
+The Abacus Simulator works fully offline after installation:
+
+- 📶 Access all features without internet connection
+- 🧮 Practice calculations anywhere
+- 🔄 Automatic sync when back online
+- 📦 Cache updates automatically with new versions
+
+### Benefits
+
+- 🚀 Fast loading times
+- 💻 Desktop app-like experience
+- 📱 Mobile-friendly interface
+- 🔄 Automatic updates
+- 📶 Works without internet
+
+<hr>
+
 ## 🕹️ How to Use
 
 1.  **Basic Operation**

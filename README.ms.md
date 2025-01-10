@@ -27,6 +27,37 @@ Simulator Abakus Jepun (Soroban) berasaskan web interaktif yang direka untuk mem
   - Dapatkan maklum balas segera dan skor akhir
   - Pilihan untuk bantuan berpandu semasa latihan
 
+<hr>
+
+## 📱 Ciri-ciri Aplikasi Web Progresif
+
+### Pemasangan
+
+Anda boleh memasang aplikasi ini pada peranti anda:
+
+- 💻 **Desktop (Chrome/Edge)**: Klik ikon pasang (⊕) di bar alamat
+- 🤖 **Android**: Ketik "Tambah ke Skrin Utama" dalam menu pelayar
+- 🍎 **iOS**: Gunakan butang Kongsi dan pilih "Tambah ke Skrin Utama"
+
+### Keupayaan Luar Talian
+
+Simulator Abakus berfungsi sepenuhnya di luar talian selepas pemasangan:
+
+- 📶 Akses semua ciri tanpa sambungan internet
+- 🧮 Praktikkan pengiraan di mana-mana sahaja
+- 🔄 Penyegerakan automatik apabila kembali dalam talian
+- 📦 Kemas kini cache secara automatik dengan versi baharu
+
+### Faedah
+
+- 🚀 Masa muat yang pantas
+- 💻 Pengalaman seperti aplikasi desktop
+- 📱 Antara muka mesra mudah alih
+- 🔄 Kemas kini automatik
+- 📶 Berfungsi tanpa internet
+
+<hr>
+
 ## 🕹️ Cara Menggunakan
 
 1.  **Operasi Asas**
