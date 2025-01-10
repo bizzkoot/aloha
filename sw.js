@@ -52,8 +52,13 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Skip non-HTTP(S) requests
+  // Skip chrome-extension and non-HTTP requests
   if (!event.request.url.startsWith('http')) {
+      return;
+  }
+
+  // Only handle requests from our origin
+  if (!event.request.url.startsWith(self.location.origin)) {
       return;
   }
 
@@ -65,7 +70,7 @@ self.addEventListener('fetch', event => {
               }
               return fetch(event.request)
                   .then(response => {
-                      if (response.ok && event.request.url.startsWith(self.location.origin)) {
+                      if (response.ok) {
                           return caches.open(CACHE_NAME)
                               .then(cache => {
                                   cache.put(event.request, response.clone());
