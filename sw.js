@@ -1,9 +1,8 @@
 const CACHE_NAME = 'abacus-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/language-select.html',
-  '/favicon.ico',
+    './',
+    './index.html',
+    './favicon.ico',
   
   // CSS Files
   '/arithmetic.css',
