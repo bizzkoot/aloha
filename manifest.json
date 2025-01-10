@@ -2,31 +2,32 @@
   "name": "Abacus Simulator",
   "short_name": "Abacus",
   "description": "Interactive abacus simulator for learning arithmetic calculations",
-  "start_url": "/",
+  "start_url": "/aloha/",
+  "scope": "/aloha/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4A90E2",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/aloha/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-192x192-maskable.png",
+      "src": "/aloha/icons/icon-192x192-maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "/aloha/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512x512-maskable.png",
+      "src": "/aloha/icons/icon-512x512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -34,13 +35,13 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshots/desktop.png",
+      "src": "/aloha/screenshots/desktop.png",
       "sizes": "1280x800",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/screenshots/mobile.png",
+      "src": "/aloha/screenshots/mobile.png",
       "sizes": "390x844",
       "type": "image/png"
     }

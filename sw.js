@@ -1,73 +1,73 @@
 const CACHE_NAME = 'abacus-v1';
+const BASE_PATH = '/aloha/';  // Add this line for GitHub Pages path
+
 const ASSETS = [
-    './',
-    './index.html',
-    './favicon.ico',
-  
-  // CSS Files
-  '/arithmetic.css',
-  '/game.css',
-  '/positions.css',
-  '/styles.css',
-  '/tutorial.css',
-  
-  // JavaScript Files
-  '/addition.js',
-  '/arithmetic.js',
-  '/game.js',
-  '/language-selector.js',
-  '/movements.js',
-  '/script.js',
-  '/subtraction.js',
-  '/tutorial.js',
-  '/translations.js',
-  
-  // Assets and Icons
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
-  '/screenshots/desktop.png',
-  '/screenshots/mobile.png',
-  
-  // Configuration Files
-  '/manifest.json',
-  
-  // Documentation (if needed for offline access)
-  '/ADDITION.md',
-  '/SUBTRACTION.md',
-  '/README.md',
-  '/translation.csv'
+    // Root files with BASE_PATH
+    `${BASE_PATH}`,
+    `${BASE_PATH}index.html`,
+    `${BASE_PATH}favicon.ico`,
+    
+    // CSS Files
+    `${BASE_PATH}arithmetic.css`,
+    `${BASE_PATH}game.css`,
+    `${BASE_PATH}positions.css`,
+    `${BASE_PATH}styles.css`,
+    `${BASE_PATH}tutorial.css`,
+    
+    // JavaScript Files
+    `${BASE_PATH}addition.js`,
+    `${BASE_PATH}arithmetic.js`,
+    `${BASE_PATH}game.js`,
+    `${BASE_PATH}language-selector.js`,
+    `${BASE_PATH}movements.js`,
+    `${BASE_PATH}script.js`,
+    `${BASE_PATH}subtraction.js`,
+    `${BASE_PATH}tutorial.js`,
+    `${BASE_PATH}translations.js`,
+    
+    // Assets and Icons
+    `${BASE_PATH}icons/icon-192x192.png`,
+    `${BASE_PATH}icons/icon-512x512.png`,
+    `${BASE_PATH}screenshots/desktop.png`,
+    `${BASE_PATH}screenshots/mobile.png`,
+    
+    // Configuration Files
+    `${BASE_PATH}manifest.json`,
+    
+    // Documentation
+    `${BASE_PATH}ADDITION.md`,
+    `${BASE_PATH}SUBTRACTION.md`,
+    `${BASE_PATH}README.md`,
+    `${BASE_PATH}translation.csv`
 ];
 
-// Install event - cache all required assets
+// Install event remains the same
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log('Caching app assets');
-        return cache.addAll(ASSETS);
-    })
-  );
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                console.log('Caching app assets');
+                return cache.addAll(ASSETS);
+            })
+    );
 });
 
-// Fetch event - serve from cache first, then network
+// Fetch event remains the same
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        // Return cached response if found
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        // Otherwise fetch from network
-        return fetch(event.request)
-          .then(response => {
-            // Cache the network response for future
-            return caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, response.clone());
-                return response;
-              });
-          });
-      })
-  );
+    event.respondWith(
+        caches.match(event.request)
+            .then(cachedResponse => {
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                return fetch(event.request)
+                    .then(response => {
+                        return caches.open(CACHE_NAME)
+                            .then(cache => {
+                                cache.put(event.request, response.clone());
+                                return response;
+                            });
+                    });
+            })
+    );
 });
