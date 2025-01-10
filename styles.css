@@ -1,19 +1,41 @@
 @import url('positions.css');
 
+:root {
+    font-size: 16px;
+    /* Base font size for desktop */
+}
+
+/* Responsive base font size */
+@media screen and (max-width: 768px) {
+    :root {
+        font-size: calc(14px + 1vw);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    :root {
+        font-size: calc(12px + 1.5vw);
+    }
+}
+
 .container {
     text-align: center;
-    padding: 20px;
+    padding: clamp(1rem, 3vw, 2rem);
     font-family: Arial, sans-serif;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 .abacus {
     background: #d4a373;
-    padding: 40px 20px;
+    padding: clamp(20px, 4vw, 40px) clamp(10px, 2vw, 20px);
     display: inline-flex;
-    gap: 30px;
+    gap: clamp(15px, 3vw, 30px);
     position: relative;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .bar {
@@ -29,18 +51,19 @@
 .column {
     display: flex;
     flex-direction: column;
-    width: 40px;
-    height: 300px;
+    width: clamp(30px, 4vw, 40px);
+    height: clamp(240px, 40vh, 300px);
     position: relative;
 }
 
 .bead {
-    width: 36px;
-    height: 36px;
+    width: clamp(28px, 3.8vw, 36px);
+    height: clamp(28px, 3.8vw, 36px);
     background: #2f1810;
     border-radius: 50%;
     position: absolute;
-    left: 2px;
+    left: 50%;
+    transform: translateX(-50%);
     cursor: pointer;
     transition: transform 0.3s ease;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -65,7 +88,7 @@
 
 .value {
     margin-top: 20px;
-    font-size: 24px;
+    font-size: 1.5rem; /* Changed from 24px */
     font-weight: bold;
     color: #2f1810;
 }
@@ -73,8 +96,8 @@
 /* Common button styles */
 .button-common {
     margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 18px;
+    padding: 0.625rem 1.25rem; /* Changed from 10px 20px */
+    font-size: 1.125rem; /* Changed from 18px */
     background-color: #8b4513;
     color: white;
     border: none;
@@ -102,12 +125,12 @@
 }
 
 .language-selector select {
-    padding: 8px;
+    padding: 0.5rem; /* Changed from 8px */
     border-radius: 5px;
     border: 1px solid #8b4513;
     background-color: white;
     color: #2f1810;
-    font-size: 14px;
+    font-size: 0.875rem; /* Changed from 14px */
     cursor: pointer;
 }
 
@@ -117,9 +140,10 @@
 
 .button-container {
     display: flex;
-    gap: 10px;
+    gap: clamp(0.5rem, 2vw, 1rem); /* Dynamic gap based on viewport width */
     justify-content: center;
-    margin: 20px 0;
+    margin: clamp(1rem, 3vw, 2rem) 0;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
 }
 .language-select-modal {
     position: fixed;
@@ -189,10 +213,10 @@
 /* Add these styles */
 .language-button {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 8px 16px;
-    font-size: 14px;
+    top: 1.25rem; /* Changed from 20px */
+    right: 1.25rem; /* Changed from 20px */
+    padding: 0.5rem 1rem; /* Changed from 8px 16px */
+    font-size: 0.875rem; /* Changed from 14px */
     background-color: #8b4513;
     color: white;
     border: none;
@@ -207,9 +231,9 @@
 
 .github-link {
     position: fixed;
-    top: 20px;
-    left: 20px;
-    font-size: 32px;
+    top: 1.25rem; /* Changed from 20px */
+    left: 1.25rem; /* Changed from 20px */
+    font-size: 2rem; /* Changed from 32px */
     color: #333;
     transition: transform 0.3s ease;
     z-index: 1000;
@@ -218,4 +242,77 @@
 .github-link:hover {
     transform: scale(1.1);
     color: #666;
+}
+
+@media screen and (max-width: 768px) {
+    .button-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .button-common {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .abacus {
+        padding: 20px 10px;
+        gap: 15px;
+    }
+
+    .column {
+        width: 30px;
+    }
+
+    .bead {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    :root {
+        font-size: calc(10px + 1.5vw);
+    }
+
+    .column {
+        width: 25px;
+    }
+
+    .bead {
+        width: 24px;
+        height: 24px;
+    }
+
+    .button-common {
+        padding: 0.5rem 1rem;
+    }
+
+    .language-button {
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .bead {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .button-common,
+    .lang-btn,
+    .language-button {
+        min-height: 44px; /* Minimum touch target size */
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .abacus {
+        max-width: 1200px;
+    }
 }
