@@ -310,14 +310,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+// Find the service worker registration code (around line 315)
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        console.log('ServiceWorker registration successful');
-      })
-      .catch(err => {
-        console.log('ServiceWorker registration failed: ', err);
-      });
-  });
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/aloha/sw.js', {
+            scope: '/aloha/'
+        })
+        .then(registration => {
+            console.log('ServiceWorker registration successful');
+        })
+        .catch(error => {
+            console.log('ServiceWorker registration failed:', error);
+        });
+    });
 }
