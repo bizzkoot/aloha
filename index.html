@@ -49,11 +49,17 @@
     <script src="game.js" defer></script>
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/aloha/sw.js', {
-                scope: '/aloha/'
-            })
-            .then(registration => console.log('ServiceWorker registered'))
-            .catch(error => console.log('ServiceWorker registration failed: ', error));
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/aloha/sw.js', {
+                    scope: '/aloha/'
+                })
+                .then(registration => {
+                    console.log('ServiceWorker registration successful');
+                })
+                .catch(error => {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+            });
         }
     </script>
 </body>

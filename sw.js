@@ -52,22 +52,31 @@ self.addEventListener('install', event => {
     );
 });
 
-// Fetch event remains the same
+// Modify fetch event to handle chrome-extension URLs
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(cachedResponse => {
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-                return fetch(event.request)
-                    .then(response => {
-                        return caches.open(CACHE_NAME)
-                            .then(cache => {
-                                cache.put(event.request, response.clone());
-                                return response;
-                            });
-                    });
-            })
-    );
+  // Skip chrome-extension requests
+  if (event.request.url.startsWith('chrome-extension://')) {
+      return;
+  }
+
+  event.respondWith(
+      caches.match(event.request)
+          .then(cachedResponse => {
+              if (cachedResponse) {
+                  return cachedResponse;
+              }
+              return fetch(event.request)
+                  .then(response => {
+                      // Only cache same-origin requests
+                      if (event.request.url.startsWith(self.location.origin)) {
+                          return caches.open(CACHE_NAME)
+                              .then(cache => {
+                                  cache.put(event.request, response.clone());
+                                  return response;
+                              });
+                      }
+                      return response;
+                  });
+          })
+  );
 });
