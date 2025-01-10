@@ -41,21 +41,19 @@ const ASSETS = [
     `${BASE_PATH}translation.csv`
 ];
 
-// Install event remains the same
 self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Caching app assets');
-                return cache.addAll(ASSETS);
-            })
-    );
+  event.waitUntil(
+      caches.open(CACHE_NAME)
+          .then(cache => {
+              console.log('Caching app assets');
+              return cache.addAll(ASSETS);
+          })
+  );
 });
 
-// Modify fetch event to handle chrome-extension URLs
 self.addEventListener('fetch', event => {
-  // Skip chrome-extension requests
-  if (event.request.url.startsWith('chrome-extension://')) {
+  // Skip non-HTTP(S) requests
+  if (!event.request.url.startsWith('http')) {
       return;
   }
 
@@ -67,8 +65,7 @@ self.addEventListener('fetch', event => {
               }
               return fetch(event.request)
                   .then(response => {
-                      // Only cache same-origin requests
-                      if (event.request.url.startsWith(self.location.origin)) {
+                      if (response.ok && event.request.url.startsWith(self.location.origin)) {
                           return caches.open(CACHE_NAME)
                               .then(cache => {
                                   cache.put(event.request, response.clone());
