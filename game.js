@@ -1,4 +1,4 @@
-class ArithmeticGame {
+window.ArithmeticGame = class ArithmeticGame {
     constructor() {
         if (window.gameInstance) {
             return window.gameInstance;

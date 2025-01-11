@@ -339,47 +339,118 @@ async function updateAllUI(newLang) {
     console.log('Language updated successfully:', newLang);
 }
 
+console.log('script.js starting to load');
+
 window.initializeCore = async () => {
-    // Wait for all required classes to be available
-    while (!window.ArithmeticGame) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-    }
+    console.log('Core initialization starting...');
     
-    window.translationService = new LocalTranslationService();
-    window.abacus = new Abacus();
-    await window.translationService.ready;
-    window.game = new ArithmeticGame();
-    await window.game.ready;
+    // Define timeout constants
+    const MAX_WAIT_TIME = 5000; // 5 seconds
+    const CHECK_INTERVAL = 100; // 100ms between checks
+    const startTime = Date.now();
+
+    try {
+        // Wait for required classes with timeout
+        while (!window.ArithmeticGame) {
+            if (Date.now() - startTime > MAX_WAIT_TIME) {
+                throw new Error("ArithmeticGame class failed to load after 5 seconds");
+            }
+            console.log('Waiting for ArithmeticGame class...', {
+                elapsed: Date.now() - startTime,
+                maxWait: MAX_WAIT_TIME
+            });
+            await new Promise(resolve => setTimeout(resolve, CHECK_INTERVAL));
+        }
+        console.log('ArithmeticGame class available');
+
+        // Initialize services with logging
+        window.translationService = new LocalTranslationService();
+        console.log('Translation service created');
+
+        window.abacus = new Abacus();
+        console.log('Abacus instance created');
+
+        await Promise.race([
+            window.translationService.ready,
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Translation service timeout')), MAX_WAIT_TIME)
+            )
+        ]);
+        console.log('Translation service ready');
+
+        window.game = new ArithmeticGame();
+        console.log('Game instance created');
+
+        await Promise.race([
+            window.game.ready,
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Game initialization timeout')), MAX_WAIT_TIME)
+            )
+        ]);
+        console.log('Game initialization complete');
+        
+        return true;
+    } catch (error) {
+        console.error('Core initialization failed:', error.message);
+        // Log detailed state for debugging
+        console.log('Current state:', {
+            hasArithmeticGame: !!window.ArithmeticGame,
+            hasTranslationService: !!window.translationService,
+            hasAbacus: !!window.abacus,
+            hasGame: !!window.game
+        });
+        return false;
+    }
 };
 
 window.initializeCore();
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('DOM Content Loaded');
+    
     if (!localStorage.getItem('selectedLanguage')) {
+        console.log('No language selected, showing language modal');
         const modal = new LanguageSelectionModal();
         await modal.create();
     } else {
+        console.log('Initializing with saved language');
         window.translationService = new LocalTranslationService();
         await window.translationService.ready;
-        
-        window.languageManager = new LanguageManager();
-        window.abacus = new Abacus();
-        window.arithmetic = new ArithmeticMenu();
-        window.game = new ArithmeticGame();
-        window.tutorial = new AbacusTutorial();
+        console.log('Translation service ready');
 
+        window.languageManager = new LanguageManager();
+        console.log('Language manager created');
+
+        window.abacus = new Abacus();
+        console.log('Abacus created');
+
+        window.arithmetic = new ArithmeticMenu();
+        console.log('Arithmetic menu created');
+
+        window.game = new ArithmeticGame();
+        console.log('Game created');
+
+        window.tutorial = new AbacusTutorial();
+        console.log('Tutorial created');
+
+        // Log subscriptions
+        console.log('Setting up component subscriptions');
         window.languageManager.subscribe(window.abacus);
         window.languageManager.subscribe(window.arithmetic);
         window.languageManager.subscribe(window.game);
         window.languageManager.subscribe(window.tutorial);
 
-        await window.languageManager.changeLanguage(localStorage.getItem('selectedLanguage'));
+        const savedLanguage = localStorage.getItem('selectedLanguage');
+        console.log('Changing language to:', savedLanguage);
+        await window.languageManager.changeLanguage(savedLanguage);
+        console.log('Language change complete');
     }
 });
 
 // Find the service worker registration code (around line 315)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
+        console.log('Registering ServiceWorker...');
         navigator.serviceWorker.register('/aloha/sw.js', {
             scope: '/aloha/'
         })
