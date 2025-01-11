@@ -42,16 +42,21 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-      caches.open(CACHE_NAME)
-          .then(cache => {
-              console.log('Caching app assets');
-              return cache.addAll(ASSETS);
-          })
-  );
-});
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                console.log('Started caching assets...');
+                return cache.addAll(ASSETS).then(() => {
+                    console.log('All assets cached successfully');
+                }).catch(error => {
+                    console.log('Failed to cache assets:', error);
+                });
+            })
+    );
+  });
 
 self.addEventListener('fetch', event => {
+    console.log('Fetching:', event.request.url);
   // Skip chrome-extension and non-HTTP requests
   if (!event.request.url.startsWith('http')) {
       return;
