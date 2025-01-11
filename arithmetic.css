@@ -1,34 +1,116 @@
+/* Main container */
 .arithmetic-section {
-    margin-top: 20px;
+    position: fixed;
+    width: clamp(280px, 90vw, 400px);
+    max-height: 80vh;
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+    overflow-y: auto;
+    display: none;
+    flex-direction: column;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-.arithmetic-content {
+/* Header styling */
+.arithmetic-section .tutorial-header {
+    position: relative;
+    background: #8b4513;
+    color: white;
+    padding: 12px 15px;
+    margin: -20px -20px 15px -20px;
+    cursor: move;
+    display: flex;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+}
+
+
+/* Input row - New section */
+.input-row {
     display: flex;
     flex-direction: row;
-    gap: 15px;
+    gap: clamp(8px, 2vw, 15px);
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+/* Button row - New section */
+.button-row {
+    display: flex;
+    gap: clamp(8px, 2vw, 15px);
+    justify-content: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.button-row .button-common {
+    flex: 1;
+    min-width: 120px;
+    max-width: 150px;
+    padding: 8px 15px;
+    font-size: clamp(14px, 2vw, 16px);
+    background-color: #8b4513;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.button-row .button-common:hover {
+    background-color: #a05516;
+}
+
+.button-row .button-common:active {
+    transform: translateY(1px);
+}
+
+/* Content layout */
+.arithmetic-content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 2vw, 15px);
+    align-items: center;
+    width: 100%;
+}
+
+/* Input controls */
+.arithmetic-controls {
+    display: flex;
+    flex-direction: row;
+    gap: clamp(8px, 2vw, 15px);
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
 }
 
+
+/* Input controls */
 .arithmetic-content input,
 .arithmetic-content select {
     padding: 8px;
-    font-size: 16px;
+    font-size: clamp(14px, 2vw, 16px);
     border: 1px solid #ccc;
     border-radius: 5px;
+    width: clamp(60px, 20vw, 100px);
 }
 
+/* Results and messages */
 .expected-result {
     width: 100%;
     text-align: center;
     margin-top: 15px;
     font-weight: bold;
     color: #2f1810;
+    font-size: clamp(14px, 2vw, 16px);
+    order: 4; /* Ensures result appears at the bottom */
 }
 
 .mental-process {
@@ -37,4 +119,87 @@
     background-color: rgba(139, 69, 19, 0.1);
     padding: 2px 5px;
     border-radius: 3px;
+}
+
+/* Tutorial section */
+.tutorial-section {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 5px;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    order: 3; /* Ensures tutorial appears after inputs but before result */
+}
+
+.tutorial-content {
+    margin-bottom: 15px;
+    font-size: clamp(14px, 2vw, 16px);
+    line-height: 1.5;
+    text-align: center;
+    color: #2f1810;
+}
+
+.tutorial-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.tutorial-controls button {
+    min-width: 120px;
+    font-size: clamp(14px, 2vw, 16px);
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
+    background: #8b4513;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.tutorial-controls button:hover {
+    background: #a05516;
+}
+
+.tutorial-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #999;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    .arithmetic-section {
+        width: min(95vw, 450px);
+        max-height: clamp(350px, 70vh, 500px);
+        padding: 15px;
+    }
+
+    .arithmetic-content {
+        font-size: 0.9rem;
+    }
+
+    .button-common {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .arithmetic-section {
+        width: 95vw;
+        padding: 15px;
+        max-height: clamp(300px, 60vh, 450px);
+    }
+
+    .arithmetic-content {
+        gap: 8px;
+    }
+
+    .arithmetic-content input,
+    .arithmetic-content select {
+        padding: 6px;
+    }
 }

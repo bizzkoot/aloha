@@ -1,45 +1,123 @@
-.game-setup-modal {
-    margin-top: 20px;
+.game-section {
+    position: fixed;
+    width: clamp(280px, 90vw, 400px);
+    max-height: 80vh;
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 1000;
+    overflow-y: auto;
+    display: none;  /* Hidden by default */
+    flex-direction: column;
+}
+
+/* Custom scrollbar styling */
+.game-section::-webkit-scrollbar {
+    width: 8px;
+}
+
+.game-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.game-section::-webkit-scrollbar-thumb {
+    background: #8b4513;
+    border-radius: 4px;
+}
+
+.game-section .tutorial-header {
+    position: relative;
+    background: #8b4513;
+    color: white;
+    padding: 12px 15px;
+    margin: -20px -20px 15px -20px;
+    border-radius: 10px 10px 0 0;
+    z-index: 2;
+    cursor: move;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+.tutorial-drag-handle {
+    font-size: 20px;
+    margin-right: 15px;
+    cursor: move;
+}
+
+.tutorial-title {
+    flex-grow: 1;
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.tutorial-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.tutorial-close:hover {
+    color: #ff9999;
 }
 
 .game-setup-content {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: clamp(8px, 2vw, 15px);
     align-items: center;
+    padding: 0 10px;
 }
 
 .operators-selection {
     display: flex;
-    gap: 10px;
+    gap: clamp(8px, 2vw, 10px);
     flex-wrap: wrap;
     justify-content: center;
+    font-size: clamp(14px, 2vw, 16px);
+}
+
+.operators-selection label {
+    background: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.operators-selection label:hover {
+    background: #e0e0e0;
 }
 
 .game-question-section {
     margin-top: 20px;
     text-align: center;
+    display: none; /* Initially hide question section */
 }
 
 .question-display {
-    font-size: 24px;
+    font-size: clamp(16px, 2.5vw, 24px);
     font-weight: bold;
     margin-bottom: 15px;
 }
 
 .game-results {
     margin-top: 20px;
-    padding: 20px;
+    padding: clamp(15px, 3vw, 20px);
     background: #f5f5f5;
     border-radius: 8px;
+    font-size: clamp(14px, 2vw, 16px);
+    display: none; /* Initially hide results section */
 }
 
 .score-display {
-    font-size: 20px;
+    font-size: clamp(16px, 2.5vw, 20px);
     font-weight: bold;
     color: #8b4513;
     margin: 10px 0;
@@ -47,4 +125,96 @@
 
 .questions-review {
     margin-top: 15px;
+    line-height: 1.4;
+}
+
+.review-item {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-detail {
+    color: #666;
+    margin-left: 8px;
+}
+
+.review-result {
+    margin-left: 8px;
+}
+
+.review-result.correct {
+    color: #4caf50;
+}
+
+.review-result.incorrect {
+    color: #f44336;
+}
+
+@media screen and (max-width: 768px) {
+    .game-section {
+        width: min(95vw, 450px);
+        max-height: clamp(350px, 70vh, 500px);
+        padding: 15px;
+        top: 15px; /* Slightly reduced top spacing for mobile */
+    }
+
+    .operators-selection label {
+        padding: 8px 12px;
+        flex: 1 1 calc(50% - 10px);
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .game-section {
+        width: 95vw;
+        padding: 15px;
+        max-height: clamp(300px, 60vh, 450px);
+        top: 10px; /* Minimal top spacing for smaller screens */
+    }
+
+    .operators-selection {
+        gap: 8px;
+    }
+
+    .tutorial-header {
+        margin: -15px -15px 15px -15px;
+    }
+}
+
+.game-section .button-common {
+    font-size: clamp(14px, 2vw, 16px);
+    padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
+}
+
+.tutorial-section {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 5px;
+}
+
+.tutorial-content {
+    margin-bottom: 10px;
+    font-size: clamp(14px, 2vw, 16px);
+    line-height: 1.4;
+}
+
+.tutorial-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.tutorial-controls button {
+    min-width: 120px;
+}
+
+.tutorial-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

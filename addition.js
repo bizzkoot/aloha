@@ -20,13 +20,17 @@ class Addition {
             greaterOrEqual5: await window.translationService.translate('greater than or equal to 5', window.tutorial.currentLanguage),
             use5Complement: await window.translationService.translate('we use the 5\'s complement (5 - Y)', window.tutorial.currentLanguage),
             calculate: await window.translationService.translate('We calculate', window.tutorial.currentLanguage),
-            thisMeans: await window.translationService.translate('This means we add 5 and subtract', window.tutorial.currentLanguage), // Modified this line
+            thisMeans: await window.translationService.translate('This means we add 5 and subtract', window.tutorial.currentLanguage),
             use10Complement: await window.translationService.translate('we use the 10\'s complement (10 - Y)', window.tutorial.currentLanguage),
             add10Subtract: await window.translationService.translate('This means we add 10 and subtract', window.tutorial.currentLanguage),
             canAddDirectly: await window.translationService.translate('we can add directly', window.tutorial.currentLanguage),
             andXIs: await window.translationService.translate('and X is', window.tutorial.currentLanguage),
-            lessThan5AndSumLessThan10: await window.translationService.translate('less than 5 and the sum is less than 10', window.tutorial.currentLanguage)
+            lessThan5AndSumLessThan10: await window.translationService.translate('less than 5 and the sum is less than 10', window.tutorial.currentLanguage),
+            moveBeads: await window.translationService.translate('Move beads:', window.tutorial.currentLanguage),
+            addTop: await window.translationService.translate('Add top bead (5)', window.tutorial.currentLanguage),
+            removeBottom: await window.translationService.translate('Remove bottom beads', window.tutorial.currentLanguage)
         };
+
         const steps = [];
         steps.push({
             value: num1,
@@ -37,8 +41,10 @@ class Addition {
         let stepMessage = `${translatedMessages.stepPrefix} 2: ${translatedMessages.forAdding}:<br>${translatedMessages.startingSmallest}<br><br>`;
         let currentValue = num1;
 
-        for (let index = 0; index < placeValues.length; index++) {
-            const value = placeValues[index];
+        const reversedPlaceValues = [...placeValues].reverse();
+
+        for (let index = 0; index < reversedPlaceValues.length; index++) {
+            const value = reversedPlaceValues[index];
             const placeValueBase = Math.pow(10, Math.floor(Math.log10(value)));
             const nextValue = currentValue + value;
             const X = Math.floor((currentValue / placeValueBase) % 10);
@@ -47,26 +53,35 @@ class Addition {
 
             const positionName = await window.translationService.translate(this.getPositionName(placeValueBase), window.tutorial.currentLanguage);
             stepMessage += `${index + 1}. ${await window.translationService.translate('In', window.tutorial.currentLanguage)} ${positionName} ${translatedMessages.position} X=${X}, Y=${Y}: ${X}+${Y}=${sum}<br>`;
+
             let processMessage = '';
             let complement;
             const doText = await window.translationService.translate('do', window.tutorial.currentLanguage);
             const andText = await window.translationService.translate('and', window.tutorial.currentLanguage);
 
-            if (sum < 5) {
+            if (sum === 5) {
+                complement = 5 - Y;
+                processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.use5Complement}.<br>
+                ${translatedMessages.calculate} 5 - ${Y} = ${complement}.<br>
+                ${translatedMessages.moveBeads}:<br>
+                1. ${translatedMessages.addTop}<br>
+                2. ${translatedMessages.removeBottom} (${complement})`;
+            } else if (sum < 5) {
                 processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.lessThan5}, ${translatedMessages.canAddDirectly}`;
             } else if (sum >= 5) {
                 if (X < 5 && sum < 10) {
                     processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.andXIs} ${X} ${translatedMessages.lessThan5AndSumLessThan10}, ${translatedMessages.canAddDirectly}`;
                 } else if (Y < 5) {
                     complement = 5 - Y;
-                    processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.greaterOrEqual5}, ${translatedMessages.use5Complement}. ${translatedMessages.calculate} 5 - ${Y} = ${complement}. ${translatedMessages.thisMeans} ${complement}.`; // Removed andText
+                    processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.greaterOrEqual5}, ${translatedMessages.use5Complement}. ${translatedMessages.calculate} 5 - ${Y} = ${complement}. ${translatedMessages.thisMeans} ${complement}`;
                 } else {
                     complement = 10 - Y;
-                    processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.greaterOrEqual5}, ${translatedMessages.use10Complement}. ${translatedMessages.calculate} 10 - ${Y} = ${complement}. ${translatedMessages.add10Subtract} ${complement}.`;
+                    processMessage = `${translatedMessages.sinceSum} ${sum}, ${translatedMessages.greaterOrEqual5}, ${translatedMessages.use10Complement}. ${translatedMessages.calculate} 10 - ${Y} = ${complement}. ${translatedMessages.add10Subtract} ${complement}`;
                 }
             }
-            stepMessage += `   <span class="mental-process">${processMessage}</span><br>`;
-            stepMessage += `   ${translatedMessages.currentValue} ${nextValue}<br><br>`;
+
+            stepMessage += ` <span class="mental-process">${processMessage}</span><br>`;
+            stepMessage += ` ${translatedMessages.currentValue} ${nextValue}<br><br>`;
             currentValue = nextValue;
         }
 

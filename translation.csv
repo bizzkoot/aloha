@@ -174,3 +174,6 @@ Addition Mental Math,Pengiraan Tambah Mental,加法心算,மன கூட்ட
 "When subtracting 7: Since 7 is less than 10 we can think: 10 - 7 = 3. So remove 10 and add 3.",Apabila menolak 7: Oleh kerana 7 kurang dari 10 kita boleh fikir: 10 - 7 = 3. Jadi buang 10 dan tambah 3.,减去7时：因为7小于10，我们可以想：10 - 7 = 3。所以去掉10并加3。,7ஐக் கழிக்கும்போது: 7 ஆனது 10ஐ விட குறைவாக இருப்பதால் நாம் 10 - 7 = 3 என்று நினைக்கலாம். எனவே 10ஐ அகற்றி 3ஐச் சேர்க்கவும்.,
 Current Value:,Nilai Semasa:,当前值：,தற்போதைய மதிப்பு:,Display label for current abacus value
 Use complement of 5:,Gunakan pelengkap 5:,使用5的补数：,5 இன் நிரப்பியைப் பயன்படுத்து:
+Move beads:,Gerakkan manik:,移动珠子：,மணிகளை நகர்த்தவும்:,Instruction for bead movement
+Add top bead (5),Tambah manik atas (5),添加上珠 (5),மேல் மணியைச் சேர்க்கவும் (5),Instruction for moving top bead
+Remove bottom beads,Buang manik bawah,移除下珠,கீழ் மணிகளை அகற்றவும்,Instruction for moving bottom beads

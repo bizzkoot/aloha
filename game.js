@@ -10,10 +10,13 @@ class ArithmeticGame {
         this.currentQuestionIndex = 0;
         this.userAnswers = [];
         this.guidedQuestions = new Set();
+        this.isModalCreated = false;
+        this.pendingLanguageUpdate = null;
+        this.isInitializing = true;  // Add this
+        this.hasInitialized = false; // Add this
         this.ready = this.init();
     }
 
-    // Add the new method here
     async checkDependencies() {
         let attempts = 0;
         const maxAttempts = 10;
@@ -28,7 +31,7 @@ class ArithmeticGame {
             
             console.log("Dependencies check:", dependencies);
             
-            if (dependencies.translationService && dependencies.abacus) {
+            if (Object.values(dependencies).every(dep => dep)) {
                 return true;
             }
             
@@ -36,79 +39,106 @@ class ArithmeticGame {
             attempts++;
         }
         
+        console.error('Dependencies not loaded:', {
+            translationService: !!window.translationService,
+            abacus: !!window.abacus,
+            Addition: typeof Addition !== 'undefined',
+            Subtraction: typeof Subtraction !== 'undefined'
+        });
         return false;
     }
 
-    // Modify the init method to use checkDependencies
     async init() {
         try {
+            console.log('Initializing game...');
             const dependenciesLoaded = await this.checkDependencies();
             if (!dependenciesLoaded) {
                 throw new Error("Required services not available after timeout");
             }
-            
-            await Promise.all([
-                window.translationService.ready,
-                new Promise(resolve => {
-                    if (window.tutorial && window.tutorial.translateText) {
-                        resolve();
-                    } else {
-                        const tutorialInterval = setInterval(() => {
-                            if (window.tutorial && window.tutorial.translateText) {
-                                clearInterval(tutorialInterval);
-                                resolve();
-                            }
-                        }, 100);
-                    }
-                })
-            ]);
-
-            console.log('Translation service and tutorial ready, creating modal...');
+            console.log('Dependencies loaded, creating modal...');
             await this.createGameModal();
             this.setupEventListeners();
+            this.hasInitialized = true;
+            this.isInitializing = false;
             console.log('Game initialization complete');
         } catch (error) {
             console.error('Error in game initialization:', error);
+            this.isInitializing = false;
+            throw error;
         }
     }
-    
-    
-    // game.js
     async updateLanguage(targetLanguage) {
-        console.log('Updating game language to:', targetLanguage);
-
-        await window.translationService.ready;
-
-        // Remove and recreate the game modal
-        const existingModal = document.querySelector('.game-setup-modal');
-        if (existingModal) {
-            existingModal.remove();
+        if (this.isInitializing) {
+            console.log('Queuing language update during initialization');
+            this.pendingLanguageUpdate = targetLanguage;
+            return;
         }
-
-        // Recreate the game modal with new language
+    
+        console.log('Updating game language to:', targetLanguage);
+        await window.translationService.ready;
+    
+        if (!this.isModalCreated) {
+            console.log('Modal not created yet, queuing language update');
+            this.pendingLanguageUpdate = targetLanguage;
+            return;
+        }
+    
+        const modal = document.querySelector('.game-section');
+        if (!modal) {
+            console.error('Game modal not found.');
+            return;
+        }
+    
+        // Store current display state
+        const wasVisible = modal.style.display === 'block';
+    
+        // Remove existing content sections
+        const setupContent = modal.querySelector('.game-setup-content');
+        const questionSection = modal.querySelector('.game-question-section');
+        const resultsSection = modal.querySelector('.game-results');
+    
+        if (setupContent) setupContent.remove();
+        if (questionSection) questionSection.remove();
+        if (resultsSection) resultsSection.remove();
+    
+        // Recreate the modal content with new language
         await this.createGameModal();
         this.setupEventListeners();
-
+    
+        // Restore visibility if it was previously visible
+        if (wasVisible) {
+            modal.style.display = 'block';
+            this.positionModal(modal);
+        }
+    
         // Update current game state if exists
         if (this.questions.length > 0) {
-            this.questions = []; // Reset questions array
-            this.currentQuestionIndex = 0; // Reset current question index
-            const questionSection = document.querySelector('.game-question-section');
-            const resultsSection = document.querySelector('.game-results');
-
+            this.questions = [];
+            this.currentQuestionIndex = 0;
+    
+            const newSetupContent = modal.querySelector('.game-setup-content');
+            if (newSetupContent) {
+                newSetupContent.style.display = 'flex';
+            }
+    
+            const newQuestionSection = modal.querySelector('.game-question-section');
+            const newResultsSection = modal.querySelector('.game-results');
+    
             if (this.currentQuestionIndex >= this.questions.length) {
-                questionSection.style.display = 'none';
-                resultsSection.style.display = 'block';
-                await this.showResults();
+                if (newQuestionSection) newQuestionSection.style.display = 'none';
+                if (newResultsSection) {
+                    newResultsSection.style.display = 'block';
+                    await this.showResults();
+                }
             } else {
-                questionSection.style.display = 'block';
-                resultsSection.style.display = 'none';
+                if (newQuestionSection) {
+                    newQuestionSection.style.display = 'block';
+                }
+                if (newResultsSection) newResultsSection.style.display = 'none';
                 await this.showCurrentQuestion();
             }
         }
     }
-
-
     cleanupTutorial() {
         const existingTutorials = document.querySelectorAll('.tutorial-modal');
         existingTutorials.forEach(tutorial => tutorial.remove());
@@ -116,21 +146,45 @@ class ArithmeticGame {
 
     setupEventListeners() {
         console.log('Setting up event listeners');
-        const startGameBtn = document.getElementById('startGame');
+        const modal = document.querySelector('.game-section');
+        if (!modal) {
+            console.error('Game modal not found.');
+            return;
+        }
+
+        const startGameBtn = modal.querySelector('#startGame');
         if (startGameBtn) {
             startGameBtn.onclick = () => {
                 console.log('Start Game clicked');
+                const operators = Array.from(modal.querySelectorAll('.operators-selection input:checked'));
+                
+                // Validate operator selection
+                if (operators.length === 0) {
+                    alert('Please select at least one operator');
+                    return;
+                }
+                
+                // Generate questions and start game
                 this.generateQuestions();
-                console.log('Questions generated:', this.questions);
-                this.startGame();
-                const modal = document.querySelector('.game-setup-modal');
-                modal.style.display = 'block';
+                
+                // Hide setup content and show question section
+                const setupContent = modal.querySelector('.game-setup-content');
+                const questionSection = modal.querySelector('.game-question-section');
+                
+                if (setupContent) setupContent.style.display = 'none';
+                if (questionSection) questionSection.style.display = 'block';
+                
+                // Initialize game state
+                this.currentQuestionIndex = 0;
+                this.showCurrentQuestion();
+                
+                console.log('Game started with questions:', this.questions);
             };
         }
 
-        const checkAnswerBtn = document.querySelector('.check-answer');
-        const guideMeBtn = document.querySelector('.guide-me');
-        const nextQuestionBtn = document.querySelector('.next-question');
+        const checkAnswerBtn = modal.querySelector('.check-answer');
+        const guideMeBtn = modal.querySelector('.guide-me');
+        const nextQuestionBtn = modal.querySelector('.next-question');
 
         if (checkAnswerBtn) {
             checkAnswerBtn.onclick = () => this.checkAnswer();
@@ -140,41 +194,41 @@ class ArithmeticGame {
             guideMeBtn.onclick = async () => {
                 const translatedTexts = {
                     nextStep: await this.translateText('Next Step'),
-                    close: await this.translateText('Close'),
                     repeat: await this.translateText('Show Movement')
                 };
-        
+                
                 await window.translationService.ready;
-                this.cleanupTutorial();
+                const questionDisplay = modal.querySelector('.question-display');
+                
+                if (!questionDisplay) {
+                    console.error('Question display not found');
+                    return;
+                }
         
-                const gameSection = document.querySelector('.game-question-section');
-                const tutorialModal = document.createElement('div');
-                tutorialModal.id = 'tutorialModal';
-                tutorialModal.className = 'modal tutorial-modal';
+                // Remove any existing tutorial sections
+                const existingTutorial = questionDisplay.querySelector('.tutorial-section');
+                if (existingTutorial) {
+                    existingTutorial.remove();
+                }
         
-                const tutorialContent = document.createElement('div');
-                tutorialContent.id = 'tutorialContent';
-        
-                const controls = document.createElement('div');
-                controls.className = 'tutorial-controls';
-                controls.innerHTML = `
-                    <button class="tutorial-repeat">${translatedTexts.repeat}</button>
-                    <button class="tutorial-next">${translatedTexts.nextStep}</button>
-                    <button class="tutorial-close">${translatedTexts.close}</button>
+                // Create fresh tutorial content container
+                const tutorialSection = document.createElement('div');
+                tutorialSection.className = 'tutorial-section';
+                tutorialSection.innerHTML = `
+                    <div class="tutorial-content"></div>
+                    <div class="tutorial-controls">
+                        <button class="tutorial-repeat button-common">${translatedTexts.repeat}</button>
+                        <button class="tutorial-next button-common">${translatedTexts.nextStep}</button>
+                    </div>
                 `;
         
-                tutorialModal.appendChild(tutorialContent);
-                tutorialModal.appendChild(controls);
-                gameSection.appendChild(tutorialModal);
-        
+                questionDisplay.appendChild(tutorialSection);
                 this.guidedQuestions.add(this.currentQuestionIndex);
-        
+                
                 const currentQuestion = this.questions[this.currentQuestionIndex];
-                console.log('Current question:', currentQuestion);
-                console.log('Subtraction instance:', this.subtraction);
-        
                 let steps;
                 let operationInstance;
+        
                 try {
                     switch (currentQuestion.operator) {
                         case '+':
@@ -198,7 +252,6 @@ class ArithmeticGame {
                 }
         
                 if (!steps || steps.length === 0) {
-                    console.log('Generating default steps');
                     steps = [
                         {
                             value: currentQuestion.num1,
@@ -213,71 +266,69 @@ class ArithmeticGame {
                     ];
                 }
         
-                console.log('Generated steps:', steps);
-        
                 let currentStepIndex = 0;
-                
-                // Function to display the current step
+        
                 const displayStep = async () => {
-                    if (!steps) {
-                        console.error('Steps array is undefined.');
+                    if (!steps || currentStepIndex < 0 || currentStepIndex >= steps.length) {
                         return;
                     }
-                    if (currentStepIndex < 0 || currentStepIndex >= steps.length) {
-                        console.error('Invalid currentStepIndex:', currentStepIndex, 'steps length:', steps.length);
-                        return;
-                    }
-                    try {
-                        tutorialContent.innerHTML = steps[currentStepIndex].message;
-                        // Display initial number
-                        window.abacus.resetAbacus();
-                        this.displayNumberWithHighlights(Array.from(document.querySelectorAll('.column')).reverse(), steps[currentStepIndex].value);
-                    } catch (error) {
-                        console.error('Error displaying step:', error);
-                    }
+                    const tutorialContent = tutorialSection.querySelector('.tutorial-content');
+                    tutorialContent.innerHTML = steps[currentStepIndex].message;
+                    window.abacus.resetAbacus();
+                    await this.displayNumberWithHighlights(
+                        Array.from(document.querySelectorAll('.column')).reverse(),
+                        steps[currentStepIndex].value
+                    );
                 };
         
-                // Initial display
                 await displayStep();
         
-                const repeatBtn = tutorialModal.querySelector('.tutorial-repeat');
-                repeatBtn.onclick = async () => {
-                    if (steps && steps.length > 0 && currentStepIndex < steps.length) {
-                        const step = steps[currentStepIndex];
-                        if (step.isComplement) {
-                            await this.repeatComplementStep(step.complementValue, step.value);
-                        } else {
-                            await this.displayNumberWithHighlights(
-                                Array.from(document.querySelectorAll('.column')).reverse(),
-                                step.value
-                            );
+                // Initialize tutorial controls with fresh event listeners
+                const tutorialControls = tutorialSection.querySelector('.tutorial-controls');
+                if (tutorialControls) {
+                    const repeatBtn = tutorialControls.querySelector('.tutorial-repeat');
+                    const nextBtn = tutorialControls.querySelector('.tutorial-next');
+
+                    // Clear existing listeners and create fresh buttons
+                    const newRepeatBtn = repeatBtn.cloneNode(true);
+                    const newNextBtn = nextBtn.cloneNode(true);
+                    repeatBtn.replaceWith(newRepeatBtn);
+                    nextBtn.replaceWith(newNextBtn);
+
+                    // Add new event listeners
+                    newRepeatBtn.onclick = async () => {
+                        // Get the current step, even if we're at the end
+                        const currentStep = steps[Math.min(currentStepIndex, steps.length - 1)];
+                        if (currentStep) {
+                            if (currentStep.isComplement) {
+                                await this.repeatComplementStep(currentStep.complementValue, currentStep.value);
+                            } else {
+                                await this.displayNumberWithHighlights(
+                                    Array.from(document.querySelectorAll('.column')).reverse(),
+                                    currentStep.value
+                                );
+                            }
                         }
-                    }
-                };
-        
-                const nextBtn = tutorialModal.querySelector('.tutorial-next');
-                nextBtn.onclick = async () => {
-                    currentStepIndex++;
-                    // Check if currentStepIndex is within bounds *before* calling displayStep
-                    if (currentStepIndex < steps.length) {
-                        await displayStep();
-                    } else {
-                        nextBtn.disabled = true;
-                    }
-                };
-        
-                const closeBtn = tutorialModal.querySelector('.tutorial-close');
-                closeBtn.onclick = () => {
-                    tutorialModal.remove();
-                    window.abacus.resetAbacus();
-                };
+                    };
+
+                    newNextBtn.onclick = async () => {
+                        currentStepIndex++;
+                        if (currentStepIndex < steps.length) {
+                            await displayStep();
+                        } else {
+                            newNextBtn.disabled = true;
+                            // Keep the last step accessible for the Show Movement button
+                            currentStepIndex = steps.length - 1;
+                        }
+                    };
+                }        
+                // Disable Guide Me button after starting tutorial
+                guideMeBtn.disabled = true;
             };
-        }              
-               
+        }        
 
         if (nextQuestionBtn) {
             nextQuestionBtn.onclick = () => {
-                // First check if we need to record the current answer
                 if (!this.userAnswers[this.currentQuestionIndex]) {
                     const currentValue = window.abacus.value;
                     const currentQuestion = this.questions[this.currentQuestionIndex];
@@ -291,24 +342,26 @@ class ArithmeticGame {
                         });
                     }
                 }
-        
+
                 this.cleanupTutorial();
                 this.currentQuestionIndex++;
-        
+
                 if (this.currentQuestionIndex < this.questions.length) {
-                    document.querySelector('.check-answer').disabled = false;
+                    const checkAnswerBtn = modal.querySelector('.check-answer');
+                    if (checkAnswerBtn) checkAnswerBtn.disabled = false;
                     this.showCurrentQuestion();
                 } else {
-                    const questionSection = document.querySelector('.game-question-section');
-                    const resultsSection = document.querySelector('.game-results');
-                    questionSection.style.display = 'none';
-                    resultsSection.style.display = 'block';
-                    this.showResults();
+                    const questionSection = modal.querySelector('.game-question-section');
+                    const resultsSection = modal.querySelector('.game-results');
+                    if (questionSection) questionSection.style.display = 'none';
+                    if (resultsSection) {
+                        resultsSection.style.display = 'block';
+                        this.showResults();
+                    }
                 }
             };
         }
     }
-
     async createGameModal() {
         console.log('Starting modal creation');
         const translatedTexts = {
@@ -330,7 +383,8 @@ class ArithmeticGame {
             questions20: await this.translateText('20 Questions')
         };
         console.log('Modal translations loaded:', translatedTexts);
-
+    
+        // Ensure DOM is ready
         await new Promise(resolve => {
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', resolve);
@@ -338,19 +392,28 @@ class ArithmeticGame {
                 resolve();
             }
         });
-
+    
         const container = document.querySelector('.container');
         if (!container) {
             console.error('Container element not found');
             return;
         }
-
+    
+        // Remove existing modal if present
+        const existingModal = document.querySelector('.game-section');
+        if (existingModal) {
+            existingModal.remove();
+        }
+    
         const modal = document.createElement('div');
-        modal.className = 'game-setup-modal';
-        modal.style.display = 'none';
+        modal.className = 'game-section';
         modal.innerHTML = `
+            <div class="tutorial-header">
+                <span class="tutorial-drag-handle">≡</span>
+                <h2 class="tutorial-title">${translatedTexts.settings}</h2>
+                <button class="tutorial-close">X</button>
+            </div>
             <div class="game-setup-content">
-                <h3>${translatedTexts.settings}</h3>
                 <select id="numberRange">
                     <option value="9">${translatedTexts.singleDigit}</option>
                     <option value="99">${translatedTexts.doubleDigits}</option>
@@ -367,30 +430,57 @@ class ArithmeticGame {
                     <option value="10">${translatedTexts.questions10}</option>
                     <option value="20">${translatedTexts.questions20}</option>
                 </select>
-                <button id="startGame">${translatedTexts.start}</button>
+                <button id="startGame" class="button-common">${translatedTexts.start}</button>
             </div>
-            <div class="game-question-section" style="display:none">
+            <div class="game-question-section">
                 <div class="question-display"></div>
-                <button class="check-answer">${translatedTexts.checkAnswer}</button>
-                <button class="guide-me">${translatedTexts.guideMe}</button>
-                <button class="next-question">${translatedTexts.next}</button>
+                <button class="check-answer button-common">${translatedTexts.checkAnswer}</button>
+                <button class="guide-me button-common">${translatedTexts.guideMe}</button>
+                <button class="next-question button-common">${translatedTexts.next}</button>
             </div>
-            <div class="game-results" style="display:none">
+            <div class="game-results">
                 <h3>${translatedTexts.results}</h3>
                 <div class="score-display"></div>
                 <div class="questions-review"></div>
             </div>
         `;
+    
+        // Add modal to container
         container.appendChild(modal);
+    
+        // Initialize modal position and visibility
+        modal.style.display = 'none';
+        this.positionModal(modal);
+    
+        // Setup drag functionality
+        this.setupDragFunctionality(modal);
+        this.isModalCreated = true;
+    
+        // Add close button functionality
+        const closeButton = modal.querySelector('.tutorial-close');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        }
+    
+        // Process any pending language updates
+        if (this.pendingLanguageUpdate) {
+            const currentLanguage = this.pendingLanguageUpdate;
+            this.pendingLanguageUpdate = null;
+            await this.updateLanguage(currentLanguage);
+        }
+    
+        return modal;
     }
 
     async translateText(text) {
         await window.translationService.ready;
         const currentLang = window.translationService.currentLanguage;
         const cacheKey = `${currentLang}_${text}`;
-        
+
         if (this.translations[cacheKey]) return this.translations[cacheKey];
-        
+
         const translated = await window.translationService.translate(text, currentLang);
         this.translations[cacheKey] = translated;
         localStorage.setItem('gameTranslations', JSON.stringify(this.translations));
@@ -398,12 +488,19 @@ class ArithmeticGame {
     }
 
     generateQuestions() {
-        console.log('Generating questions');
-        const range = parseInt(document.getElementById('numberRange').value);
-        const operators = Array.from(document.querySelectorAll('.operators-selection input:checked')).map(inp => inp.value);
-        const count = parseInt(document.getElementById('questionCount').value);
-        console.log('Settings:', { range, operators, count });
-
+        console.log('Generating questions - start');
+        const modal = document.querySelector('.game-section');
+        if (!modal) {
+            console.error('Game modal not found in generateQuestions');
+            return;
+        }
+        
+        const range = parseInt(modal.querySelector('#numberRange').value);
+        const operators = Array.from(modal.querySelectorAll('.operators-selection input:checked')).map(inp => inp.value);
+        const count = parseInt(modal.querySelector('#questionCount').value);
+        
+        console.log('Question generation settings:', { range, operators, count });
+        
         this.questions = [];
         for (let i = 0; i < count; i++) {
             let num1, num2, operator;
@@ -425,9 +522,15 @@ class ArithmeticGame {
 
             this.questions.push({ num1, num2, operator });
         }
+        console.log('Generated questions:', this.questions);
     }
 
     async checkAnswer() {
+        const modal = document.querySelector('.game-section');
+        if (!modal) {
+            console.error('Game modal not found.');
+            return;
+        }
         const currentValue = window.abacus.value;
         const question = this.questions[this.currentQuestionIndex];
         const expectedValue = this.calculateExpectedValue(question);
@@ -441,32 +544,44 @@ class ArithmeticGame {
                 isGuided: this.guidedQuestions.has(this.currentQuestionIndex)
             });
         }
-    
+
         const isCorrect = currentValue === expectedValue;
-        
-        // Translate the strings
+
         const questionText = await this.translateText('Question');
         const yourAnswerText = await this.translateText('Your answer');
         const incorrectText = await this.translateText('Incorrect');
         const expectedText = await this.translateText('Expected');
         const correctText = await this.translateText('Correct!');
-    
-        document.querySelector('.question-display').innerHTML =
-            `${questionText} ${this.currentQuestionIndex + 1}: ${question.num1} ${question.operator} ${question.num2}<br>
-            <span style="color: ${isCorrect ? 'green' : 'red'}">
-                ${yourAnswerText}: ${currentValue} (${isCorrect ? correctText : `${incorrectText} - ${expectedText}: ${expectedValue}`})
-            </span>`;
-    
-        document.querySelector('.check-answer').disabled = true;
-    }
 
+        const questionDisplay = modal.querySelector('.question-display');
+        if (questionDisplay) {
+            questionDisplay.innerHTML =
+                `${questionText} ${this.currentQuestionIndex + 1}: ${question.num1} ${question.operator} ${question.num2}<br>
+                <span style="color: ${isCorrect ? 'green' : 'red'}">
+                    ${yourAnswerText}: ${currentValue} (${isCorrect ? correctText : `${incorrectText} - ${expectedText}: ${expectedValue}`})
+                </span>`;
+        }
+
+
+        const checkAnswerBtn = modal.querySelector('.check-answer');
+        if (checkAnswerBtn) checkAnswerBtn.disabled = true;
+    }
     async showResults() {
+        const modal = document.querySelector('.game-section');
+        if (!modal) {
+            console.error('Game modal not found.');
+            return;
+        }
         const correctCount = this.userAnswers.filter(a => a.userAnswer === a.expectedAnswer && !a.isGuided).length;
         const guidedCount = this.userAnswers.filter(a => a.isGuided).length;
-        
-        const resultsDiv = document.querySelector('.game-results');
+
+        const resultsDiv = modal.querySelector('.game-results');
+        if (!resultsDiv) {
+            console.error('Results section not found.');
+            return;
+        }
         const guidedText = await this.translateText('Questions solved with guidance:');
-        
+
         resultsDiv.innerHTML = `
             <h3>${await this.translateText('Results')}</h3>
             <p>${await this.translateText('Score')}: ${correctCount}/${this.questions.length}</p>
@@ -476,78 +591,162 @@ class ArithmeticGame {
             </div>
             <button class="button-common" id="resetGame">${await this.translateText('Start New Game')}</button>
         `;
-    
-        // Add event listener for the reset button
-        document.getElementById('resetGame').addEventListener('click', () => {
-            this.resetGame();
-            document.querySelector('.game-setup-modal').style.display = 'block';
-        });
+
+        const resetGameButton = resultsDiv.querySelector('#resetGame');
+        if (resetGameButton) {
+            resetGameButton.addEventListener('click', () => {
+                this.resetGame();
+                const setupContent = modal.querySelector('.game-setup-content');
+                if (setupContent) setupContent.style.display = 'flex';
+            });
+        }
     }
 
     resetGame() {
+        const modal = document.querySelector('.game-section');
+        if (!modal) {
+            console.error('Game modal not found.');
+            return;
+        }
         this.questions = [];
         this.currentQuestionIndex = 0;
         this.userAnswers = [];
         this.guidedQuestions = new Set();
         window.abacus.resetAbacus();
 
-        const setupContent = document.querySelector('.game-setup-content');
-        const questionSection = document.querySelector('.game-question-section');
-        const resultsSection = document.querySelector('.game-results');
+        const setupContent = modal.querySelector('.game-setup-content');
+        const questionSection = modal.querySelector('.game-question-section');
+        const resultsSection = modal.querySelector('.game-results');
 
-        setupContent.style.display = 'block';
-        questionSection.style.display = 'none';
-        resultsSection.style.display = 'none';
+        if (setupContent) setupContent.style.display = 'flex';
+        if (questionSection) questionSection.style.display = 'none';
+        if (resultsSection) resultsSection.style.display = 'none';
     }
 
     async showGameSetup() {
         try {
             await window.translationService.ready;
-            const modal = document.querySelector('.game-setup-modal');
+            const modal = document.querySelector('.game-section');
+            
             if (!modal) {
                 await this.createGameModal();
-                const newModal = document.querySelector('.game-setup-modal');
+                const newModal = document.querySelector('.game-section');
                 if (newModal) {
                     newModal.style.display = 'block';
+                    
+                    const modalHeight = newModal.offsetHeight;
+                    const modalWidth = newModal.offsetWidth;
+                    const windowWidth = window.innerWidth;
+                    
+                    // Position horizontally centered, but from bottom
+                    const centerX = (windowWidth - modalWidth) / 2;
+                    const bottomOffset = 40; // Distance from bottom of screen
+                    
+                    newModal.style.left = `${centerX}px`;
+                    newModal.style.bottom = `${bottomOffset}px`;
+                    newModal.style.top = 'auto'; // Clear any top positioning
                 }
             } else {
-                modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
+                if (modal.style.display === 'none') {
+                    modal.style.display = 'block';
+                    
+                    const modalHeight = modal.offsetHeight;
+                    const modalWidth = modal.offsetWidth;
+                    const windowWidth = window.innerWidth;
+                    
+                    const centerX = (windowWidth - modalWidth) / 2;
+                    const bottomOffset = 40;
+                    
+                    modal.style.left = `${centerX}px`;
+                    modal.style.bottom = `${bottomOffset}px`;
+                    modal.style.top = 'auto';
+                } else {
+                    modal.style.display = 'none';
+                }
             }
         } catch (error) {
             console.error('Error showing game setup:', error);
         }
     }
 
+    positionModal(modal) {
+        // Get viewport dimensions
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // Get modal dimensions
+        const modalRect = modal.getBoundingClientRect();
+        const modalWidth = modalRect.width;
+        const modalHeight = modalRect.height;
+        
+        // Calculate centered position with padding
+        const padding = 20;
+        const left = Math.max(padding, Math.min(viewportWidth - modalWidth - padding, (viewportWidth - modalWidth) / 2));
+        const top = Math.max(padding, Math.min(viewportHeight - modalHeight - padding, (viewportHeight - modalHeight) / 2));
+        
+        // Apply position
+        modal.style.left = `${left}px`;
+        modal.style.top = `${top}px`;
+        modal.style.transform = 'none';
+    }
+
     async startGame() {
         console.log('Starting game');
-        const selectedOperators = Array.from(document.querySelectorAll('.operators-selection input:checked')).map(inp => inp.value);
-        
-        // Create instances directly since they don't require initialization
+        const modal = document.querySelector('.game-section');
+        if (!modal) {
+            console.error('Game modal not found.');
+            return;
+        }
+        const selectedOperators = Array.from(modal.querySelectorAll('.operators-selection input:checked')).map(inp => inp.value);
+
         if (selectedOperators.includes('+')) {
             this.addition = new Addition();
         }
         if (selectedOperators.includes('-')) {
             this.subtraction = new Subtraction();
         }
-    
-        const setupContent = document.querySelector('.game-setup-content');
-        const questionSection = document.querySelector('.game-question-section');
-        setupContent.style.display = 'none';
-        questionSection.style.display = 'block';
+
+        const setupContent = modal.querySelector('.game-setup-content');
+        const questionSection = modal.querySelector('.game-question-section');
+        if (setupContent) setupContent.style.display = 'none';
+        if (questionSection) questionSection.style.display = 'block';
         this.currentQuestionIndex = 0;
         this.showCurrentQuestion();
     }
-    
 
     async showCurrentQuestion() {
         console.log('Showing question:', this.currentQuestionIndex + 1);
+        const modal = document.querySelector('.game-section');
+        if (!modal) {
+            console.error('Game modal not found in showCurrentQuestion');
+            return;
+        }
+        
+        // Reset the abacus for the new question
         window.abacus.resetAbacus();
+        
         const question = this.questions[this.currentQuestionIndex];
-    
-        const display = document.querySelector('.question-display');
-    
+        if (!question) {
+            console.error('No question found for index:', this.currentQuestionIndex);
+            return;
+        }
+        
+        const display = modal.querySelector('.question-display');
+        if (!display) {
+            console.error('Question display element not found');
+            return;
+        }
+        
         const questionText = await this.translateText('Question');
         display.textContent = `${questionText} ${this.currentQuestionIndex + 1}: ${question.num1} ${question.operator} ${question.num2}`;
+        
+        // Re-enable the Guide Me button for each new question
+        const guideMeBtn = modal.querySelector('.guide-me');
+        if (guideMeBtn) {
+            guideMeBtn.disabled = false;
+        }
+        
+        console.log('Question displayed:', display.textContent);
     }
 
     calculateExpectedValue(question) {
@@ -555,17 +754,17 @@ class ArithmeticGame {
             case '+': return question.num1 + question.num2;
             case '-': return question.num1 - question.num2;
             case 'x': return question.num1 * question.num2;
-            case '/': return question.num1 / question.num2;
+            case '/': return Math.floor(question.num1 / question.num2);
             default: return NaN;
         }
     }
 
     async generateReviewHTML() {
-        const correct = await this.translateText('Correct!');  // Changed to 'Correct!'
+        const correct = await this.translateText('Correct!');
         const incorrect = await this.translateText('Incorrect');
         const expected = await this.translateText('Expected');
         const guided = await this.translateText('Guided');
-    
+
         return Promise.all(this.userAnswers.map(async answer => {
             const result = answer.userAnswer === answer.expectedAnswer ? correct : incorrect;
             const guidanceText = answer.isGuided ? ` (${guided})` : '';
@@ -573,47 +772,40 @@ class ArithmeticGame {
         })).then(results => results.join(''));
     }
 
-    // Add this method to ArithmeticGame class in game.js
     async displayNumberWithHighlights(columns, number, beadMovements) {
         try {
-            // Reset all beads and highlights
             columns.forEach(column => {
                 column.querySelectorAll('.bead').forEach(bead => {
                     bead.classList.remove('active', 'tutorial-highlight');
                 });
             });
-    
-            // Handle sequential bead movements
+
             if (beadMovements) {
                 beadMovements.forEach(movement => {
                     const column = columns[movement.columnIndex];
                     if (!column) return;
-    
+
                     const bead = column.querySelector(`.${movement.beadType}`);
                     if (bead) {
-                        // Set bead state
                         const isActive = movement.direction === 'add';
                         bead.classList.toggle('active', isActive);
                         bead.classList.toggle('tutorial-highlight', isActive);
                     }
                 });
             }
-    
-            // Set final number display
+
             let remaining = number;
             for (let i = 0; i < columns.length && remaining > 0; i++) {
                 const digit = remaining % 10;
                 const column = columns[i];
-    
-                // Set top bead if needed
+
                 if (digit >= 5) {
                     const topBead = column.querySelector('.top-bead');
                     if (topBead) {
                         topBead.classList.add('active', 'tutorial-highlight');
                     }
                 }
-    
-                // Set bottom beads
+
                 const bottomCount = digit % 5;
                 for (let j = 0; j < bottomCount; j++) {
                     const bottomBead = column.querySelector(`.bottom-bead-${4 - j}`);
@@ -621,44 +813,36 @@ class ArithmeticGame {
                         bottomBead.classList.add('active', 'tutorial-highlight');
                     }
                 }
-    
+
                 remaining = Math.floor(remaining / 10);
             }
-            // Update abacus value
             window.abacus.calculateValue();
-    
-            // Return a promise that resolves when animations complete
+
             return new Promise(resolve => setTimeout(resolve, 500));
         } catch (error) {
             console.error('Error in displayNumberWithHighlights:', error);
         }
     }
 
-      
-
-    // Add this method to ArithmeticGame class
     async repeatComplementStep(complement, finalValue) {
         const columns = Array.from(document.querySelectorAll('.column')).reverse();
         const currentQuestion = this.questions[this.currentQuestionIndex];
         const num1 = currentQuestion.num1;
         const num2 = currentQuestion.num2;
         const isSubtraction = currentQuestion.operator === '-';
-    
-        // Generate steps array with bead movements
+
         const steps = [];
         let currentValue = num1;
-    
-        // Process each digit from right to left
+
         for (let i = 0; i < columns.length; i++) {
             const placeValue = Math.pow(10, i);
             const currentDigit = Math.floor((currentValue / placeValue) % 10);
             const operandDigit = Math.floor((num2 / placeValue) % 10);
             const beadMovements = [];
-    
+
             if (operandDigit > 0) {
                 if (isSubtraction) {
                     if (currentDigit < operandDigit) {
-                        // Need to borrow
                         const complement = 10 - operandDigit;
                         currentValue = currentValue - Math.pow(10, i + 1) + (complement * placeValue);
                         steps.push({
@@ -667,9 +851,7 @@ class ArithmeticGame {
                             beadMovements: beadMovements
                         });
                     } else {
-                        // Direct subtraction
                         currentValue -= operandDigit * placeValue;
-                        // Generate bead movements for direct subtraction
                         if (currentDigit >= 5) {
                             beadMovements.push({columnIndex: i, beadType: 'top-bead', direction: 'remove'});
                             for (let j = 0; j < operandDigit; j++) {
@@ -687,7 +869,6 @@ class ArithmeticGame {
                         });
                     }
                 } else {
-                    // Addition logic
                     if (currentDigit + operandDigit >= 10) {
                         const complement = 10 - operandDigit;
                         currentValue = currentValue + (placeValue * 10) - (complement * placeValue);
@@ -707,31 +888,92 @@ class ArithmeticGame {
                 }
             }
         }
-    
-        // Animate the steps
+
         const animateSteps = async () => {
             window.abacus.resetAbacus();
-            // Show initial number
             await this.displayNumberWithHighlights(columns, num1);
-    
-            // Animate each step
+
             for (const step of steps) {
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 await this.displayNumberWithHighlights(columns, step.value, step.beadMovements);
             }
         };
-    
+
         await animateSteps();
     }
+
+    setupDragFunctionality(modal) {
+        // Get exact window and modal dimensions
+        const windowHeight = window.innerHeight;
+        const windowWidth = window.innerWidth;
+        const modalHeight = modal.offsetHeight;
+        const modalWidth = modal.offsetWidth;
     
+        // Calculate center position with padding
+        const padding = 20;
+        const centerX = Math.max(
+            padding,
+            Math.min(
+                windowWidth - modalWidth - padding,
+                (windowWidth - modalWidth) / 2
+            )
+        );
+        const centerY = Math.max(
+            padding,
+            Math.min(
+                windowHeight - modalHeight - padding,
+                (windowHeight - modalHeight) / 2
+            )
+        );
+    
+        // Set initial position
+        modal.style.left = `${centerX}px`;
+        modal.style.top = `${centerY}px`;
+    
+        // Drag functionality
+        const header = modal.querySelector('.tutorial-header');
+        let isDragging = false;
+        let initialX;
+        let initialY;
+    
+        const dragStart = (e) => {
+            const rect = modal.getBoundingClientRect();
+            initialX = e.type === "touchstart" ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+            initialY = e.type === "touchstart" ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+            if (e.target === header || e.target.closest('.tutorial-header')) {
+                isDragging = true;
+            }
+        };
+    
+        const dragEnd = () => {
+            isDragging = false;
+        };
+    
+        const drag = (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                const currentClientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+                const currentClientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+                modal.style.left = `${currentClientX - initialX}px`;
+                modal.style.top = `${currentClientY - initialY}px`;
+            }
+        };
+    
+        // Event listeners
+        header.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        header.addEventListener('touchstart', dragStart);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('touchend', dragEnd);
+    }
 }
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Waiting for services...');
     try {
-        // Enhanced service check with parallel loading
         await Promise.all([
-            // Translation service check
             new Promise(resolve => {
                 if (window.translationService?.ready) {
                     resolve();
@@ -744,7 +986,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }, 50);
                 }
             }),
-            // Abacus check
             new Promise(resolve => {
                 if (window.abacus) {
                     resolve();

@@ -34,19 +34,24 @@
         <div class="value"><span id="currentValueLabel"></span> <span id="currentValue">0</span></div>
         <div class="button-container">
             <button class="button-common" id="tutorialBtn">Tutorial</button>
-            <button class="button-common" id="additionBtn">Addition</button>
+            <button class="button-common" id="additionBtn" onclick="window.arithmetic?.toggleModal()">Addition</button>
             <button class="button-common" id="subtractionBtn">Subtraction</button>
-            <button class="button-common" id="gameBtn">Game</button>
+            <button class="button-common" id="gameBtn" onclick="window.game?.showGameSetup()">Game</button>
         </div>
+
+        <!-- Add these practice containers here -->
+        <div id="arithmeticPractice" class="arithmetic-practice-container"></div>
+        <div id="gamePractice" class="game-practice-container"></div>
+        
     </div>
     <script src="translations.js" defer></script>
     <script src="movements.js" defer></script>
-    <script src="script.js" defer></script>
     <script src="addition.js" defer></script>
     <script src="subtraction.js" defer></script>
-    <script src="tutorial.js" defer></script>
     <script src="arithmetic.js" defer></script>
     <script src="game.js" defer></script>
+    <script src="tutorial.js" defer></script>
+    <script src="script.js" defer></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
