@@ -21,6 +21,7 @@
     <a href="https://github.com/bizzkoot/aloha" class="github-link" title="View on GitHub" target="_blank">
         <i class="fab fa-github"></i>
     </a>
+    <span class="version-text" id="appVersionDisplay"></span>
     <div class="container">
         <h1>Soroban (Japanese Abacus)</h1>
         <div class="abacus">
@@ -59,6 +60,39 @@
 
     <!-- Finally load the main script -->
     <script src="script.js"></script>
+    <!-- Add this before the service worker registration -->
+    <script>
+        navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data.type === 'VERSION_CHECK') {
+                const storedVersion = localStorage.getItem('appVersion');
+                
+                // Update version display first
+                const versionDisplay = document.getElementById('appVersionDisplay');
+                if (versionDisplay) {
+                    versionDisplay.textContent = `v${event.data.version}`;
+                }
+
+                // Then handle version check and data clearing
+                if (!storedVersion || storedVersion !== event.data.version) {
+                    // Clear old data
+                    Object.keys(localStorage).forEach(key => {
+                        if (!event.data.preservedKeys.includes(key)) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                    localStorage.setItem('appVersion', event.data.version);
+                    
+                    // Inform service worker
+                    event.source.postMessage({
+                        type: 'VERSION_CHECK_RESULT',
+                        result: 'Data cleared and version updated'
+                    });
+                }
+            }
+        });
+    </script>
+
+    <!-- Then the service worker registration -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

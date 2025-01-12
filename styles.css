@@ -274,8 +274,7 @@
         height: 36px;
     }
 
-    /* Remove the transform scale from smaller screens */
-    transform: none;  /* This prevents the entire abacus from scaling down */
+
 }
 
 @media screen and (max-width: 360px) {
@@ -361,4 +360,13 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     z-index: 1000;
+}
+
+.version-text {
+    position: fixed;
+    top: 1.25rem;
+    left: 4rem;
+    font-size: 0.8rem;
+    color: #666;
+    opacity: 0.7;
 }

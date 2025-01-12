@@ -1,5 +1,7 @@
 const CACHE_NAME = 'abacus-v1';
+const APP_VERSION = '1.1.0';  // Add this line
 const BASE_PATH = '/aloha/';  // Add this line for GitHub Pages path
+const PRESERVED_KEYS = ['selectedLanguage'];  // Add this line
 
 const ASSETS = [
     // Root files with BASE_PATH
@@ -43,17 +45,36 @@ const ASSETS = [
 
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                console.log('Started caching assets...');
-                return cache.addAll(ASSETS).then(() => {
-                    console.log('All assets cached successfully');
-                }).catch(error => {
-                    console.log('Failed to cache assets:', error);
+        Promise.all([
+            // Cache assets
+            caches.open(CACHE_NAME)
+                .then(cache => {
+                    console.log('Started caching assets...');
+                    return cache.addAll(ASSETS).then(() => {
+                        console.log('All assets cached successfully');
+                    }).catch(error => {
+                        console.log('Failed to cache assets:', error);
+                    });
+                }),
+            // Check version and clear data if needed
+            self.clients.matchAll().then(clients => {
+                clients.forEach(client => {
+                    client.postMessage({
+                        type: 'VERSION_CHECK',
+                        version: APP_VERSION,
+                        preservedKeys: PRESERVED_KEYS
+                    });
                 });
             })
+        ])
     );
-  });
+});
+
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'VERSION_CHECK_RESULT') {
+        console.log('Version check result:', event.data.result);
+    }
+});
 
 self.addEventListener('fetch', event => {
     console.log('Fetching:', event.request.url);

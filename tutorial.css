@@ -8,6 +8,7 @@
     z-index: 100;
     display: none;
 }
+
 .tutorial-container {
     position: fixed;
     width: 300px;
@@ -18,16 +19,17 @@
     z-index: 1000;
     transition: all 0.3s ease;
 }
+
 .tutorial-right {
     right: 20px;
     top: 50%;
-    transform: translateY(-50%);
+    /* Removed transform: translateY(-50%); */
 }
 
 .tutorial-left {
     left: 20px;
     top: 50%;
-    transform: translateY(-50%);
+    /* Removed transform: translateY(-50%); */
 }
 
 .tutorial-container {
@@ -41,6 +43,7 @@
     cursor: default;
     user-select: none;
 }
+
 .tutorial-close {
     position: absolute;
     right: 10px;
@@ -68,6 +71,7 @@
     align-items: center;
     border-radius: 10px 10px 0 0;
 }
+
 .tutorial-drag-handle {
     font-size: 20px;
     margin-right: 15px;
@@ -81,6 +85,7 @@
     font-weight: bold;
     letter-spacing: 0.5px;
 }
+
 .tutorial-content {
     margin-bottom: 20px;
 }
@@ -107,6 +112,7 @@
     50% { box-shadow: 0 0 0 8px rgba(255, 235, 59, 0.3); }
     100% { box-shadow: 0 0 0 4px rgba(255, 235, 59, 0.7); }
 }
+
 .bead.active {
     transition: transform 0.5s ease;
 }

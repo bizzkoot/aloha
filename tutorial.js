@@ -292,17 +292,39 @@ class AbacusTutorial {
         title.textContent = await window.translationService.translate('Soroban Tutorial', this.currentLanguage);
     }
 
+    manageTutorialZIndex() {
+        const container = document.querySelector('.tutorial-container');
+        const header = container.querySelector('.tutorial-header');
+        
+        // Set high z-index for the entire tutorial container
+        container.style.zIndex = '2000';
+        
+        // Make header even higher to ensure it's always clickable
+        header.style.zIndex = '2001';
+        
+        // When highlighting elements, temporarily adjust their z-index
+        const highlightedElements = document.querySelectorAll('.tutorial-highlight');
+        highlightedElements.forEach(el => {
+            el.style.zIndex = '1999'; // Just below the tutorial container
+        });
+    }    
+
     updateHighlightsAndDemo(step) {
+        // Remove existing highlights and reset z-indices
         document.querySelectorAll('.tutorial-highlight').forEach(el => {
             el.classList.remove('tutorial-highlight');
+            el.style.zIndex = ''; // Reset to default
         });
-
+    
         if (step.highlight) {
             document.querySelectorAll(step.highlight).forEach(el => {
                 el.classList.add('tutorial-highlight');
             });
         }
-
+    
+        // Manage z-indices after adding new highlights
+        this.manageTutorialZIndex();
+    
         if (step.demo) {
             step.demo(this);
         }
@@ -347,7 +369,32 @@ class AbacusTutorial {
     }
 
     showTutorial() {
-        document.querySelector('.tutorial-container').style.display = 'block';
+        const container = document.querySelector('.tutorial-container');
+        if (!container) return;
+    
+        container.style.display = 'block';
+    
+        // Get viewport dimensions
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+    
+        // Get modal dimensions
+        const modalRect = container.getBoundingClientRect();
+        const modalWidth = modalRect.width;
+        const modalHeight = modalRect.height;
+    
+        // Calculate centered position with padding
+        const padding = 20;
+        const left = Math.max(padding, Math.min(viewportWidth - modalWidth - padding, (viewportWidth - modalWidth) / 2));
+        const top = Math.max(padding, Math.min(viewportHeight - modalHeight - padding, (viewportHeight - modalHeight) / 2));
+    
+        // Apply position
+        container.style.left = `${left}px`;
+        container.style.top = `${top}px`;
+        container.style.transform = 'none';
+    
+        // Ensure proper z-index hierarchy
+        this.manageTutorialZIndex();
     }
 
     hideTutorial() {
@@ -381,42 +428,59 @@ class AbacusTutorial {
     makeDraggable(element) {
         const header = element.querySelector('.tutorial-header');
         let isDragging = false;
-        let currentX;
-        let currentY;
-        let initialX;
-        let initialY;
-        let xOffset = 0;
-        let yOffset = 0;
-
-        header.addEventListener('mousedown', startDragging);
-
-        function startDragging(e) {
-            initialX = e.clientX - xOffset;
-            initialY = e.clientY - yOffset;
-            isDragging = true;
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', stopDragging);
-        }
-
-        function drag(e) {
-            if (isDragging) {
-                e.preventDefault();
-                currentX = e.clientX - initialX;
-                currentY = e.clientY - initialY;
-                xOffset = currentX;
-                yOffset = currentY;
-                element.style.transform = `translate(${currentX}px, ${currentY}px)`;
+        let startX;
+        let startY;
+        let elementX;
+        let elementY;
+    
+        const dragStart = (e) => {
+            if (e.target === header || e.target.closest('.tutorial-header')) {
+                isDragging = true;
+                
+                // Get current element position
+                const rect = element.getBoundingClientRect();
+                elementX = rect.left;
+                elementY = rect.top;
+                
+                // Get starting mouse/touch position
+                startX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
+                startY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+                
+                header.style.cursor = 'grabbing';
             }
-        }
-
-        function stopDragging() {
+        };
+    
+        const dragEnd = () => {
             isDragging = false;
-            document.removeEventListener('mousemove', drag);
-            document.removeEventListener('mouseup', stopDragging);
-        }
+            header.style.cursor = 'grab';
+        };
+    
+        const drag = (e) => {
+            if (!isDragging) return;
+            
+            e.preventDefault();
+            
+            // Get current mouse/touch position
+            const currentX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+            const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+            
+            // Calculate distance moved
+            const deltaX = currentX - startX;
+            const deltaY = currentY - startY;
+            
+            // Set new position
+            element.style.left = `${elementX + deltaX}px`;
+            element.style.top = `${elementY + deltaY}px`;
+        };
+    
+        header.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        
+        header.addEventListener('touchstart', dragStart);
+        document.addEventListener('touchmove', drag);
+        document.addEventListener('touchend', dragEnd);
     }
-
-
 
     repeatStep() {
         const step = this.steps[this.currentStep];
