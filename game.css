@@ -1,7 +1,7 @@
 .game-section {
     position: fixed;
     width: clamp(280px, 90vw, 400px);
-    max-height: 30vh;
+    max-height: 40vh;
     background: white;
     padding: 20px;
     border-radius: 10px;
