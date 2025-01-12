@@ -1,4 +1,25 @@
-const APP_VERSION = '1.1.2';
+// Remove the APP_VERSION constant and use APP_CONFIG.VERSION instead
+async function checkAppVersion() {
+    try {
+        const response = await fetch('/aloha/version.json?t=' + new Date().getTime());
+        const data = await response.json();
+        
+        if (data.version !== APP_CONFIG.VERSION) {
+            if ('caches' in window) {
+                await caches.delete('aloha-cache');
+            }
+            window.location.reload(true);
+        }
+    } catch (error) {
+        console.log('Version check failed:', error);
+    }
+}
+
+// Update version display
+const versionDisplay = document.getElementById('appVersionDisplay');
+if (versionDisplay) {
+    versionDisplay.textContent = `v${APP_CONFIG.VERSION}`;  // Using centralized version
+}
 
 // Language Selection Modal Handler
 class LanguageSelectionModal {
@@ -349,7 +370,7 @@ window.initializeCore = async () => {
     // Add version display initialization
     const versionDisplay = document.getElementById('appVersionDisplay');
     if (versionDisplay) {
-        versionDisplay.textContent = `v${APP_VERSION}`;
+        versionDisplay.textContent = `v${APP_CONFIG.VERSION}`;  // Using centralized version
     }
     
     // Define timeout constants

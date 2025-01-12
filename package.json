@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "sync-version": "node sync-version.js",
+    "predeploy": "npm run sync-version"
+  }
+}

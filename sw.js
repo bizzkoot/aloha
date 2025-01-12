@@ -1,3 +1,19 @@
+importScripts('config.js');
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        fetch('/aloha/version.json')
+            .then(response => response.json())
+            .then(data => {
+                if (data.version !== APP_CONFIG.VERSION) {
+                    return caches.delete('aloha-cache')
+                        .then(() => self.clients.claim());
+                }
+                return self.clients.claim();
+            })
+    );
+});
+
 const CACHE_NAME = 'abacus-v1';
 const BASE_PATH = '/aloha/';  // Add this line for GitHub Pages path
 const PRESERVED_KEYS = ['selectedLanguage'];  // Add this line

@@ -4,7 +4,16 @@
 # IDE and editor files
 *.swp
 *.swo
+.vscode/
+*.bak
 
 # Temporary files
 *.tmp
-*.bak
+
+# Node modules and logs
+node_modules/
+npm-debug.log*
+
+# Python server cache
+__pycache__/
+*.pyc
