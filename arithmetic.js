@@ -128,41 +128,39 @@ class ArithmeticMenu {
         }
         container.appendChild(modal);
 
-        // Add this block:
+        // Add this block:const header = modal.querySelector('.tutorial-header');
         const header = modal.querySelector('.tutorial-header');
-        header.style.touchAction = 'none';
-
+        const closeButton = modal.querySelector('.tutorial-close');
         let isDragging = false;
         let initialX, initialY;
 
         const dragStart = (e) => {
-            if (e.target === header || e.target.closest('.tutorial-header')) {
-                isDragging = true;
-                
-                // Ensure transform is removed and position is calculated from absolute values
-                modal.style.transform = 'none';
+            // Only initiate drag if clicking/touching the header (excluding close button)
+            if (e.target !== closeButton && (e.target === header || e.target.closest('.tutorial-header'))) {
+                if (e.type === "touchstart") {
+                    e.preventDefault();
+                }
+
                 const rect = modal.getBoundingClientRect();
+                initialX = e.type === "touchstart" ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+                initialY = e.type === "touchstart" ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
                 
-                // Force reflow to ensure new positioning is applied
-                modal.offsetHeight;
-                
-                initialX = e.type === "touchstart" ? 
-                    e.touches[0].clientX - rect.left : 
-                    e.clientX - rect.left;
-                initialY = e.type === "touchstart" ? 
-                    e.touches[0].clientY - rect.top : 
-                    e.clientY - rect.top;
+                isDragging = true;
+                modal.style.transform = 'none';
+                modal.offsetHeight; // Force reflow
             }
         };
 
         const dragEnd = () => {
-            isDragging = false;
+            if (isDragging) {
+                isDragging = false;
+            }
         };
 
         const drag = (e) => {
             if (!isDragging) return;
-            e.preventDefault();
             
+            e.preventDefault();
             const currentX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
             const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
             
@@ -171,13 +169,27 @@ class ArithmeticMenu {
             modal.style.bottom = 'auto';
         };
 
-        // Event listeners
+        // Close button handling
+        closeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            modal.style.display = 'none';
+        });
+
+        // Attach events only to header for drag functionality
         header.addEventListener('mousedown', dragStart);
+        header.addEventListener('touchstart', dragStart, { passive: false });
+
+        // Move and end events on document only activate when dragging
         document.addEventListener('mousemove', drag);
         document.addEventListener('mouseup', dragEnd);
-        header.addEventListener('touchstart', dragStart, { passive: false });
         document.addEventListener('touchmove', drag, { passive: false });
         document.addEventListener('touchend', dragEnd);
+
+        // Set touch-action only on header
+        header.style.touchAction = 'none';
+
+        // Prevent default touch behavior on header
+        header.style.touchAction = 'none';
 
         // Make inputs and select interactive
         const inputs = modal.querySelectorAll('.arithmetic-input');

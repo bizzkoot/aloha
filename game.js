@@ -886,13 +886,13 @@ window.ArithmeticGame = class ArithmeticGame {
     }
 
     setupDragFunctionality(modal) {
-        // Get exact window and modal dimensions
+        // Window and modal dimension calculations
         const windowHeight = window.innerHeight;
         const windowWidth = window.innerWidth;
         const modalHeight = modal.offsetHeight;
         const modalWidth = modal.offsetWidth;
     
-        // Calculate center position with padding
+        // Center position calculations
         const padding = 20;
         const centerX = Math.max(
             padding,
@@ -909,46 +909,83 @@ window.ArithmeticGame = class ArithmeticGame {
             )
         );
     
-        // Set initial position
+        // Initial positioning
         modal.style.left = `${centerX}px`;
         modal.style.top = `${centerY}px`;
     
-        // Drag functionality
+        // Setup drag functionality
         const header = modal.querySelector('.tutorial-header');
+        const closeButton = modal.querySelector('.tutorial-close');
         let isDragging = false;
         let initialX;
         let initialY;
     
         const dragStart = (e) => {
+            // Skip drag for close button
+            if (e.target === closeButton || e.target.closest('.tutorial-close')) {
+                return;
+            }
+    
+            // Handle touch events
+            if (e.type === "touchstart") {
+                e.preventDefault();
+            }
+    
             const rect = modal.getBoundingClientRect();
             initialX = e.type === "touchstart" ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
             initialY = e.type === "touchstart" ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+    
             if (e.target === header || e.target.closest('.tutorial-header')) {
                 isDragging = true;
+                // Disable page scrolling during drag
+                document.body.style.touchAction = 'none';
+                document.body.style.overflow = 'hidden';
             }
         };
     
         const dragEnd = () => {
             isDragging = false;
+            // Re-enable page scrolling
+            document.body.style.touchAction = '';
+            document.body.style.overflow = '';
         };
     
         const drag = (e) => {
-            if (isDragging) {
-                e.preventDefault();
-                const currentClientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-                const currentClientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-                modal.style.left = `${currentClientX - initialX}px`;
-                modal.style.top = `${currentClientY - initialY}px`;
-            }
+            if (!isDragging) return;
+    
+            e.preventDefault();
+            e.stopPropagation();
+    
+            const currentClientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+            const currentClientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+    
+            // Update modal position
+            modal.style.left = `${currentClientX - initialX}px`;
+            modal.style.top = `${currentClientY - initialY}px`;
         };
     
-        // Event listeners
+        // Close button specific handling
+        if (closeButton) {
+            closeButton.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            }, { passive: true });
+            
+            closeButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                modal.style.display = 'none';
+            });
+        }
+    
+        // Event listeners for drag functionality
         header.addEventListener('mousedown', dragStart);
+        header.addEventListener('touchstart', dragStart, { passive: false });
         document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
         document.addEventListener('mouseup', dragEnd);
-        header.addEventListener('touchstart', dragStart);
-        document.addEventListener('touchmove', drag);
         document.addEventListener('touchend', dragEnd);
+    
+        // Prevent default touch behavior on header
+        header.style.touchAction = 'none';
     }
 }
 
