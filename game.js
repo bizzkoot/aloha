@@ -198,15 +198,15 @@ window.ArithmeticGame = class ArithmeticGame {
                 };
                 
                 await window.translationService.ready;
-                const questionDisplay = modal.querySelector('.question-display');
+                const questionSection = modal.querySelector('.game-question-section'); // Get the game question section
                 
-                if (!questionDisplay) {
-                    console.error('Question display not found');
+                if (!questionSection) {
+                    console.error('Question section not found');
                     return;
                 }
         
                 // Remove any existing tutorial sections
-                const existingTutorial = questionDisplay.querySelector('.tutorial-section');
+                const existingTutorial = questionSection.querySelector('.tutorial-section');
                 if (existingTutorial) {
                     existingTutorial.remove();
                 }
@@ -221,14 +221,19 @@ window.ArithmeticGame = class ArithmeticGame {
                         <button class="tutorial-next button-common">${translatedTexts.nextStep}</button>
                     </div>
                 `;
-        
-                questionDisplay.appendChild(tutorialSection);
+                
+                const questionDisplay = questionSection.querySelector('.question-display');
+                if (questionDisplay) {
+                    questionDisplay.appendChild(tutorialSection);
+                } else {
+                    questionSection.appendChild(tutorialSection);
+                }
                 this.guidedQuestions.add(this.currentQuestionIndex);
                 
                 const currentQuestion = this.questions[this.currentQuestionIndex];
                 let steps;
                 let operationInstance;
-        
+                
                 try {
                     switch (currentQuestion.operator) {
                         case '+':
@@ -250,7 +255,7 @@ window.ArithmeticGame = class ArithmeticGame {
                     console.error('Error generating steps:', error);
                     return;
                 }
-        
+                
                 if (!steps || steps.length === 0) {
                     steps = [
                         {
@@ -265,9 +270,9 @@ window.ArithmeticGame = class ArithmeticGame {
                         }
                     ];
                 }
-        
+                
                 let currentStepIndex = 0;
-        
+                
                 const displayStep = async () => {
                     if (!steps || currentStepIndex < 0 || currentStepIndex >= steps.length) {
                         return;
@@ -280,21 +285,21 @@ window.ArithmeticGame = class ArithmeticGame {
                         steps[currentStepIndex].value
                     );
                 };
-        
+                
                 await displayStep();
-        
+                
                 // Initialize tutorial controls with fresh event listeners
                 const tutorialControls = tutorialSection.querySelector('.tutorial-controls');
                 if (tutorialControls) {
                     const repeatBtn = tutorialControls.querySelector('.tutorial-repeat');
                     const nextBtn = tutorialControls.querySelector('.tutorial-next');
-
+                    
                     // Clear existing listeners and create fresh buttons
                     const newRepeatBtn = repeatBtn.cloneNode(true);
                     const newNextBtn = nextBtn.cloneNode(true);
                     repeatBtn.replaceWith(newRepeatBtn);
                     nextBtn.replaceWith(newNextBtn);
-
+                    
                     // Add new event listeners
                     newRepeatBtn.onclick = async () => {
                         // Get the current step, even if we're at the end
@@ -310,7 +315,7 @@ window.ArithmeticGame = class ArithmeticGame {
                             }
                         }
                     };
-
+                    
                     newNextBtn.onclick = async () => {
                         currentStepIndex++;
                         if (currentStepIndex < steps.length) {
@@ -321,11 +326,11 @@ window.ArithmeticGame = class ArithmeticGame {
                             currentStepIndex = steps.length - 1;
                         }
                     };
-                }        
+                }
                 // Disable Guide Me button after starting tutorial
                 guideMeBtn.disabled = true;
             };
-        }        
+        }
 
         if (nextQuestionBtn) {
             nextQuestionBtn.onclick = () => {
@@ -627,39 +632,17 @@ window.ArithmeticGame = class ArithmeticGame {
         try {
             await window.translationService.ready;
             const modal = document.querySelector('.game-section');
-            
+    
             if (!modal) {
-                await this.createGameModal();
-                const newModal = document.querySelector('.game-section');
+                const newModal = await this.createGameModal();
                 if (newModal) {
                     newModal.style.display = 'block';
-                    
-                    const modalHeight = newModal.offsetHeight;
-                    const modalWidth = newModal.offsetWidth;
-                    const windowWidth = window.innerWidth;
-                    
-                    // Position horizontally centered, but from bottom
-                    const centerX = (windowWidth - modalWidth) / 2;
-                    const bottomOffset = 40; // Distance from bottom of screen
-                    
-                    newModal.style.left = `${centerX}px`;
-                    newModal.style.bottom = `${bottomOffset}px`;
-                    newModal.style.top = 'auto'; // Clear any top positioning
+                    this.positionModal(newModal);
                 }
             } else {
                 if (modal.style.display === 'none') {
                     modal.style.display = 'block';
-                    
-                    const modalHeight = modal.offsetHeight;
-                    const modalWidth = modal.offsetWidth;
-                    const windowWidth = window.innerWidth;
-                    
-                    const centerX = (windowWidth - modalWidth) / 2;
-                    const bottomOffset = 40;
-                    
-                    modal.style.left = `${centerX}px`;
-                    modal.style.bottom = `${bottomOffset}px`;
-                    modal.style.top = 'auto';
+                    this.positionModal(modal);
                 } else {
                     modal.style.display = 'none';
                 }
@@ -673,17 +656,17 @@ window.ArithmeticGame = class ArithmeticGame {
         // Get viewport dimensions
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
-        
+
         // Get modal dimensions
         const modalRect = modal.getBoundingClientRect();
         const modalWidth = modalRect.width;
         const modalHeight = modalRect.height;
-        
+
         // Calculate centered position with padding
         const padding = 20;
         const left = Math.max(padding, Math.min(viewportWidth - modalWidth - padding, (viewportWidth - modalWidth) / 2));
         const top = Math.max(padding, Math.min(viewportHeight - modalHeight - padding, (viewportHeight - modalHeight) / 2));
-        
+
         // Apply position
         modal.style.left = `${left}px`;
         modal.style.top = `${top}px`;

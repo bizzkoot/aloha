@@ -2,7 +2,7 @@
 .arithmetic-section {
     position: fixed;
     width: clamp(280px, 90vw, 400px);
-    max-height: 80vh;
+    max-height: 30vh;
     background: white;
     padding: 20px;
     border-radius: 10px;

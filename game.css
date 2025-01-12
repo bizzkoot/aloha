@@ -1,14 +1,14 @@
 .game-section {
     position: fixed;
     width: clamp(280px, 90vw, 400px);
-    max-height: 80vh;
+    max-height: 30vh;
     background: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.2);
     z-index: 1000;
     overflow-y: auto;
-    display: none;  /* Hidden by default */
+    display: none;
     flex-direction: column;
 }
 
@@ -98,7 +98,7 @@
 .game-question-section {
     margin-top: 20px;
     text-align: center;
-    display: none; /* Initially hide question section */
+    display: none;
 }
 
 .question-display {
@@ -113,7 +113,7 @@
     background: #f5f5f5;
     border-radius: 8px;
     font-size: clamp(14px, 2vw, 16px);
-    display: none; /* Initially hide results section */
+    display: none;
 }
 
 .score-display {
@@ -159,7 +159,7 @@
         width: min(95vw, 450px);
         max-height: clamp(350px, 70vh, 500px);
         padding: 15px;
-        top: 15px; /* Slightly reduced top spacing for mobile */
+        top: 15px;
     }
 
     .operators-selection label {
@@ -174,7 +174,7 @@
         width: 95vw;
         padding: 15px;
         max-height: clamp(300px, 60vh, 450px);
-        top: 10px; /* Minimal top spacing for smaller screens */
+        top: 10px;
     }
 
     .operators-selection {
@@ -196,12 +196,16 @@
     padding: 10px;
     background: #f5f5f5;
     border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .tutorial-content {
     margin-bottom: 10px;
     font-size: clamp(14px, 2vw, 16px);
     line-height: 1.4;
+    text-align: center;
+    padding: 0 10px;
 }
 
 .tutorial-controls {

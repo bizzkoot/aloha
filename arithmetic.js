@@ -97,25 +97,27 @@ class ArithmeticMenu {
                 <h2 class="tutorial-title">${translatedTexts.arithmeticPractice}</h2>
                 <button class="tutorial-close">X</button>
             </div>
-            <div class="arithmetic-content">
-                <div class="input-row">
-                    <span>(X)</span>
-                    <input type="number" id="num1" class="arithmetic-input" placeholder="${translatedTexts.firstNumber}">
-                    <select id="operator" class="arithmetic-select">
-                        <option value="+">+</option>
-                        <option value="-">-</option>
-                        <option value="x">x</option>
-                        <option value="/">/</option>
-                    </select>
-                    <span>(Y)</span>
-                    <input type="number" id="num2" class="arithmetic-input" placeholder="${translatedTexts.secondNumber}">
+            <div class="arithmetic-content-wrapper">
+                <div class="arithmetic-content">
+                    <div class="input-row">
+                        <span>(X)</span>
+                        <input type="number" id="num1" class="arithmetic-input" placeholder="${translatedTexts.firstNumber}">
+                        <select id="operator" class="arithmetic-select">
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                            <option value="x">x</option>
+                            <option value="/">/</option>
+                        </select>
+                        <span>(Y)</span>
+                        <input type="number" id="num2" class="arithmetic-input" placeholder="${translatedTexts.secondNumber}">
+                    </div>
+                    <div class="button-row">
+                        <button class="button-common" id="calculate">${translatedTexts.calculate}</button>
+                        <button class="button-common" id="guide">${translatedTexts.guideMe}</button>
+                    </div>
+                    <div class="tutorial-section"></div>
+                    <div class="expected-result"></div>
                 </div>
-                <div class="button-row">
-                    <button class="button-common" id="calculate">${translatedTexts.calculate}</button>
-                    <button class="button-common" id="guide">${translatedTexts.guideMe}</button>
-                </div>
-                <div class="tutorial-section"></div>
-                <div class="expected-result"></div>
             </div>
         `;
     
@@ -125,7 +127,58 @@ class ArithmeticMenu {
             return;
         }
         container.appendChild(modal);
-    
+
+        // Add this block:
+        const header = modal.querySelector('.tutorial-header');
+        header.style.touchAction = 'none';
+
+        let isDragging = false;
+        let initialX, initialY;
+
+        const dragStart = (e) => {
+            if (e.target === header || e.target.closest('.tutorial-header')) {
+                isDragging = true;
+                
+                // Ensure transform is removed and position is calculated from absolute values
+                modal.style.transform = 'none';
+                const rect = modal.getBoundingClientRect();
+                
+                // Force reflow to ensure new positioning is applied
+                modal.offsetHeight;
+                
+                initialX = e.type === "touchstart" ? 
+                    e.touches[0].clientX - rect.left : 
+                    e.clientX - rect.left;
+                initialY = e.type === "touchstart" ? 
+                    e.touches[0].clientY - rect.top : 
+                    e.clientY - rect.top;
+            }
+        };
+
+        const dragEnd = () => {
+            isDragging = false;
+        };
+
+        const drag = (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            const currentX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
+            const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
+            
+            modal.style.left = `${currentX - initialX}px`;
+            modal.style.top = `${currentY - initialY}px`;
+            modal.style.bottom = 'auto';
+        };
+
+        // Event listeners
+        header.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        header.addEventListener('touchstart', dragStart, { passive: false });
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', dragEnd);
+
         // Make inputs and select interactive
         const inputs = modal.querySelectorAll('.arithmetic-input');
         inputs.forEach(input => {
@@ -222,12 +275,20 @@ class ArithmeticMenu {
                 const isHidden = modal.style.display === 'none' || modal.style.display === '';
                 
                 if (isHidden) {
+                    // First make the modal visible to get correct dimensions
                     modal.style.display = 'block';
                     
-                    // Set bottom position with offset
-                    const bottomOffset = 40;
-                    modal.style.bottom = `${bottomOffset}px`;
-                    modal.style.top = 'auto'; // Clear any top positioning
+                    // Remove transform before positioning
+                    modal.style.transform = 'none';
+                    
+                    // Calculate and set position
+                    const viewportHeight = window.innerHeight;
+                    const modalHeight = modal.offsetHeight;
+                    const centerX = (window.innerWidth - modal.offsetWidth) / 2;
+                    
+                    modal.style.top = `${viewportHeight - modalHeight - 40}px`;
+                    modal.style.left = `${centerX}px`;
+                    modal.style.bottom = 'auto';
                 } else {
                     modal.style.display = 'none';
                 }
@@ -235,7 +296,7 @@ class ArithmeticMenu {
         } catch (error) {
             console.error('Error toggling arithmetic modal:', error);
         }
-    }    
+    }
     
     startPractice() {
         const modal = document.querySelector('.arithmetic-section');
