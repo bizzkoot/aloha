@@ -1,19 +1,40 @@
-// Remove the APP_VERSION constant and use APP_CONFIG.VERSION instead
+// Update the version checking function
 async function checkAppVersion() {
     try {
-        const response = await fetch('/aloha/version.json?t=' + new Date().getTime());
+        const response = await fetch(`/aloha/version.json?t=${Date.now()}`);
         const data = await response.json();
         
         if (data.version !== APP_CONFIG.VERSION) {
+            console.log('New version detected:', data.version);
+            
+            // Clear all caches
             if ('caches' in window) {
-                await caches.delete('aloha-cache');
+                const cacheKeys = await caches.keys();
+                await Promise.all(
+                    cacheKeys.map(key => caches.delete(key))
+                );
             }
+            
+            // Clear localStorage except preserved keys
+            Object.keys(localStorage).forEach(key => {
+                if (!PRESERVED_KEYS.includes(key)) {
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            // Force reload from server
             window.location.reload(true);
         }
     } catch (error) {
-        console.log('Version check failed:', error);
+        console.error('Version check failed:', error);
     }
 }
+
+// Add periodic version check
+setInterval(checkAppVersion, 60000); // Check every minute
+
+// Initial version check on load
+window.addEventListener('load', checkAppVersion);
 
 // Update version display
 const versionDisplay = document.getElementById('appVersionDisplay');

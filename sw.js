@@ -1,22 +1,36 @@
+// Update the service worker with version-aware cache naming
 importScripts('config.js');
+
+const CACHE_NAME = `abacus-v${APP_CONFIG.VERSION}`;
+const BASE_PATH = '/aloha/';
+const PRESERVED_KEYS = ['selectedLanguage'];
 
 self.addEventListener('activate', event => {
     event.waitUntil(
-        fetch('/aloha/version.json')
-            .then(response => response.json())
-            .then(data => {
-                if (data.version !== APP_CONFIG.VERSION) {
-                    return caches.delete('aloha-cache')
-                        .then(() => self.clients.claim());
-                }
-                return self.clients.claim();
-            })
+        Promise.all([
+            // Clear old caches
+            caches.keys().then(cacheNames => {
+                return Promise.all(
+                    cacheNames.map(cacheName => {
+                        if (cacheName !== CACHE_NAME) {
+                            return caches.delete(cacheName);
+                        }
+                    })
+                );
+            }),
+            // Check version
+            fetch(`${BASE_PATH}version.json?t=${Date.now()}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.version !== APP_CONFIG.VERSION) {
+                        return caches.delete(CACHE_NAME)
+                            .then(() => self.clients.claim());
+                    }
+                    return self.clients.claim();
+                })
+        ])
     );
 });
-
-const CACHE_NAME = 'abacus-v1';
-const BASE_PATH = '/aloha/';  // Add this line for GitHub Pages path
-const PRESERVED_KEYS = ['selectedLanguage'];  // Add this line
 
 const ASSETS = [
     // Root files with BASE_PATH

@@ -1,17 +1,23 @@
 const fs = require('fs');
 const path = require('path');
 
-// Read version from config.js
+// Read config.js to get version
 const configContent = fs.readFileSync('config.js', 'utf8');
 const versionMatch = configContent.match(/VERSION:\s*['"](.+?)['"]/);
-const version = versionMatch[1];
+const newVersion = versionMatch[1];
 
-// Generate version.json content
-const versionJson = {
-    version: version
-};
+// Read existing version.json
+let versionData = {};
+try {
+    versionData = JSON.parse(fs.readFileSync('version.json', 'utf8'));
+} catch (error) {
+    // If file doesn't exist or is invalid, create new object
+    versionData = {};
+}
 
-// Write to version.json
-fs.writeFileSync('version.json', JSON.stringify(versionJson, null, 4));
+// Update version and timestamp
+versionData.version = newVersion;
+versionData.timestamp = versionData.timestamp || new Date().toISOString().split('T')[0];
 
-console.log(`Version ${version} synced to version.json`);
+// Write back to version.json
+fs.writeFileSync('version.json', JSON.stringify(versionData, null, 4));
