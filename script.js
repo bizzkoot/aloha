@@ -1,3 +1,5 @@
+const APP_VERSION = '1.1.0';
+
 // Language Selection Modal Handler
 class LanguageSelectionModal {
     constructor() {
@@ -343,6 +345,12 @@ console.log('script.js starting to load');
 
 window.initializeCore = async () => {
     console.log('Core initialization starting...');
+    
+    // Add version display initialization
+    const versionDisplay = document.getElementById('appVersionDisplay');
+    if (versionDisplay) {
+        versionDisplay.textContent = `v${APP_VERSION}`;
+    }
     
     // Define timeout constants
     const MAX_WAIT_TIME = 5000; // 5 seconds

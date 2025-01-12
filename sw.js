@@ -1,5 +1,4 @@
 const CACHE_NAME = 'abacus-v1';
-const APP_VERSION = '1.1.0';  // Add this line
 const BASE_PATH = '/aloha/';  // Add this line for GitHub Pages path
 const PRESERVED_KEYS = ['selectedLanguage'];  // Add this line
 
@@ -56,16 +55,6 @@ self.addEventListener('install', event => {
                         console.log('Failed to cache assets:', error);
                     });
                 }),
-            // Check version and clear data if needed
-            self.clients.matchAll().then(clients => {
-                clients.forEach(client => {
-                    client.postMessage({
-                        type: 'VERSION_CHECK',
-                        version: APP_VERSION,
-                        preservedKeys: PRESERVED_KEYS
-                    });
-                });
-            })
         ])
     );
 });
