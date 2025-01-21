@@ -1,6 +1,10 @@
 {
   "scripts": {
     "sync-version": "node sync-version.js",
-    "predeploy": "npm run sync-version"
+    "predeploy": "npm run sync-version",
+    "watch-version": "nodemon --watch config.js sync-version.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }

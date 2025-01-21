@@ -1,0 +1,151 @@
+/* Introduction Module Styles for Age 5-7 */
+
+/* Remove bead highlighting overrides - let modules.css handle it */
+
+/* Feedback Messages */
+.feedback-message {
+    margin: 10px 0;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-weight: 500;
+    animation: slide-in 0.3s ease;
+    position: relative;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.feedback-message.success {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    color: #2e7d32;
+}
+
+.feedback-message.error {
+    background-color: #ffebee;
+    border-left: 4px solid #ff4444;
+    color: #c62828;
+}
+
+@keyframes slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide Container */
+.intro-slide {
+    padding: 20px;
+    text-align: center;
+    background-color: #fff6e6;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Instructions */
+.instruction {
+    margin: 20px 0;
+    font-size: 1.2em;
+    color: #333;
+    text-align: left;
+}
+
+.instruction p {
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.instruction strong {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+.instruction ul, .instruction ol {
+    text-align: left;
+    margin: 15px 0;
+    padding-left: 25px;
+}
+
+.instruction li {
+    margin: 8px 0;
+    line-height: 1.4;
+}
+
+/* Counter and Target Display */
+.counter, .target {
+    font-size: 1.5em;
+    margin: 15px 0;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.target {
+    color: #2196f3;
+    font-weight: bold;
+}
+
+.counter {
+    color: #4caf50;
+}
+
+/* Navigation Buttons */
+.next-btn, .start-practice {
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.next-btn:hover, .start-practice:hover {
+    background: #43a047;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.next-btn:active, .start-practice:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Active State for Interactive Elements */
+.interactive-element {
+    position: relative;
+    cursor: pointer;
+}
+
+.interactive-element:hover {
+    transform: scale(1.05);
+}
+
+.interactive-element.active {
+    background-color: #4caf50;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .instruction {
+        font-size: 1.1em;
+    }
+
+    .counter, .target {
+        font-size: 1.3em;
+    }
+
+    .next-btn, .start-practice {
+        padding: 10px 25px;
+        font-size: 1.1em;
+    }
+}

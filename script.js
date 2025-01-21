@@ -178,37 +178,51 @@ class Abacus {
     }
 
     async setupButtons() {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.className = 'button-container';
+        const buttonContainer = document.querySelector('.button-container');
+        if (!buttonContainer) return;
 
-        const buttons = await Promise.all([
-            this.createButton('Reset Abacus', () => this.resetAbacus()),
-            this.createButton('Start Tutorial', () => window.tutorial.startTutorial()),
-            this.createButton('Arithmetic Practice', () => window.arithmetic.toggleModal()),
-            this.createButton('Practice Game', () => window.game.showGameSetup()),
-            this.createButton('Change Language', () => window.languageManager.showLanguageSelector())
+        // Wait for required dependencies
+        await Promise.all([
+            window.translationService?.ready,
+            new Promise(resolve => {
+                if (window.moduleManager) resolve();
+                else window.addEventListener('moduleManagerReady', resolve, { once: true });
+            })
         ]);
 
-        buttons.forEach(button => buttonContainer.appendChild(button));
+        // Clear existing buttons to ensure consistent order
+        buttonContainer.innerHTML = '';
 
-        const existingContainer = document.querySelector('.button-container');
-        if (existingContainer) {
-            existingContainer.remove();
+        // Define fixed button order
+        const buttonConfigs = [
+            { text: 'Reset Abacus', handler: () => this.resetAbacus(), id: 'resetBtn' },
+            { text: 'Start Tutorial', handler: () => window.tutorial?.startTutorial(), id: 'tutorialBtn' },
+            { text: 'Arithmetic Practice', handler: () => window.arithmetic?.toggleModal(), id: 'arithmeticBtn' },
+            { text: 'Practice Game', handler: () => window.game?.showGameSetup(), id: 'gameBtn' },
+            { text: 'Training Module', handler: () => window.moduleManager?.showAgeGroupModal(), id: 'trainingBtn' }
+        ];
+
+        // Create and add buttons in fixed order
+        for (const config of buttonConfigs) {
+            const button = await this.createButton(config.text, config.handler);
+            button.className = 'button-common';
+            button.id = config.id;
+            buttonContainer.appendChild(button);
         }
-        document.querySelector('.container').appendChild(buttonContainer);
 
-        // Add event listeners for the arithmetic and game buttons
-        const additionBtn = document.getElementById('additionBtn');
-        if (additionBtn) {
-            additionBtn.addEventListener('click', () => window.arithmetic.toggleModal());
-        }
-
-        const gameBtn = document.getElementById('gameBtn');
-        if (gameBtn) {
-            gameBtn.addEventListener('click', () => window.game.showGameSetup());
+        // Create language button separately to ensure it's always last and in top-right
+        if (!document.querySelector('.language-button')) {
+            const langButton = await this.createButton(
+                'Change Language',
+                () => window.languageManager?.showLanguageSelector()
+            );
+            langButton.className = 'language-button';
+            langButton.style.position = 'fixed';
+            langButton.style.top = '20px';
+            langButton.style.right = '20px';
+            document.body.appendChild(langButton);
         }
     }
-
 
     async createButton(textKey, clickHandler) {
         const button = document.createElement('button');
@@ -227,11 +241,20 @@ class Abacus {
     }
 
     async updateButtonTexts(newLanguage) {
-        const buttons = document.querySelectorAll('.button-container .button-common');
-        const texts = ['Reset Abacus', 'Start Tutorial', 'Arithmetic Practice', 'Practice Game', 'Change Language'];
+        // Update main button texts in order they appear
+        const mainButtons = document.querySelectorAll('.button-container .button-common');
+        const mainButtonTexts = ['Reset Abacus', 'Start Tutorial', 'Arithmetic Practice', 'Practice Game', 'Training Module'];
         
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].textContent = await window.translationService.translate(texts[i], newLanguage);
+        for (let i = 0; i < mainButtons.length; i++) {
+            if (mainButtons[i]) {
+                mainButtons[i].textContent = await window.translationService.translate(mainButtonTexts[i], newLanguage);
+            }
+        }
+
+        // Update language button separately
+        const langButton = document.querySelector('.language-button');
+        if (langButton) {
+            langButton.textContent = await window.translationService.translate('Change Language', newLanguage);
         }
     }
 
@@ -335,8 +358,13 @@ class DraggableManager {
     }
 
     static makeDraggable(element) {
+        // Skip making training module modal draggable
+        if (element.classList.contains('training-module-modal') || 
+            element.querySelector('.training-module-modal')) {
+            return;
+        }
+
         let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        
         const header = element.querySelector('.modal-header') || element;
         header.onmousedown = dragMouseDown;
         header.style.cursor = 'move';
@@ -427,6 +455,12 @@ window.initializeCore = async () => {
             )
         ]);
         console.log('Translation service ready');
+
+        // Initialize module manager first
+        if (window.moduleManager && !window.moduleManager.initialized) {
+            await window.moduleManager.initialize();
+            console.log('Module manager initialized');
+        }
 
         window.game = new ArithmeticGame();
         console.log('Game instance created');

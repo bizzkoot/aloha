@@ -287,20 +287,12 @@ class ArithmeticMenu {
                 const isHidden = modal.style.display === 'none' || modal.style.display === '';
                 
                 if (isHidden) {
-                    // First make the modal visible to get correct dimensions
                     modal.style.display = 'block';
-                    
-                    // Remove transform before positioning
-                    modal.style.transform = 'none';
-                    
-                    // Calculate and set position
-                    const viewportHeight = window.innerHeight;
-                    const modalHeight = modal.offsetHeight;
-                    const centerX = (window.innerWidth - modal.offsetWidth) / 2;
-                    
-                    modal.style.top = `${viewportHeight - modalHeight - 40}px`;
-                    modal.style.left = `${centerX}px`;
-                    modal.style.bottom = 'auto';
+                    // Keep the transform for horizontal centering from CSS
+                    modal.style.transform = 'translateX(-50%)';
+                    // Position vertically
+                    modal.style.bottom = '40px';
+                    modal.style.top = 'auto';
                 } else {
                     modal.style.display = 'none';
                 }

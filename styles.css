@@ -113,6 +113,7 @@
     background-color: #6b3410;
 }
 
+
 .button-group {
     margin-top: 20px;
     display: flex;
@@ -147,6 +148,8 @@
     justify-content: center;
     margin: clamp(1rem, 3vw, 2rem) 0;
     flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 .language-select-modal {
     position: fixed;
@@ -248,7 +251,6 @@
 }
 
 @media screen and (max-width: 768px) {
-
     .button-container {
         flex-direction: column;
         align-items: stretch;
@@ -273,8 +275,6 @@
         width: 36px;
         height: 36px;
     }
-
-
 }
 
 @media screen and (max-width: 360px) {

@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- PWA Related Tags - Update these lines -->
-    <link rel="manifest" href="/aloha/manifest.json">
-    <link rel="icon" type="image/x-icon" href="/aloha/favicon.ico">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta name="theme-color" content="#4A90E2">
-    <link rel="apple-touch-icon" href="/aloha/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Abacus">
@@ -34,34 +34,43 @@
             <div class="column" data-place="1"></div>
         </div>
         <div class="value"><span id="currentValueLabel"></span> <span id="currentValue">0</span></div>
+        
+        <!-- Training module container -->
+        <div id="training-container" class="training-container">
+            <!-- Training content will be injected here -->
+        </div>
+
         <div class="button-container">
-            <button class="button-common" id="tutorialBtn">Tutorial</button>
-            <button class="button-common" id="additionBtn" onclick="window.arithmetic?.toggleModal()">Addition</button>
-            <button class="button-common" id="subtractionBtn">Subtraction</button>
-            <button class="button-common" id="gameBtn" onclick="window.game?.showGameSetup()">Game</button>
+            <!-- Buttons will be created by script.js in the correct order -->
         </div>
 
         <!-- Add these practice containers here -->
         <div id="arithmeticPractice" class="arithmetic-practice-container"></div>
         <div id="gamePractice" class="game-practice-container"></div>
-        
     </div>
-    <script src="config.js"></script>
+
     <!-- First load core dependencies -->
+    <script src="config.js"></script>
     <script src="translations.js"></script>
     <script src="movements.js"></script>
 
-    <!-- Load operation modules -->
+    <!-- First load module system -->
+    <link rel="stylesheet" href="js/modules/styles/modules.css">
+    <script type="module">
+        import { moduleManager } from './js/modules/core/moduleManager.js';
+        window.moduleManager = moduleManager;
+    </script>
+
+    <!-- Then load module dependencies -->
     <script src="addition.js"></script>
     <script src="subtraction.js"></script>
-
-    <!-- Load feature modules that depend on operations -->
     <script src="arithmetic.js"></script>
     <script src="game.js"></script>
     <script src="tutorial.js"></script>
 
-    <!-- Finally load the main script -->
+    <!-- Finally load main script -->
     <script src="script.js"></script>
+    
     <!-- Add this before the service worker registration -->
     <script>
         navigator.serviceWorker.addEventListener('message', event => {
@@ -94,13 +103,11 @@
         });
     </script>
 
-    <!-- Then the service worker registration -->
+    <!-- Service worker registration -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/aloha/sw.js', {
-                    scope: '/aloha/'
-                })
+                navigator.serviceWorker.register('./sw.js')
                 .then(registration => {
                     console.log('ServiceWorker registration successful');
                 })

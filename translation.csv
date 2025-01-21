@@ -177,3 +177,22 @@ Use complement of 5:,Gunakan pelengkap 5:,使用5的补数：,5 இன் நி
 Move beads:,Gerakkan manik:,移动珠子：,மணிகளை நகர்த்தவும்:,Instruction for bead movement
 Add top bead (5),Tambah manik atas (5),添加上珠 (5),மேல் மணியைச் சேர்க்கவும் (5),Instruction for moving top bead
 Remove bottom beads,Buang manik bawah,移除下珠,கீழ் மணிகளை அகற்றவும்,Instruction for moving bottom beads
+Training Module,Modul Latihan,训练模块,பயிற்சி தொகுதி,Button to open training module
+Select Age Group,Pilih Kumpulan Umur,选择年龄组,வயது குழுவைத் தேர்ந்தெடுக்கவும்,Modal title for age selection
+Age 5-7,Umur 5-7,年龄 5-7,வயது 5-7,Age group selection button
+Age 8-10,Umur 8-10,年龄 8-10,வயது 8-10,Age group selection button
+Age 11-13,Umur 11-13,年龄 11-13,வயது 11-13,Age group selection button
+Age 14+,Umur 14+,年龄 14+,வயது 14+,Age group selection button
+Training Panel,Panel Latihan,训练面板,பயிற்சி பலகை,Training panel header
+Level,Tahap,等级,நிலை,Level indicator in training module
+Score,Skor,分数,மதிப்பெண்,Score display in training module
+Show this number,Tunjukkan nombor ini,显示这个数字,இந்த எண்ணைக் காட்டு,Exercise instruction
+Check Answer,Semak Jawapan,检查答案,விடையைச் சரிபார்,Check answer button in training
+Need a Hint?,Perlukan Petunjuk?,需要提示吗？,குறிப்பு வேண்டுமா?,Hint button in training
+Try Again,Cuba Lagi,再试一次,மீண்டும் முயற்சி,Retry button in training
+Correct!,Betul!,正确！,சரி!,Success message in training
+Not quite right,Tidak begitu tepat,不太对,சரியல்ல,Error message in training
+Level Up!,Naik Tahap!,升级！,நிலை உயர்வு!,Level up message in training
+Continue,Teruskan,继续,தொடரவும்,Continue button in training
+Great job!,Bagus!,做得好！,நன்று!,Praise message in training
+Try Another Number,Cuba Nombor Lain,试试另一个数字,மற்றொரு எண்ணை முயற்சி,Next number button in training

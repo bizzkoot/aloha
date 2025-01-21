@@ -261,3 +261,37 @@ A web-based Japanese Abacus (Soroban) implementation with interactive features i
    - Add unit tests
    - Implement integration tests
    - Add automated UI testing
+
+## Version Management System
+
+### Implementation Files
+1. **config.js**
+   - Single source of truth for version number
+   - Contains VERSION constant
+   - Handles cache management and version checking
+   - Controls development vs production behavior
+
+2. **sync-version.js**
+   - Syncs version across application
+   - Calculates content hash for cache busting
+   - Updates version.json automatically
+   - Tracks changes in key application files
+
+3. **version.json**
+   - Stores current version info
+   - Contains timestamp and hash
+   - Used for cache invalidation
+   - Referenced by service worker
+
+### Version Update Process
+1. Update VERSION in config.js
+2. Run one of:
+   - `npm run sync-version` (one-time sync)
+   - `npm run watch-version` (auto-sync on changes)
+3. Changes are automatically reflected in version.json
+
+### Cache Management
+- Development mode forces cache refresh
+- Production checks version.json against config.js
+- Cache invalidation on version mismatch
+- Handles PWA cache clearing

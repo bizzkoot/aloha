@@ -1,0 +1,234 @@
+/* Training Container */
+.training-container {
+    display: none;
+    background: #fff;
+    border-radius: 10px;
+    margin: 20px 0;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+/* Bead highlighting overrides */
+.abacus .bead.highlight {
+    box-shadow: 0 0 10px #ffd700;
+    border: 2px solid #ffd700;
+    box-sizing: border-box;
+}
+
+.abacus .bead.highlight.active {
+    box-shadow: 0 0 10px #4caf50;
+    border-color: #4caf50;
+}
+
+.abacus .bead.wrong {
+    box-shadow: 0 0 10px #ff4444;
+    border-color: #ff4444;
+}
+
+
+.training-container.visible {
+    display: block;
+}
+
+.training-container .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.training-container .header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.training-container .close-button {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 5px;
+}
+
+.training-container .close-button:hover {
+    color: #333;
+}
+
+/* Age Selection Modal */
+.dark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.dark-overlay.visible {
+    display: block;
+    opacity: 1;
+}
+
+/* Training Module */
+.training-section {
+    position: fixed;
+    width: clamp(280px, 90vw, 400px);
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 1001;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: none;
+    flex-direction: column;
+    touch-action: none;
+    user-select: none;
+}
+
+.training-section.visible {
+    display: flex;
+    pointer-events: auto;
+}
+
+/* Training Panel */
+#training-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 0 10px;
+}
+
+.panel-content {
+    flex: 1;
+}
+
+.panel-content h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+/* Age Group Buttons */
+.age-group-buttons {
+    display: grid;
+    gap: 1rem;
+    margin-top: 20px;
+    max-height: calc(90vh - 100px);
+    overflow-y: auto;
+}
+
+.age-group-buttons button {
+    width: 100%;
+    padding: 15px;
+    margin: 0;
+    border: none;
+    border-radius: 5px;
+    background: #28a745;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.age-group-buttons button:hover {
+    background: #218838;
+}
+
+.training-section .tutorial-header {
+    position: relative;
+    background: #8b4513;
+    color: white;
+    padding: 12px 15px;
+    margin: -20px -20px 15px -20px;
+    border-radius: 10px 10px 0 0;
+    z-index: 2;
+    cursor: grab;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    touch-action: none;
+}
+
+.training-section .tutorial-header:active {
+    cursor: grabbing;
+}
+
+.tutorial-drag-handle {
+    font-size: 20px;
+    margin-right: 15px;
+    cursor: move;
+}
+
+.tutorial-title {
+    flex-grow: 1;
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.tutorial-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.tutorial-close:hover {
+    color: #ff9999;
+}
+
+/* Feedback Messages */
+.feedback-message {
+    margin: 10px 0;
+    padding: 10px 15px;
+    border-radius: 4px;
+    animation: fadeIn 0.3s ease;
+}
+
+.feedback-message.success {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+    color: #2e7d32;
+}
+
+.feedback-message.error {
+    background-color: #ffebee;
+    border-left: 4px solid #ff4444;
+    color: #c62828;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .training-section {
+        width: 90vw;
+        max-height: 80vh;
+    }
+
+    .age-group-buttons {
+        gap: 0.75rem;
+    }
+
+    .age-group-buttons button {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
