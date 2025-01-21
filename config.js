@@ -1,5 +1,5 @@
 const APP_CONFIG = {
-    VERSION: '1.1.6',
+    VERSION: '1.2.0',
     IS_DEV: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1',
     FORCE_REFRESH: true,
     checkVersion: async () => {

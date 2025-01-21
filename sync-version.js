@@ -4,8 +4,14 @@ const crypto = require('crypto');
 
 // Read config.js to get version
 const configContent = fs.readFileSync('config.js', 'utf8');
+// Updated regex pattern to match APP_CONFIG.VERSION format
 const versionMatch = configContent.match(/VERSION:\s*['"](.+?)['"]/);
+if (!versionMatch) {
+    console.error('Could not find version in config.js');
+    process.exit(1);
+}
 const newVersion = versionMatch[1];
+console.log('Found version:', newVersion); // Debug log
 
 // Calculate content hash for cache busting
 const calculateHash = (files) => {
