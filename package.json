@@ -2,9 +2,11 @@
   "scripts": {
     "sync-version": "node sync-version.js",
     "predeploy": "npm run sync-version",
-    "watch-version": "nodemon --watch config.js sync-version.js"
+    "watch": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop config-watcher",
+    "status": "pm2 status"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "pm2": "^5.3.0"
   }
 }

@@ -1,6 +1,11 @@
+import CountingGame from './games/countingGame.js';
+
 class IntroductionModule {
     constructor() {
         this.currentStep = 0;
+        this.mode = 'tutorial'; // 'tutorial' or 'practice'
+        this.game = null; // Will hold CountingGame instance
+        this.soundManager = window.moduleManager.soundManager;
         this.steps = [
             {
                 title: "Welcome to Abacus Training!",
@@ -93,12 +98,17 @@ class IntroductionModule {
                                 <li>Lower beads = 1 each</li>
                                 <li>Combine them to make numbers!</li>
                             </ul>
+                            <p>Are you ready to practice with different numbers?</p>
                         </div>
-                        <button class="start-practice">Practice More!</button>
+                        <div class="final-buttons">
+                            <button class="start-practice">Start Practice!</button>
+                            <button class="restart-tutorial">Review Tutorial</button>
+                        </div>
                     </div>
                 `,
                 onEnter: () => {
                     window.moduleManager.clearHighlights();
+                    this.resetAbacus();
                 }
             }
         ];
@@ -113,6 +123,11 @@ class IntroductionModule {
 
         // Set up abacus value observer
         this.setupValueObserver();
+
+        // Listen for return to tutorial event
+        window.addEventListener('returnToTutorial', () => {
+            this.restartTutorial();
+        });
     }
 
     // Helper method to safely reset a bead
@@ -213,7 +228,11 @@ class IntroductionModule {
     }
 
     onValueChange(value) {
-        // Update any counter displays in the current step
+        if (this.mode === 'practice') {
+            return; // Let the game handle value changes in practice mode
+        }
+
+        // Update any counter displays in the tutorial step
         const counter = document.querySelector('.intro-slide .counter span');
         if (counter) {
             counter.textContent = value;
@@ -233,17 +252,26 @@ class IntroductionModule {
         const panel = document.querySelector('#training-panel .panel-content');
         if (!panel) return;
 
-        const step = this.steps[this.currentStep];
-        panel.innerHTML = `
-            <h3>${step.title}</h3>
-            ${step.content}
-        `;
+        if (this.mode === 'practice') {
+            // Initialize the practice game if not already done
+            if (!this.game) {
+                this.game = new CountingGame(this.soundManager);
+            }
+            this.game.initialize(panel);
+        } else {
+            // Render tutorial step
+            const step = this.steps[this.currentStep];
+            panel.innerHTML = `
+                <h3>${step.title}</h3>
+                ${step.content}
+            `;
 
-        this.attachStepHandlers();
-        
-        // Call onEnter if it exists
-        if (step.onEnter) {
-            step.onEnter();
+            this.attachStepHandlers();
+            
+            // Call onEnter if it exists
+            if (step.onEnter) {
+                step.onEnter();
+            }
         }
     }
 
@@ -536,6 +564,12 @@ class IntroductionModule {
         if (startBtn) {
             startBtn.onclick = () => this.startPractice();
         }
+
+        // Restart tutorial button handler
+        const restartBtn = panel.querySelector('.restart-tutorial');
+        if (restartBtn) {
+            restartBtn.onclick = () => this.restartTutorial();
+        }
     }
 
     nextStep() {
@@ -576,30 +610,58 @@ class IntroductionModule {
     }
 
     startPractice() {
+        this.cleanupCurrentMode();
+        this.mode = 'practice';
+        this.renderCurrentStep();
+    }
+
+    restartTutorial() {
+        this.cleanupCurrentMode();
+        this.mode = 'tutorial';
         this.currentStep = 0;
         this.renderCurrentStep();
     }
 
-    cleanup() {
-        // Clean up observers
-        if (this.valueObserver) {
-            this.valueObserver.disconnect();
+    cleanupCurrentMode() {
+        // Clean up game if in practice mode
+        if (this.mode === 'practice' && this.game) {
+            this.game.cleanup();
+            this.game = null;
         }
+
+        // Clean up observers
         if (this.currentObserver) {
             this.currentObserver.disconnect();
+            this.currentObserver = null;
         }
         if (this.currentObservers) {
             this.currentObservers.forEach(observer => observer.disconnect());
+            this.currentObservers = [];
+        }
+
+        // Reset abacus and clear highlights
+        this.resetAbacus();
+        window.moduleManager.clearHighlights();
+    }
+
+    cleanup() {
+        // Clean up the current mode
+        this.cleanupCurrentMode();
+
+        // Clean up value observer
+        if (this.valueObserver) {
+            this.valueObserver.disconnect();
+            this.valueObserver = null;
         }
 
         // Remove age-specific class
         document.body.classList.remove('age-5-7');
 
-        // Reset the abacus state
-        this.resetAbacus();
-
-        // Clear any remaining highlights
-        window.moduleManager.clearHighlights();
+        // Ensure game is cleaned up
+        if (this.game) {
+            this.game.cleanup();
+            this.game = null;
+        }
     }
 }
 

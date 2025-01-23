@@ -17,3 +17,57 @@ npm-debug.log*
 # Python server cache
 __pycache__/
 *.pyc
+
+# Build artifacts
+dist/
+build/
+*.map
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Log files
+logs/
+*.log
+
+# Debug files
+.debug/
+debug.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+
+# PM2 files
+.pm2/
+ecosystem.config.js
+
+# Dependency directories
+jspm_packages/
+bower_components/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Deploy files
+.deploy/
+deploy.config.js
+
+# System files
+Thumbs.db
+desktop.ini
+
+# Test files
+.nyc_output/
+.coverage
+coverage.xml

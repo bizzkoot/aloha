@@ -37,34 +37,378 @@
 /* Game Content */
 .game-content {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Level Description */
+.level-description {
+    background-color: rgba(255, 167, 38, 0.1);
+    padding: 12px;
+    border-radius: 10px;
+    margin: 0 auto;
+    font-size: 1.1em;
+    color: #f57c00;
+    max-width: 90%;
+    animation: fadeIn 0.5s ease;
 }
 
 /* Target Number Section */
 .target-number {
-    margin: 20px 0;
+    margin: 30px 0;
+    text-align: center;
+    position: relative;
 }
 
 .target-number h3 {
-    color: #ff6b6b;
-    font-size: 1.3em;
-    margin-bottom: 10px;
+    color: #2b44ff;
+    font-size: 2.2em;
+    margin-bottom: 25px;
+    text-shadow: 2px 2px 4px rgba(43, 68, 255, 0.3);
+    font-weight: bold;
+    font-family: "Comic Sans MS", cursive;
 }
 
-.target-number .number {
-    font-size: 3em;
-    color: #ff6b6b;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(255, 107, 107, 0.2);
-    animation: bounceIn 0.5s ease;
+/* Target Number Container with Fun Background */
+.target-container {
+    background: linear-gradient(145deg, #ff6b6b 0%, #ff8e8e 100%);
+    padding: 35px 25px;
+    border-radius: 25px;
+    max-width: 340px;
+    margin: 0 auto;
+    box-shadow:
+        0 15px 35px rgba(255, 107, 107, 0.3),
+        inset 0 -2px 6px rgba(0, 0, 0, 0.2);
+    border: 8px solid #FFE4E1;
+    position: relative;
+    overflow: hidden;
 }
+
+/* Spotlight Effect */
+.number-spotlight {
+    position: relative;
+    padding: 20px 0;
+}
+
+.spotlight-arrow {
+    font-size: 3em;
+    margin-bottom: 10px;
+    animation: bounceArrow 2s infinite;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes bounceArrow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.spotlight-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    z-index: 1;
+    animation: glowPulse 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+}
+
+.number-block {
+    background: #ffffff;
+    border-radius: 25px;
+    padding: 25px 40px;
+    display: inline-block;
+    margin: 30px 0;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.1),
+        0 0 20px rgba(255, 255, 255, 0.8);
+    border: 8px solid #FFE4E1;
+    position: relative;
+    z-index: 2;
+}
+
+.number-block::before {
+    content: '👇';
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3em;
+    animation: pointDown 1.5s infinite;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes pointDown {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(10px); }
+}
+
+@keyframes floatBlock {
+    0%, 100% { transform: scale(1.1) translateY(0); }
+    50% { transform: scale(1.1) translateY(-10px); }
+}
+
+/* Enhanced number styling */
+/* Number Display Container */
+.target-container {
+    margin: 40px auto;
+    padding: 25px;
+    background: linear-gradient(145deg, #4a148c 0%, #6a1b9a 100%);
+    border-radius: 30px;
+    box-shadow: 0 15px 40px rgba(74, 20, 140, 0.4);
+    border: 8px solid #7c4dff;
+    max-width: 90%;
+    position: relative;
+    overflow: visible;
+}
+
+.number-spotlight {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px 20px;
+    margin: 20px 0;
+}
+
+/* Remove the spotlight arrow as it's not effective */
+.spotlight-arrow {
+    display: none;
+}
+
+/* Simple, clear target number styling */
+.target-number {
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px;
+}
+
+.instruction {
+    font-size: 24px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Number block with prominent display */
+.number-block {
+    background: #4a148c;
+    padding: 30px;
+    border-radius: 25px;
+    position: relative;
+    margin: 20px auto;
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.3),
+        0 0 60px rgba(74, 20, 140, 0.4);
+    border: 6px solid #7c4dff;
+    max-width: fit-content;
+}
+
+.number-block::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2), transparent 70%);
+    border-radius: inherit;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Prominent Target Number */
+.target-container .number {
+    position: relative;
+    display: inline-block;
+    color: #ff1744;
+    font-weight: 900;
+    line-height: 1;
+    padding: 40px 60px;
+    margin: 20px;
+    background: white;
+    border: 15px solid #ff1744;
+    border-radius: 30px;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 0 100px rgba(255, 23, 68, 0.4);
+    text-shadow:
+        5px 5px 0 #ff616f,
+        -2px -2px 0 #c4001d,
+        10px 10px 20px rgba(255, 23, 68, 0.4);
+    font-family: "Comic Sans MS", cursive;
+    animation: numberBounce 2s ease-in-out infinite;
+    transform-origin: center;
+    z-index: 10;
+}
+
+@keyframes numberBounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.1); }
+}
+
+@keyframes numberFocus {
+    0%, 100% {
+        transform: scale(1) translateY(0);
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.3),
+            0 0 50px rgba(255, 23, 68, 0.4),
+            0 0 100px rgba(255, 23, 68, 0.2);
+    }
+    50% {
+        transform: scale(1.15) translateY(-5px);
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.4),
+            0 0 70px rgba(255, 23, 68, 0.6),
+            0 0 120px rgba(255, 23, 68, 0.3);
+    }
+}
+
+/* Enhance the container glow effect */
+@keyframes containerGlow {
+    0%, 100% {
+        box-shadow:
+            0 15px 40px rgba(0, 0, 0, 0.3),
+            0 0 60px rgba(74, 20, 140, 0.4),
+            inset 0 0 30px rgba(124, 77, 255, 0.3);
+    }
+    50% {
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.4),
+            0 0 80px rgba(74, 20, 140, 0.5),
+            inset 0 0 40px rgba(124, 77, 255, 0.4);
+    }
+}
+
+.number-block {
+    animation: containerGlow 3s ease-in-out infinite;
+}
+
+
+.spotlight-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center,
+        rgba(124, 77, 255, 0.3) 0%,
+        transparent 70%);
+    z-index: 1;
+    animation: glowPulse 3s infinite;
+    pointer-events: none;
+}
+
+/* Giant Number Style */
+.target-container .number-block .number {
+    color: #ff1744;
+    font-weight: 900;
+    text-shadow:
+        8px 8px 0 #ff616f,
+        -3px -3px 0 #c4001d,
+        15px 15px 30px rgba(255, 23, 68, 0.6);
+    font-family: "Comic Sans MS", cursive;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
+    display: block;
+    text-align: center;
+    padding: 40px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff5f5 100%);
+    border-radius: 40px;
+    box-shadow:
+        0 0 100px rgba(255, 23, 68, 0.5),
+        inset 0 0 60px rgba(255, 23, 68, 0.2);
+    animation: numberPulse 3s ease-in-out infinite;
+    min-width: 1.5em;
+    transform-origin: center center;
+}
+
+@keyframes numberPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 100px rgba(255, 23, 68, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 150px rgba(255, 23, 68, 0.7);
+    }
+}
+
+/* Enhanced title with improved spacing */
+.target-number h3 {
+    font-size: 2.5em;
+    color: white;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 10px 30px rgba(255, 23, 68, 0.2);
+}
+
+@keyframes numberAttention {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(255, 23, 68, 0.3);
+    }
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 50px rgba(255, 23, 68, 0.5);
+    }
+}
+
+/* Enhanced hint styling */
+.number-hint {
+    margin-top: 20px;
+    color: #fff;
+    font-size: 1.4em;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.hint-icon {
+    font-size: 1.2em;
+    animation: wiggle 2s infinite;
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: rotate(-10deg); }
+    50% { transform: rotate(10deg); }
+}
+
+/* Target container specific hint styling */
+.target-container .number-hint {
+    font-size: 1.1em;
+    font-weight: 500;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+}
+
 
 /* Visual Aid */
 .visual-aid {
-    margin: 25px 0;
+    margin: 20px 0;
     font-size: 2em;
-    letter-spacing: 8px;
+    letter-spacing: 6px;
     line-height: 1.5;
     min-height: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 10px;
 }
 
 /* Game Controls */
@@ -73,9 +417,10 @@
     justify-content: center;
     gap: 15px;
     margin: 20px 0;
+    flex-wrap: wrap;
 }
 
-.check-answer-btn, .hint-btn {
+.check-answer-btn, .hint-btn, .reset-btn {
     padding: 12px 25px;
     font-size: 1.2em;
     font-family: "Comic Sans MS", cursive;
@@ -83,6 +428,7 @@
     border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
+    min-width: 120px;
 }
 
 .check-answer-btn {
@@ -97,7 +443,13 @@
     box-shadow: 0 4px 8px rgba(255, 167, 38, 0.3);
 }
 
-.check-answer-btn:hover, .hint-btn:hover {
+.reset-btn {
+    background: linear-gradient(145deg, #ff9f9f, #ff6b6b);
+    color: white;
+    box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+}
+
+.check-answer-btn:hover, .hint-btn:hover, .reset-btn:hover {
     transform: translateY(-2px);
 }
 
@@ -107,6 +459,21 @@
 
 .hint-btn:hover {
     box-shadow: 0 6px 12px rgba(255, 167, 38, 0.4);
+}
+
+.reset-btn:hover {
+    box-shadow: 0 6px 12px rgba(255, 107, 107, 0.4);
+}
+
+/* Level Progress */
+.level-progress {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: rgba(255, 167, 38, 0.1);
+    border-radius: 10px;
+    font-size: 1.1em;
+    color: #f57c00;
+    animation: fadeIn 0.5s ease;
 }
 
 /* Feedback Area */
@@ -150,7 +517,7 @@
 }
 
 /* Level Up Celebration */
-.level-up-celebration {
+.level-up-celebration, .game-completion {
     text-align: center;
     padding: 30px;
     background: linear-gradient(145deg, #ffd868, #ffa726);
@@ -159,10 +526,73 @@
     animation: popIn 0.5s ease;
 }
 
-.level-up-celebration h2 {
+.level-up-celebration h2, .game-completion h2 {
     font-size: 2em;
     margin-bottom: 15px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Game Completion Styles */
+.completion-stats {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    font-size: 1.2em;
+}
+
+.completion-stats p {
+    margin: 10px 0;
+}
+
+.completion-message {
+    font-size: 1.3em;
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+.completion-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.completion-buttons button {
+    min-width: 140px;
+    padding: 12px 25px;
+    font-size: 1.2em;
+    font-family: "Comic Sans MS", cursive;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.restart-game {
+    background: linear-gradient(145deg, #4cd964, #32d74b);
+    color: white;
+    box-shadow: 0 4px 8px rgba(76, 217, 100, 0.3);
+}
+
+.review-tutorial {
+    background: linear-gradient(145deg, #ffd868, #ffa726);
+    color: white;
+    box-shadow: 0 4px 8px rgba(255, 167, 38, 0.3);
+}
+
+.restart-game:hover, .review-tutorial:hover {
+    transform: translateY(-2px);
+}
+
+.restart-game:hover {
+    box-shadow: 0 6px 12px rgba(76, 217, 100, 0.4);
+}
+
+.review-tutorial:hover {
+    box-shadow: 0 6px 12px rgba(255, 167, 38, 0.4);
 }
 
 .continue-btn, .next-number-btn, .retry-btn {
@@ -188,6 +618,15 @@
     box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
 }
 
+/* Abacus Visual Feedback */
+.column.correct-value {
+    animation: correctPulse 1s ease;
+}
+
+.column.wrong-value {
+    animation: wrongShake 0.5s ease;
+}
+
 /* Animations */
 @keyframes bounceIn {
     0% { transform: scale(0.3); opacity: 0; }
@@ -206,15 +645,51 @@
     100% { transform: scale(1); opacity: 1; }
 }
 
-/* Responsive Design */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mobile Responsive Styles */
+/* Responsive Styles */
 @media (max-width: 768px) {
     .game-header {
         flex-direction: column;
         gap: 10px;
     }
 
-    .target-number .number {
+    .target-container {
+        margin: 30px auto;
+        padding: 20px;
+        max-width: 300px;
+    }
+
+    .number-block {
+        padding: 15px;
+        max-width: 90%;
+    }
+
+    .target-container .number-block .number {
+        font-size: 180px;
+        border-width: 15px;
+        padding: 25px;
+        box-shadow:
+            0 0 60px rgba(255, 23, 68, 0.4),
+            inset 0 0 40px rgba(255, 23, 68, 0.2);
+        min-height: 1.2em;
+    }
+
+    .target-number h3 {
         font-size: 2.5em;
+        margin-bottom: 30px;
+    }
+
+    .number-hint {
+        font-size: 1.6em;
+        margin-top: 30px;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
     }
 
     .visual-aid {
@@ -224,10 +699,79 @@
 
     .game-controls {
         flex-direction: column;
+        align-items: stretch;
     }
 
-    .check-answer-btn, .hint-btn {
+    .check-answer-btn, .hint-btn, .reset-btn {
         width: 100%;
         padding: 15px;
     }
+
+    .level-progress {
+        font-size: 1em;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .target-container {
+        margin: 20px auto;
+        padding: 12px;
+        border-width: 4px;
+        max-width: 280px;
+    }
+
+    .number-block {
+        padding: 15px;
+        margin: 12px auto;
+    }
+
+    .target-container .number-block .number {
+        font-size: 120px;
+        border-width: 8px;
+        padding: 10px;
+        text-shadow:
+            3px 3px 0 #ff616f,
+            -1px -1px 0 #c4001d,
+            6px 6px 12px rgba(255, 23, 68, 0.4);
+    }
+
+    .target-number h3 {
+        font-size: 1.6em;
+        margin-bottom: 15px;
+    }
+
+    .number-hint {
+        font-size: 1.3em;
+        margin-top: 20px;
+    }
+
+    .visual-aid {
+        font-size: 1.2em;
+        letter-spacing: 4px;
+    }
+
+    /* Simpler animation for better performance */
+    @keyframes numberAttention {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 20px rgba(255, 23, 68, 0.3);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px rgba(255, 23, 68, 0.5);
+        }
+    }
+}
+
+@keyframes correctPulse {
+    0% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(76, 217, 100, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(76, 217, 100, 0); }
+}
+
+@keyframes wrongShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
 }
