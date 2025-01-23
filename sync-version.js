@@ -2,10 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-// Add debouncing to prevent multiple rapid executions
-let timeoutId = null;
-const DEBOUNCE_DELAY = 1000; // 1 second
-
 function updateVersion() {
     try {
         // Read config.js to get version
@@ -17,7 +13,6 @@ function updateVersion() {
         }
         
         const newVersion = versionMatch[1];
-        console.log('Found version:', newVersion); // Debug log
 
         // Calculate content hash for cache busting
         const calculateHash = (files) => {
@@ -47,32 +42,29 @@ function updateVersion() {
                 .map(file => path.join('js/modules', file))
         ];
 
-        // Read existing version.json
-        let versionData = {};
-        try {
-            versionData = JSON.parse(fs.readFileSync('version.json', 'utf8'));
-        } catch (error) {
-            console.log('No existing version.json found, creating new one');
-            versionData = {};
-        }
-
-        // Update version data
-        versionData.version = newVersion;
-        versionData.timestamp = new Date().toISOString().split('T')[0];
-        versionData.hash = calculateHash(filesToHash);
-        versionData.lastUpdate = new Date().toISOString();
+        // Create version data
+        const versionData = {
+            version: newVersion,
+            timestamp: new Date().toISOString().split('T')[0],
+            hash: calculateHash(filesToHash),
+            lastUpdate: new Date().toISOString()
+        };
 
         // Write updated version.json
         fs.writeFileSync('version.json', JSON.stringify(versionData, null, 4));
-
-        console.log('Version file updated successfully');
-        console.log(JSON.stringify(versionData, null, 2));
+        console.log('Version file updated successfully:', newVersion);
     } catch (error) {
         console.error('Error updating version:', error);
-        process.exit(1);
     }
 }
 
-// Wrap the execution in a debounced function
-clearTimeout(timeoutId);
-timeoutId = setTimeout(updateVersion, DEBOUNCE_DELAY);
+// Run update immediately
+updateVersion();
+
+// Watch for changes in config.js
+fs.watch('config.js', (eventType, filename) => {
+    if (filename) {
+        console.log(`Detected ${eventType} in ${filename}`);
+        updateVersion();
+    }
+});
