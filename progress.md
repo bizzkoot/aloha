@@ -284,14 +284,32 @@ A web-based Japanese Abacus (Soroban) implementation with interactive features i
    - Referenced by service worker
 
 ### Version Update Process
-1. Update VERSION in config.js
-2. Run one of:
-   - `npm run sync-version` (one-time sync)
-   - `npm run watch-version` (auto-sync on changes)
-3. Changes are automatically reflected in version.json
+1. Update VERSION in config.js (e.g., from '1.2.1' to '1.2.1a')
+2. Version sync can be done in two ways:
+   - **Method 1: PM2 Watching (Recommended)**
+     ```bash
+     pm2 stop config-watcher
+     pm2 delete config-watcher
+     pm2 start ecosystem.config.js
+     pm2 save
+     ```
+   - **Method 2: Manual Node Execution**
+     ```bash
+     node sync-version.js
+     ```
 
-### Cache Management
-- Development mode forces cache refresh
-- Production checks version.json against config.js
-- Cache invalidation on version mismatch
-- Handles PWA cache clearing
+### Success Verification
+1. Check version.json is updated with:
+   - New version number
+   - Current date in timestamp
+   - New hash value
+   - Updated lastUpdate timestamp
+2. Verify PM2 logs show: "Version file updated successfully"
+3. Web application should detect version change and clear cache
+
+### Troubleshooting
+- If version.json doesn't update:
+  1. Ensure config-watcher is running: `pm2 list`
+  2. Check PM2 logs: `pm2 logs config-watcher`
+  3. Verify file permissions
+  4. Try manual node execution as fallback
