@@ -1,0 +1,164 @@
+/* Module Abacus Styles */
+.module-abacus-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #d4a373;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.module-abacus {
+    display: flex;
+    gap: clamp(10px, 2vw, 30px);
+    padding: clamp(10px, 2vw, 40px) clamp(10px, 3vw, 40px);
+    position: relative;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Column Styles */
+.module-column {
+    display: flex;
+    flex-direction: column;
+    width: 40px;
+    height: 300px;
+    position: relative;
+}
+
+.module-rod {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background-color: #8b4513;
+    transform: translateX(-50%);
+    border-radius: 2px;
+    z-index: 1;
+}
+
+/* Bead Sections */
+.module-top-section,
+.module-bottom-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+
+.module-top-section {
+    justify-content: flex-end;
+    padding-bottom: 10px;
+}
+
+.module-bottom-section {
+    justify-content: flex-start;
+    padding-top: 10px;
+}
+
+/* Bead Styles */
+.module-bead {
+    width: 36px;
+    height: 36px;
+    background-color: #2f1810;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.2s ease;
+    margin: 2px 0;
+    z-index: 2;
+}
+
+.module-bead:hover {
+    transform: scale(1.1);
+}
+
+.module-bead.active {
+    background-color: #4a3528;
+}
+
+.module-bead.highlight {
+    box-shadow: 0 0 10px #ffd700;
+    border: 2px solid #ffd700;
+}
+
+/* Value Display */
+.module-value-display {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2f1810;
+    text-align: center;
+    min-width: 60px;
+    padding: 8px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+/* Decimal Point */
+.module-decimal-point {
+    font-size: 36px;
+    font-weight: bold;
+    color: #2f1810;
+    display: flex;
+    align-items: center;
+    height: 300px;
+    margin: 0 -5px;
+    position: relative;
+    z-index: 3;
+}
+
+/* Controls Section */
+.module-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    .module-abacus {
+        padding: 10px 5px;
+        gap: 15px;
+    }
+
+    .module-column {
+        width: 30px;
+        height: 250px;
+    }
+
+    .module-bead {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .module-column {
+        width: 25px;
+        height: 200px;
+    }
+
+    .module-bead {
+        width: 24px;
+        height: 24px;
+    }
+
+    .module-value-display {
+        font-size: 20px;
+    }
+}
+
+/* Transitions and Animations */
+@keyframes beadActivate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.module-bead.active {
+    animation: beadActivate 0.3s ease;
+}

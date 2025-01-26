@@ -1,81 +1,398 @@
-/* Simple, focused number display styling */
-.target-number {
-    text-align: center;
-    margin: 40px auto;
-    padding: 20px;
-    max-width: 90vw;
+/* Number Display Styling - Enhanced for young children */
+
+/* Enhanced Number Display System */
+
+/* Target Section Container */
+.target-section {
+    padding: clamp(1.5rem, 4vh, 2.5rem);
+    background: linear-gradient(145deg, #f5f5f5, #ffffff);
+    border-radius: 30px;
+    box-shadow:
+        0 12px 36px rgba(0, 0, 0, 0.1),
+        inset 0 2px 0 rgba(255, 255, 255, 0.5);
+    margin: clamp(1rem, 3vh, 2rem) 0;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Instruction Text */
 .instruction {
-    font-size: 24px;
-    color: #666;
-    margin-bottom: 20px;
+    font-size: clamp(1.3rem, 3.5vw, 1.6rem);
+    color: #4a148c;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-family: "Comic Sans MS", cursive;
+    text-shadow:
+        2px 2px 0 white,
+        4px 4px 8px rgba(74, 20, 140, 0.2);
+    position: relative;
+    z-index: 2;
 }
 
+/* Number Display Container */
+.number-container {
+    position: relative;
+    padding: clamp(1rem, 3vh, 2rem);
+    margin: 2rem auto;
+    max-width: min(500px, 90vw);
+    perspective: 1000px;
+}
+
+/* Main Number Display */
 .big-number {
-    font-size: 48px; /* Reduced to 60% of original 80px */
+    font-size: clamp(5rem, 15vw, 10rem);
     font-family: "Comic Sans MS", cursive;
     font-weight: 900;
     color: #E91E63;
     line-height: 1;
-    padding: 15px 30px; /* Reduced padding */
-    margin: 0 auto;
+    padding: clamp(1.5rem, 5vw, 3rem);
     text-align: center;
-    display: inline-block;
     background: white;
-    border-radius: 20px; /* Reduced from 30px */
-    border: 6px solid #E91E63; /* Reduced from 8px */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    text-shadow: 
-        2px 2px 0 white,
-        -2px -2px 0 white,
-        2px -2px 0 white,
-        -2px 2px 0 white;
+    border: 12px solid #E91E63;
+    border-radius: 40px;
+    box-shadow:
+        0 20px 40px rgba(233, 30, 99, 0.3),
+        0 0 100px rgba(233, 30, 99, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.5);
+    text-shadow:
+        4px 4px 0 #ff4081,
+        -2px -2px 0 #c2185b,
+        8px 8px 16px rgba(233, 30, 99, 0.4);
+    transform-origin: center;
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: numberFloat 4s ease-in-out infinite;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
 }
 
-.hint {
-    font-size: 20px;
+/* Number Background Effects */
+.number-container::before {
+    content: '';
+    position: absolute;
+    inset: -20%;
+    background: radial-gradient(
+        circle at center,
+        rgba(233, 30, 99, 0.1) 0%,
+        transparent 70%
+    );
+    opacity: 0.5;
+    animation: pulseGlow 4s ease-in-out infinite;
+    z-index: 1;
+}
+
+/* Visual Enhancement for Hover */
+.big-number:hover {
+    transform:
+        translateY(-10px)
+        rotateX(10deg)
+        scale(1.05);
+    box-shadow:
+        0 30px 60px rgba(233, 30, 99, 0.4),
+        0 0 120px rgba(233, 30, 99, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Number Value Badge */
+.number-value {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background: #4a148c;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(74, 20, 140, 0.3);
+    z-index: 3;
+}
+
+/* Animations */
+@keyframes numberFloat {
+    0%, 100% {
+        transform: translateY(0) rotateX(0deg);
+    }
+    50% {
+        transform: translateY(-15px) rotateX(5deg);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+    .target-section {
+        padding: clamp(1rem, 3vh, 1.5rem);
+    }
+
+    .big-number {
+        font-size: clamp(4rem, 12vw, 8rem);
+        padding: clamp(1rem, 3vw, 2rem);
+        border-width: 8px;
+    }
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+    .big-number {
+        border: 3px solid CanvasText;
+        background: Canvas;
+        color: CanvasText;
+        text-shadow: none;
+    }
+}
+
+.big-number:hover {
+    transform: scale(1.05) rotate(-2deg);
+}
+
+/* Touch Interaction Styles */
+.number-container {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    touch-action: none; /* Prevent browser handling of touches */
+}
+
+.number-container.swipe-left {
+    animation: swipeLeftFeedback 0.3s ease-out;
+}
+
+.number-container.swipe-right {
+    animation: swipeRightFeedback 0.3s ease-out;
+}
+
+.number-container.pinching {
+    transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Touch Gesture Hints */
+.gesture-hint {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
     color: #666;
-    margin-top: 20px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
+    opacity: 0.8;
+    text-align: center;
+    pointer-events: none;
+    animation: fadeInUp 0.5s ease-out;
+    display: none;
+}
+
+/* Touch Animation Keyframes */
+@keyframes swipeLeftFeedback {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-20px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes swipeRightFeedback {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(20px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
+    to {
+        opacity: 0.8;
+        transform: translate(-50%, 0);
+    }
+}
+
+/* Touch Device Detection */
+@media (hover: none) and (pointer: coarse) {
+    .gesture-hint {
+        display: block;
+    }
+
+    .number-container:active {
+        transform: scale(0.98);
+    }
+}
+
+/* Enhanced Visual Hint Section */
+.visual-hint {
+    margin-top: clamp(1.5rem, 4vh, 2.5rem);
+    padding: clamp(1rem, 3vh, 1.5rem);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+    border-radius: 25px;
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.1),
+        inset 0 2px 0 rgba(255, 255, 255, 0.5);
+    position: relative;
+    z-index: 2;
+}
+
+/* Visual Aid Enhancement */
+.visual-aid {
+    font-size: clamp(2rem, 6vw, 3rem);
+    line-height: 1.4;
+    text-align: center;
+    padding: clamp(0.5rem, 2vh, 1rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.visual-aid span {
     display: inline-block;
+    animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    animation-fill-mode: both;
+}
+
+/* Encouragement Text */
+.hint-text {
+    font-size: clamp(1.1rem, 2.8vw, 1.3rem);
+    color: #4a148c;
+    text-align: center;
+    margin-top: clamp(0.75rem, 2vh, 1rem);
+    font-family: "Comic Sans MS", cursive;
+    font-weight: 600;
+    text-shadow: 1px 1px 0 white;
+    opacity: 0;
+    animation: slideUp 0.5s ease-out 0.3s forwards;
+}
+
+/* Additional Animations */
+@keyframes popIn {
+    0% {
+        transform: scale(0) rotate(-15deg);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Hint Display */
+.hint {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    color: #666;
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .hint-icon {
-    font-size: 24px;
-    margin-right: 8px;
+    font-size: 1.2em;
+    margin-right: 0.5rem;
     vertical-align: middle;
+    animation: bounce 2s infinite;
 }
 
-/* Responsive design */
+/* Visual Aid */
+.visual-aid {
+    margin: 1rem 0;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    line-height: 1.5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Animations */
+@keyframes numberFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .big-number {
-        font-size: 70px;
-        padding: 12px 25px;
+        font-size: clamp(3rem, 10vw, 6rem);
+        border-width: 6px;
     }
 
     .instruction {
-        font-size: 20px;
+        font-size: clamp(1.1rem, 2.5vw, 1.3rem);
     }
 
-    .hint {
-        font-size: 18px;
+    .visual-aid {
+        font-size: clamp(1.2rem, 3.5vw, 1.8rem);
     }
 }
 
-@media (max-width: 480px) {
+/* Print Styles */
+@media print {
     .big-number {
-        font-size: 60px;
-        padding: 10px 20px;
+        border: 3px solid black;
+        color: black;
+        text-shadow: none;
+        box-shadow: none;
+        animation: none;
     }
 
-    .instruction {
-        font-size: 18px;
+    .hint, .visual-aid {
+        border: 1px solid black;
+        background: none;
+        box-shadow: none;
     }
+}
 
-    .hint {
-        font-size: 16px;
+/* High Contrast Mode */
+@media (forced-colors: active) {
+    .big-number {
+        border: 3px solid CanvasText;
+        background: Canvas;
+        color: CanvasText;
+        text-shadow: none;
     }
 }

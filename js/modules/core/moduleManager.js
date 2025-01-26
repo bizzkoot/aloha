@@ -217,6 +217,7 @@ class ModuleManager {
         await this.loadModule(ageGroup);
     }
 
+    
     async loadModule(ageGroup) {
         const moduleName = this.ageGroups[ageGroup];
         const agePath = this.ageGroupPaths[ageGroup];

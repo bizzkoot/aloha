@@ -101,7 +101,7 @@ class IntroductionModule {
                             <p>Are you ready to practice with different numbers?</p>
                         </div>
                         <div class="final-buttons">
-                            <button class="start-practice">Start Practice!</button>
+                            <button class="start-practice-standalone">Start Practice Mode</button>
                             <button class="restart-tutorial">Review Tutorial</button>
                         </div>
                     </div>
@@ -560,9 +560,9 @@ class IntroductionModule {
         }
 
         // Start practice button handler
-        const startBtn = panel.querySelector('.start-practice');
+        const startBtn = panel.querySelector('.start-practice-standalone');
         if (startBtn) {
-            startBtn.onclick = () => this.startPractice();
+            startBtn.onclick = () => this.startStandalonePractice();
         }
 
         // Restart tutorial button handler
@@ -613,6 +613,48 @@ class IntroductionModule {
         this.cleanupCurrentMode();
         this.mode = 'practice';
         this.renderCurrentStep();
+    }
+
+    startStandalonePractice() {
+        // Create practice mode container
+        const container = document.createElement('div');
+        container.className = 'practice-layout-container';
+        document.body.appendChild(container);
+
+        // Create abacus panel and move existing abacus into it
+        const abacusPanel = document.createElement('div');
+        abacusPanel.className = 'abacus-panel';
+        const existingAbacus = document.querySelector('.abacus');
+        if (existingAbacus) {
+            abacusPanel.appendChild(existingAbacus);
+        }
+        container.appendChild(abacusPanel);
+
+        // Create game panel
+        const gamePanel = document.createElement('div');
+        gamePanel.className = 'game-panel';
+        container.appendChild(gamePanel);
+
+        // Initialize game in practice mode
+        this.game = new CountingGame(this.soundManager);
+        this.game.initialize(gamePanel, 'practice');
+
+        // Add close button
+        const closeButton = document.createElement('button');
+        closeButton.className = 'close-practice-mode';
+        closeButton.innerHTML = '&times;';
+        closeButton.onclick = () => {
+            // Move abacus back to original position
+            const mainContent = document.querySelector('.main-content');
+            if (mainContent && existingAbacus) {
+                mainContent.insertBefore(existingAbacus, mainContent.firstChild);
+            }
+            // Remove practice container
+            container.remove();
+            // Cleanup
+            this.cleanupCurrentMode();
+        };
+        container.appendChild(closeButton);
     }
 
     restartTutorial() {

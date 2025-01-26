@@ -1,0 +1,204 @@
+/* Game Controls Styling - Enhanced for young children */
+
+/* Base Button Styles */
+.game-button {
+    font-family: "Comic Sans MS", cursive;
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    font-weight: 700;
+    padding: clamp(0.8rem, 2vh, 1.2rem) clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: 20px;
+    min-height: 60px;
+    min-width: 140px;
+    cursor: pointer;
+    transform-origin: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Button Icon Styles */
+.game-button span[aria-hidden="true"] {
+    font-size: 1.2em;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.3em;
+    transition: transform 0.3s ease;
+}
+
+/* Interactive States */
+.game-button:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-button:hover:before {
+    opacity: 1;
+}
+
+.game-button:hover span[aria-hidden="true"] {
+    transform: scale(1.2) rotate(15deg);
+}
+
+/* Primary Button */
+.primary-button {
+    background: linear-gradient(145deg, #4cd964, #32d74b);
+    color: white;
+    box-shadow: 
+        0 6px 0 #2cc83d,
+        0 8px 16px rgba(76, 217, 100, 0.3);
+}
+
+.primary-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 8px 0 #2cc83d,
+        0 12px 20px rgba(76, 217, 100, 0.4);
+}
+
+.primary-button:active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 0 #2cc83d,
+        0 4px 8px rgba(76, 217, 100, 0.2);
+}
+
+/* Secondary Button */
+.secondary-button {
+    background: linear-gradient(145deg, #ffd868, #ffa726);
+    color: white;
+    box-shadow: 
+        0 6px 0 #ff9800,
+        0 8px 16px rgba(255, 167, 38, 0.3);
+}
+
+.secondary-button:hover {
+    transform: translateY(-3px) rotate(1deg);
+    box-shadow: 
+        0 8px 0 #ff9800,
+        0 12px 20px rgba(255, 167, 38, 0.4);
+}
+
+.secondary-button:active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 0 #ff9800,
+        0 4px 8px rgba(255, 167, 38, 0.2);
+}
+
+.secondary-button span[aria-hidden="true"] {
+    animation: glow 2s infinite;
+}
+
+/* Utility Button */
+.utility-button {
+    background: linear-gradient(145deg, #ff9f9f, #ff6b6b);
+    color: white;
+    box-shadow: 
+        0 6px 0 #ff5252,
+        0 8px 16px rgba(255, 107, 107, 0.3);
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
+    min-width: 120px;
+}
+
+.utility-button:hover {
+    transform: translateY(-3px) rotate(-1deg);
+    box-shadow: 
+        0 8px 0 #ff5252,
+        0 12px 20px rgba(255, 107, 107, 0.4);
+}
+
+.utility-button:active {
+    transform: translateY(2px);
+    box-shadow: 
+        0 2px 0 #ff5252,
+        0 4px 8px rgba(255, 107, 107, 0.2);
+}
+
+.utility-button span[aria-hidden="true"] {
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+}
+
+.utility-button:hover span[aria-hidden="true"] {
+    transform: rotate(180deg);
+}
+
+/* Button Groups */
+.controls-primary {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 2vh, 1.25rem);
+}
+
+.controls-secondary {
+    display: flex;
+    gap: clamp(0.75rem, 2vh, 1.25rem);
+    justify-content: space-between;
+}
+
+/* Disabled State */
+.game-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Animations */
+@keyframes glow {
+    0%, 100% {
+        filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
+    }
+    50% {
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8));
+    }
+}
+
+/* Focus State for Accessibility */
+.game-button:focus-visible {
+    outline: 3px solid #4a90e2;
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    .game-button {
+        background: none !important;
+        color: #000 !important;
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+    .game-button {
+        border: 2px solid ButtonText;
+        background: ButtonFace;
+        color: ButtonText;
+        forced-color-adjust: none;
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+    .game-button {
+        min-height: 64px;
+        padding: clamp(1rem, 3vh, 1.5rem) clamp(1.5rem, 4vw, 2.5rem);
+    }
+}

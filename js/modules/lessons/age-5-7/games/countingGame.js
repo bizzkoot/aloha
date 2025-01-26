@@ -1,6 +1,5 @@
 /**
- * Counting Game Module for Age 5-7
- * Provides interactive counting exercises with increasing difficulty
+ * Core Counting Game Module for Age 5-7
  */
 class CountingGame {
     constructor(soundManager) {
@@ -8,447 +7,404 @@ class CountingGame {
         this.currentLevel = 1;
         this.score = 0;
         this.maxLevel = 5;
-        this.gameState = 'ready'; // ready, playing, completed
-        
-        // Load dedicated number display styles
-        this.loadNumberStyles();
+        this.gameState = 'ready';
+        this.numberHistory = [];
         this.levelConfig = {
-            1: { max: 5, visual: '⭐', description: 'Practice with small numbers 1-5' },
-            2: { max: 9, visual: '🌟', description: 'Try numbers from 1 to 9' },
-            3: { max: 15, visual: '🎈', description: 'Now try bigger numbers up to 15' },
-            4: { max: 20, visual: '🎯', description: 'Challenge yourself with numbers up to 20' },
-            5: { max: 20, visual: '🏆', description: 'Master all numbers from 1-20!' }
+            1: {
+                max: 5,
+                visual: '⭐',
+                description: 'Practice with small numbers 1-5',
+                encouragement: 'Great start! Let\'s count together!'
+            },
+            2: {
+                max: 9,
+                visual: '🌟',
+                description: 'Try numbers from 1 to 9',
+                encouragement: 'You\'re doing great with bigger numbers!'
+            },
+            3: {
+                max: 15,
+                visual: '�',
+                description: 'Now try bigger numbers up to 15',
+                encouragement: 'Wow! You\'re ready for teen numbers!'
+            },
+            4: {
+                max: 20,
+                visual: '🎯',
+                description: 'Challenge yourself with numbers up to 20',
+                encouragement: 'Amazing! You\'re almost a master!'
+            },
+            5: {
+                max: 20,
+                visual: '�',
+                description: 'Master all numbers from 1-20!',
+                encouragement: 'You\'re a counting champion!'
+            }
         };
-        this.valueObserver = null;
-        this.numberHistory = []; // Track recently used numbers
-    }
-
-    loadNumberStyles() {
-        const styleId = 'number-display-styles';
-        if (!document.getElementById(styleId)) {
-            const link = document.createElement('link');
-            link.id = styleId;
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = '/js/modules/lessons/age-5-7/games/number-display.css';
-            document.head.appendChild(link);
-        }
     }
 
     initialize(container) {
-        this.container = container;
-        this.setupAbacusValueObserver();
-        this.numberHistory = []; // Clear history on init
-        this.resetAbacus(); // Ensure abacus is in initial state
-        this.gameState = 'playing'; // Set game state to playing
-        this.render();
-    }
+        try {
+            if (!container) throw new Error('Container element required');
 
-    setupAbacusValueObserver() {
-        // Watch for changes to the current value display
-        const valueDisplay = document.getElementById('currentValue');
-        if (valueDisplay && !this.valueObserver) {
-            this.valueObserver = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.type === 'childList') {
-                        this.onAbacusValueChange(parseInt(mutation.target.textContent));
-                    }
+            this.container = container;
+            this.container.classList.add('counting-game');
+
+            // Create main content container
+            const content = document.createElement('div');
+            content.className = 'game-content';
+
+            // Add resize handle
+            const resizeHandle = document.createElement('div');
+            resizeHandle.className = 'resize-handle';
+            resizeHandle.setAttribute('role', 'separator');
+            resizeHandle.setAttribute('aria-label', 'Resize game panel');
+
+            this.container.appendChild(resizeHandle);
+            this.container.appendChild(content);
+            this.contentContainer = content;
+
+            // Initialize game
+            this.numberHistory = [];
+            this.gameState = 'playing';
+            this.setupAbacusObserver();
+            this.setupResizeHandling(resizeHandle);
+            this.resetAbacus();
+
+            // Mark abacus container as game active
+            const abacusContainer = document.getElementById('abacusContainer');
+            if (abacusContainer) {
+                requestAnimationFrame(() => {
+                    abacusContainer.classList.add('game-active');
+                    this.container.classList.add('active');
                 });
-            });
-            
-            this.valueObserver.observe(valueDisplay, {
-                childList: true
-            });
+            }
+
+            this.render();
+
+        } catch (error) {
+            console.error('Game initialization error:', error);
+            this.showError('Failed to initialize game');
         }
     }
 
-    onAbacusValueChange(value) {
-        // Don't do anything if value is 0 (initial state)
-        if (value === 0) {
+    setupResizeHandling(handle) {
+        let startX, startWidth, startY, startHeight;
+        const isMobile = window.innerWidth <= 768;
+        const isLandscape = window.innerWidth > window.innerHeight;
+
+        const startResize = (e) => {
+            startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            startWidth = this.container.offsetWidth;
+            startHeight = this.container.offsetHeight;
+            document.addEventListener('mousemove', resize);
+            document.addEventListener('touchmove', resize);
+            document.addEventListener('mouseup', stopResize);
+            document.addEventListener('touchend', stopResize);
+        };
+
+        const resize = (e) => {
+            if (isMobile && !isLandscape) {
+                // Vertical resize for mobile portrait
+                const currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+                const deltaY = startY - currentY;
+                const newHeight = Math.min(Math.max(startHeight + deltaY, window.innerHeight * 0.3), window.innerHeight * 0.7);
+                this.container.style.height = `${newHeight}px`;
+
+                const abacusContainer = document.getElementById('abacusContainer');
+                if (abacusContainer) {
+                    abacusContainer.style.height = `${window.innerHeight - newHeight}px`;
+                }
+            } else {
+                // Horizontal resize for desktop and landscape
+                const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const deltaX = startX - currentX;
+                const newWidth = Math.min(Math.max(startWidth + deltaX, 280), window.innerWidth * 0.4);
+                this.container.style.width = `${newWidth}px`;
+
+                const abacusContainer = document.getElementById('abacusContainer');
+                if (abacusContainer) {
+                    abacusContainer.style.width = `calc(100% - ${newWidth}px)`;
+                }
+            }
+        };
+
+        const stopResize = () => {
+            document.removeEventListener('mousemove', resize);
+            document.removeEventListener('touchmove', resize);
+            document.removeEventListener('mouseup', stopResize);
+            document.removeEventListener('touchend', stopResize);
+        };
+
+        handle.addEventListener('mousedown', startResize);
+        handle.addEventListener('touchstart', startResize);
+    }
+
+    setupAbacusObserver() {
+        const valueDisplay = document.getElementById('currentValue');
+        if (!valueDisplay) return;
+
+        this.valueObserver = new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.type === 'childList') {
+                    this.handleValueChange(parseInt(mutation.target.textContent));
+                }
+            });
+        });
+
+        this.valueObserver.observe(valueDisplay, { childList: true });
+    }
+
+    handleValueChange(value) {
+        if (value === 0 || this.gameState !== 'playing') return;
+
+        const targetNumber = this.getTargetNumber();
+        if (!targetNumber) return;
+
+        if (value > this.levelConfig[this.currentLevel].max) {
+            this.showError('That number is too big for this level!');
             return;
         }
-        
-        const targetNumber = parseInt(this.container.querySelector('.big-number')?.textContent || '0');
-        const feedback = this.container.querySelector('.feedback-area');
-        
-        // Only process if game is in playing state
-        if (this.gameState === 'playing') {
-            if (value > this.levelConfig[this.currentLevel].max) {
-                // Show error for exceeding level maximum
-                feedback.innerHTML = `
-                    <div class="error-message">
-                        <p>That number is too big for this level!</p>
-                        <button class="reset-btn">Reset Beads</button>
-                    </div>
-                `;
-                
-                const resetBtn = feedback.querySelector('.reset-btn');
-                if (resetBtn) {
-                    resetBtn.onclick = () => {
-                        this.resetAbacus();
-                        feedback.innerHTML = '';
-                    };
-                }
-            } else if (value === targetNumber) {
-                // Show success message only when correct number is achieved
-                this.handleCorrectAnswer();
-            } else {
-                // Clear any existing feedback while user is working
-                feedback.innerHTML = '';
-            }
+
+        if (value === targetNumber) {
+            this.handleSuccess();
         }
     }
 
     render() {
+        if (!this.contentContainer) return;
+
+        this.contentContainer.innerHTML = '';
+
         if (this.gameState === 'completed') {
-            this.renderGameCompletion();
+            this.showCompletion();
             return;
         }
 
         const config = this.levelConfig[this.currentLevel];
-        this.container.innerHTML = `
-            <div class="counting-game">
-                <div class="game-header">
-                    <div class="level-info">Level ${this.currentLevel} ${config.visual}</div>
-                    <div class="score-info">Score: ${this.score}</div>
-                </div>
-                
-                <div class="game-content">
-                    <div class="level-description">
-                        <p>${config.description}</p>
-                    </div>
+        const targetNumber = this.generateTargetNumber();
 
-                    <div class="target-number">
-                        <div class="instruction">Make this number:</div>
-                        <div class="big-number">${this.generateTargetNumber()}</div>
-                        <div class="hint">
-                            <span class="hint-icon">💡</span>
-                            Move the beads to show this value
-                        </div>
+        this.contentContainer.innerHTML = `
+            <div class="game-header">
+                <div class="level-info">Level ${this.currentLevel} ${config.visual}</div>
+                <div class="score-info">Score: ${this.score}</div>
+            </div>
+
+            <div class="target-section">
+                <div class="instruction">Make this number:</div>
+                <div class="target-container">
+                    <div class="number" data-value="${targetNumber}">
+                        ${targetNumber}
                     </div>
-                    
-                    <div class="visual-aid">
-                        ${this.generateVisualAid(config)}
-                    </div>
-                    
-                    <div class="game-controls">
-                        <button class="check-answer-btn">Check Answer</button>
-                        <button class="hint-btn">Need a Hint?</button>
-                        <button class="reset-btn">Reset Beads</button>
-                    </div>
-                    
-                    <div class="feedback-area"></div>
-                    
-                    ${this.currentLevel < this.maxLevel ? `
-                        <div class="level-progress">
-                            Progress: ${Math.floor((this.score / (this.currentLevel * 50)) * 100)}%
-                            to Level ${this.currentLevel + 1}
-                        </div>
-                    ` : ''}
+                    <div class="visual-aid">${Array(targetNumber).fill(config.visual).join(' ')}</div>
                 </div>
             </div>
-        `;
 
-        const feedback = this.container.querySelector('.feedback-area');
-        if (feedback) {
-            feedback.innerHTML = ''; // Ensure feedback area is empty on initial render
-        }
-
-        this.attachEventHandlers();
-    }
-
-    renderGameCompletion() {
-        // Calculate stars based on score
-        const totalPossibleScore = (1 + 2 + 3 + 4 + 5) * 50; // Sum of points possible for all levels
-        const scorePercentage = (this.score / totalPossibleScore) * 100;
-        const stars = scorePercentage >= 90 ? '⭐⭐⭐' : 
-                     scorePercentage >= 70 ? '⭐⭐' : '⭐';
-
-        this.container.innerHTML = `
-            <div class="game-completion">
-                <h2>Congratulations! 🎉</h2>
-                <p>You've completed all levels!</p>
-                <div class="completion-stats">
-                    <p>Final Score: ${this.score} points</p>
-                    <p>Performance: ${stars}</p>
-                </div>
-                <div class="completion-message">
-                    ${scorePercentage >= 90 ? 
-                        'Amazing! You\'re an abacus master!' : 
-                        scorePercentage >= 70 ? 
-                        'Great work! You\'re getting really good at this!' :
-                        'Good job! Keep practicing to improve your score!'}
-                </div>
-                <div class="completion-buttons">
-                    <button class="restart-game">Play Again</button>
-                    <button class="review-tutorial">Review Tutorial</button>
-                </div>
+            <div class="controls-section">
+                <button class="check-btn">Check Answer</button>
+                <button class="hint-btn">Need Help?</button>
+                <button class="reset-btn">Reset</button>
             </div>
+
+            <div class="feedback-section"></div>
+
+            ${this.currentLevel < this.maxLevel ? `
+                <div class="progress-section">
+                    ${Math.floor((this.score / (this.currentLevel * 50)) * 100)}% to Level ${this.currentLevel + 1}
+                </div>
+            ` : ''}
         `;
 
-        // Attach handlers for completion buttons
-        const restartBtn = this.container.querySelector('.restart-game');
-        const reviewBtn = this.container.querySelector('.review-tutorial');
-
-        if (restartBtn) {
-            restartBtn.onclick = () => this.restartGame();
-        }
-        if (reviewBtn) {
-            reviewBtn.onclick = () => {
-                // Notify parent module to switch back to tutorial
-                const event = new CustomEvent('returnToTutorial');
-                window.dispatchEvent(event);
-            }
-        }
+        this.attachHandlers();
     }
 
-    restartGame() {
-        this.currentLevel = 1;
-        this.score = 0;
-        this.gameState = 'playing';
-        this.numberHistory = []; // Clear history on restart
-        this.resetAbacus();
-        this.render();
+    attachHandlers() {
+        const checkBtn = this.contentContainer.querySelector('.check-btn');
+        const hintBtn = this.contentContainer.querySelector('.hint-btn');
+        const resetBtn = this.contentContainer.querySelector('.reset-btn');
+
+        if (checkBtn) checkBtn.onclick = () => this.checkAnswer();
+        if (hintBtn) hintBtn.onclick = () => this.showHint();
+        if (resetBtn) resetBtn.onclick = () => this.resetAbacus();
     }
 
     generateTargetNumber() {
         const config = this.levelConfig[this.currentLevel];
-        
-        // Create array of all possible numbers for this level
-        const possibleNumbers = Array.from(
-            {length: config.max},
-            (_, i) => i + 1
-        ).filter(num => !this.numberHistory.includes(num));
+        const numbers = Array.from({length: config.max}, (_, i) => i + 1)
+            .filter(n => !this.numberHistory.includes(n));
 
-        // If we've used all numbers in the range, clear history completely
-        if (possibleNumbers.length === 0) {
+        if (numbers.length === 0) {
             this.numberHistory = [];
             return this.generateTargetNumber();
         }
 
-        let number;
-        
-        // For higher levels, favor bigger numbers
-        if (this.currentLevel >= 3) {
-            const higherRange = possibleNumbers.filter(n => n > Math.floor(config.max * 0.6));
-            const lowerRange = possibleNumbers.filter(n => n <= Math.floor(config.max * 0.6));
-            
-            // 70% chance to get a number from the higher range if available
-            if (higherRange.length > 0 && Math.random() < 0.7) {
-                number = higherRange[Math.floor(Math.random() * higherRange.length)];
-            } else if (lowerRange.length > 0) {
-                number = lowerRange[Math.floor(Math.random() * lowerRange.length)];
-            } else {
-                // If one range is empty, use numbers from the other range
-                number = possibleNumbers[Math.floor(Math.random() * possibleNumbers.length)];
-            }
-        } else {
-            // For levels 1-2, keep the original random selection
-            number = possibleNumbers[Math.floor(Math.random() * possibleNumbers.length)];
-        }
-
-        // Add to history
+        const number = numbers[Math.floor(Math.random() * numbers.length)];
         this.numberHistory.push(number);
-
         return number;
     }
 
-    generateVisualAid(config) {
-        const targetNumber = parseInt(this.container.querySelector('.big-number')?.textContent || '0');
-        return Array(targetNumber).fill(config.visual).join(' ');
+    getTargetNumber() {
+        const element = this.contentContainer?.querySelector('.target-container .number');
+        return element ? parseInt(element.dataset.value) : null;
     }
 
-    attachEventHandlers() {
-        const checkBtn = this.container.querySelector('.check-answer-btn');
-        const hintBtn = this.container.querySelector('.hint-btn');
-        const resetBtn = this.container.querySelector('.reset-btn');
-
-        if (checkBtn) {
-            checkBtn.onclick = () => this.checkAnswer();
-        }
-
-        if (hintBtn) {
-            hintBtn.onclick = () => this.showHint();
-        }
-
-        if (resetBtn) {
-            resetBtn.onclick = () => {
-                this.resetAbacus();
-                this.container.querySelector('.feedback-area').innerHTML = '';
-            };
-        }
+    getCurrentValue() {
+        const element = document.getElementById('currentValue');
+        return element ? parseInt(element.textContent) : null;
     }
 
     checkAnswer() {
-        const targetNumber = parseInt(this.container.querySelector('.big-number').textContent);
-        const abacusValue = parseInt(document.getElementById('currentValue').textContent);
-        
-        // Get rightmost column for visual feedback
-        const abacus = window.moduleManager.getAbacus();
-        const columns = Array.from(abacus.querySelectorAll('.column'));
-        const rightmostColumn = columns[columns.length - 1];
-        
-        if (abacusValue === targetNumber) {
-            // Add visual success feedback
-            rightmostColumn.classList.add('correct-value');
-            setTimeout(() => rightmostColumn.classList.remove('correct-value'), 1000);
-            
-            this.handleCorrectAnswer();
-        } else {
-            // Add visual error feedback
-            rightmostColumn.classList.add('wrong-value');
-            setTimeout(() => rightmostColumn.classList.remove('wrong-value'), 1000);
-            
-            this.handleIncorrectAnswer(abacusValue, targetNumber);
+        const current = this.getCurrentValue();
+        const target = this.getTargetNumber();
+
+        if (current === null || target === null) {
+            this.showError('Unable to check answer');
+            return;
         }
+
+        if (current === target) this.handleSuccess();
+        else this.handleError(current, target);
     }
 
-    handleCorrectAnswer() {
+    handleSuccess() {
         this.score += this.currentLevel * 10;
         this.soundManager?.play('success');
-        
-        const feedback = this.container.querySelector('.feedback-area');
+
+        const feedback = this.contentContainer.querySelector('.feedback-section');
+        if (!feedback) return;
+
         feedback.innerHTML = `
             <div class="success-message">
-                <p>Great job! That's correct! 🎉</p>
-                <p>+${this.currentLevel * 10} points!</p>
-                <button class="next-number-btn">Try Another Number</button>
+                <div class="countdown">5</div>
+                <p>Correct! +${this.currentLevel * 10} points</p>
+                <button class="next-btn">Continue</button>
+                <div class="countdown-hint">Move mouse/touch screen to cancel auto-continue</div>
             </div>
         `;
 
-        const nextBtn = feedback.querySelector('.next-number-btn');
-        if (nextBtn) {
-            nextBtn.onclick = () => {
-                if (this.score >= this.currentLevel * 50) {
-                    if (this.currentLevel < this.maxLevel) {
-                        this.levelUp();
-                    } else {
-                        // Game completed!
-                        this.gameState = 'completed';
-                        this.soundManager?.play('achievement');
-                        this.render();
-                    }
-                } else {
-                    this.resetAbacus();
-                    this.render();
-                }
-            };
-        }
+        const nextBtn = feedback.querySelector('.next-btn');
+        if (nextBtn) nextBtn.onclick = () => this.handleNext();
+
+        // Start countdown
+        let countdown = 5;
+        const countdownEl = feedback.querySelector('.countdown');
+        let autoNextTimer = setInterval(() => {
+            countdown--;
+            if (countdownEl) countdownEl.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval(autoNextTimer);
+                this.handleNext();
+            }
+        }, 1000);
+
+        // Cancel countdown on user interaction
+        const cancelCountdown = () => {
+            clearInterval(autoNextTimer);
+            if (countdownEl) countdownEl.style.display = 'none';
+            feedback.querySelector('.countdown-hint')?.remove();
+        };
+
+        feedback.addEventListener('mousemove', cancelCountdown);
+        feedback.addEventListener('touchstart', cancelCountdown);
     }
 
-    handleIncorrectAnswer(currentValue, targetValue) {
-        this.soundManager?.play('bead');
-        
-        const feedback = this.container.querySelector('.feedback-area');
-        let message = 'Not quite right. ';
-        
-        if (currentValue > targetValue) {
-            message += 'Your number is too high! ';
-        } else {
-            message += 'Your number is too low! ';
-        }
-        
-        const difference = Math.abs(targetValue - currentValue);
-        if (difference >= 5) {
-            message += 'Remember, the upper bead counts as 5!';
-        } else {
-            message += `You're off by ${difference}. Adjust the lower beads!`;
-        }
-        
-        feedback.innerHTML = `
-            <div class="error-message">
-                <p>${message}</p>
-                <button class="retry-btn">Try Again</button>
-                <button class="reset-btn">Reset Beads</button>
-            </div>
-        `;
+    handleNext() {
+        // Always reset abacus first
+        this.resetAbacus();
 
-        const retryBtn = feedback.querySelector('.retry-btn');
-        if (retryBtn) {
-            retryBtn.onclick = () => {
-                feedback.innerHTML = '';
-            };
-        }
-
-        const resetBtn = feedback.querySelector('.reset-btn');
-        if (resetBtn) {
-            resetBtn.onclick = () => {
-                this.resetAbacus();
-                feedback.innerHTML = '';
-            };
-        }
-    }
-
-    showHint() {
-        const targetNumber = parseInt(this.container.querySelector('.big-number').textContent);
-        const feedback = this.container.querySelector('.feedback-area');
-        
-        feedback.innerHTML = `
-            <div class="hint-message">
-                <p>Try this:</p>
-                <ol>
-                    ${this.generateHintSteps(targetNumber)}
-                </ol>
-            </div>
-        `;
-        
-        this.soundManager?.play('next');
-    }
-
-    generateHintSteps(number) {
-        const steps = [];
-        if (number >= 5) {
-            steps.push('<li>Move down the 5-bead first</li>');
-            if (number > 5) {
-                steps.push(`<li>Then move up ${number - 5} one-beads</li>`);
+        if (this.score >= this.currentLevel * 50) {
+            if (this.currentLevel < this.maxLevel) {
+                this.levelUp();
+            } else {
+                this.gameState = 'completed';
+                this.soundManager?.play('achievement');
+                this.showCompletion();
             }
         } else {
-            steps.push(`<li>Move up ${number} one-beads</li>`);
+            this.render();
         }
-        return steps.join('');
+    }
+
+    showCompletion() {
+        if (!this.contentContainer) return;
+
+        // Clear existing content
+        this.contentContainer.innerHTML = '';
+
+        // Create completion screen
+        const completion = document.createElement('div');
+        completion.className = 'completion-section';
+        completion.innerHTML = `
+            <h2>🎉 Congratulations! 🎉</h2>
+            <p>You've mastered all levels!</p>
+            <div class="final-score">Final Score: ${this.score}</div>
+            <button class="restart-btn">Play Again</button>
+        `;
+
+        this.contentContainer.appendChild(completion);
+
+        // Add event listener to restart button
+        const restartBtn = completion.querySelector('.restart-btn');
+        if (restartBtn) {
+            restartBtn.onclick = () => {
+                this.currentLevel = 1;
+                this.score = 0;
+                this.gameState = 'playing';
+                this.numberHistory = [];
+                this.render();
+            };
+        }
     }
 
     levelUp() {
         this.currentLevel++;
-        this.soundManager?.play('achievement');
-        
-        // Clear history for new level
         this.numberHistory = [];
-        
-        this.container.innerHTML = `
-            <div class="level-up-celebration">
-                <h2>Level Up! 🎉</h2>
-                <p>You've reached Level ${this.currentLevel}!</p>
-                <p>${this.levelConfig[this.currentLevel].description}</p>
-                <button class="continue-btn">Continue</button>
+        this.soundManager?.play('achievement');
+        // Reset abacus when changing levels
+        this.resetAbacus();
+        this.render();
+    }
+
+    showHint() {
+        const target = this.getTargetNumber();
+        if (!target) return;
+
+        const feedback = this.contentContainer.querySelector('.feedback-section');
+        if (!feedback) return;
+
+        const hint = target >= 5
+            ? `Move down the 5-bead${target > 5 ? ` and move up ${target - 5} one-beads` : ''}`
+            : `Move up ${target} one-beads`;
+
+        feedback.innerHTML = `
+            <div class="hint-message">
+                <p>${hint}</p>
+            </div>
+        `;
+    }
+
+    showError(message) {
+        const feedback = this.contentContainer?.querySelector('.feedback-section');
+        if (!feedback) return;
+
+        feedback.innerHTML = `
+            <div class="error-message">
+                <p>${message}</p>
+                <button class="reset-btn">Reset</button>
             </div>
         `;
 
-        const continueBtn = this.container.querySelector('.continue-btn');
-        if (continueBtn) {
-            continueBtn.onclick = () => {
-                this.resetAbacus();
-                this.render();
-            };
-        }
+        const resetBtn = feedback.querySelector('.reset-btn');
+        if (resetBtn) resetBtn.onclick = () => this.resetAbacus();
     }
 
     resetAbacus() {
         const abacus = window.moduleManager.getAbacus();
         if (!abacus) return;
 
-        const columns = Array.from(abacus.querySelectorAll('.column'));
-        columns.forEach(column => {
-            const beads = Array.from(column.querySelectorAll('.bead'));
-            beads.forEach(bead => {
-                if (bead.classList.contains('active')) {
-                    bead.classList.remove('active');
-                    bead.classList.remove('wrong');
-                }
-            });
-        });
-        
-        // Ensure the value display is updated
+        const beads = abacus.querySelectorAll('.bead.active');
+        beads.forEach(bead => bead.classList.remove('active'));
         window.abacus.calculateValue();
     }
 
@@ -457,10 +413,93 @@ class CountingGame {
             this.valueObserver.disconnect();
             this.valueObserver = null;
         }
+
+        const abacusContainer = document.getElementById('abacusContainer');
+
         this.resetAbacus();
+
+        // Function to restore abacus container
+        const restoreAbacusContainer = () => {
+            if (!abacusContainer) return;
+
+            // Remove any game-specific classes
+            abacusContainer.classList.remove('game-active');
+
+            // Clear all styles
+            abacusContainer.removeAttribute('style');
+
+            // Force reflow
+            void abacusContainer.offsetHeight;
+
+            // Set transition for smooth restore
+            abacusContainer.style.transition = 'all 0.3s ease-out';
+
+            // Ensure proper display
+            abacusContainer.style.display = 'flex';
+            abacusContainer.style.visibility = 'visible';
+            abacusContainer.style.opacity = '1';
+            abacusContainer.style.width = '';
+            abacusContainer.style.height = '';
+            abacusContainer.style.transform = 'none';
+        };
+
+        // Clean up game container with transition
+        if (this.container) {
+            this.container.classList.remove('active');
+            this.container.style.opacity = '0';
+
+            // Wait for transition and then clean up
+            setTimeout(() => {
+                if (this.container && this.container.parentNode) {
+                    this.container.parentNode.removeChild(this.container);
+                }
+
+                // Restore abacus after container is removed
+                requestAnimationFrame(() => {
+                    restoreAbacusContainer();
+
+                    // Force final value update
+                    setTimeout(() => {
+                        window.abacus?.calculateValue();
+                    }, 50);
+                });
+            }, 300);
+        } else {
+            restoreAbacusContainer();
+        }
+
+        // Reset all game state
         this.container = null;
+        this.contentContainer = null;
         this.gameState = 'ready';
         this.numberHistory = [];
+        this.currentLevel = 1;
+        this.score = 0;
+
+        // Remove event listeners
+        window.removeEventListener('resize', this.handleResize);
+
+        // Ensure main abacus is visible and interactive
+        const mainAbacus = document.querySelector('.abacus');
+        if (mainAbacus) {
+            mainAbacus.style.display = 'flex';
+            mainAbacus.style.visibility = 'visible';
+            mainAbacus.style.opacity = '1';
+        }
+
+        // Watcher to reload abacus when game window is closed
+        const gameWindow = document.querySelector('.counting-game');
+        if (gameWindow) {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === 'childList' && !gameWindow.contains(document.querySelector('.counting-game'))) {
+                        restoreAbacusContainer();
+                    }
+                });
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
     }
 }
 
