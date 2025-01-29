@@ -24,7 +24,7 @@ class CountingGame {
             },
             3: {
                 max: 15,
-                visual: '�',
+                visual: '🌈',
                 description: 'Now try bigger numbers up to 15',
                 encouragement: 'Wow! You\'re ready for teen numbers!'
             },
@@ -36,11 +36,14 @@ class CountingGame {
             },
             5: {
                 max: 20,
-                visual: '�',
+                visual: '🏆',
                 description: 'Master all numbers from 1-20!',
                 encouragement: 'You\'re a counting champion!'
             }
         };
+        this.originalAbacusParent = null;
+        this.practiceContainer = null;
+        this.originalParent = null; // Add this property
     }
 
     initialize(container) {
@@ -74,11 +77,16 @@ class CountingGame {
             // Mark abacus container as game active
             const abacusContainer = document.getElementById('abacusContainer');
             if (abacusContainer) {
-                requestAnimationFrame(() => {
-                    abacusContainer.classList.add('game-active');
-                    this.container.classList.add('active');
-                });
+                abacusContainer.classList.add('game-active');
+                // Remove any previous styles
+                abacusContainer.style.removeProperty('width');
+                abacusContainer.style.removeProperty('height');
             }
+
+            // Ensure game container is visible
+            requestAnimationFrame(() => {
+                this.container.classList.add('active');
+            });
 
             this.render();
 
@@ -408,97 +416,70 @@ class CountingGame {
         window.abacus.calculateValue();
     }
 
-    cleanup() {
+    cleanup(callback) {
+        // Disconnect observers first
         if (this.valueObserver) {
             this.valueObserver.disconnect();
             this.valueObserver = null;
         }
 
+        // Get references
+        const existingAbacus = document.querySelector('.abacus');
         const abacusContainer = document.getElementById('abacusContainer');
 
+        // Reset abacus state
         this.resetAbacus();
 
-        // Function to restore abacus container
-        const restoreAbacusContainer = () => {
-            if (!abacusContainer) return;
+        const restoreAbacus = () => {
+            if (existingAbacus && this.originalParent) {
+                // Reset container styles first
+                if (abacusContainer) {
+                    abacusContainer.classList.remove('game-active');
+                    abacusContainer.style.removeProperty('width');
+                    abacusContainer.style.removeProperty('height');
+                }
 
-            // Remove any game-specific classes
-            abacusContainer.classList.remove('game-active');
+                // Move abacus back
+                this.originalParent.insertBefore(existingAbacus, this.originalParent.firstChild);
 
-            // Clear all styles
-            abacusContainer.removeAttribute('style');
+                // Reset abacus styles
+                existingAbacus.style.removeProperty('display');
+                existingAbacus.style.removeProperty('visibility');
+                existingAbacus.style.removeProperty('opacity');
+                existingAbacus.style.removeProperty('transform');
 
-            // Force reflow
-            void abacusContainer.offsetHeight;
-
-            // Set transition for smooth restore
-            abacusContainer.style.transition = 'all 0.3s ease-out';
-
-            // Ensure proper display
-            abacusContainer.style.display = 'flex';
-            abacusContainer.style.visibility = 'visible';
-            abacusContainer.style.opacity = '1';
-            abacusContainer.style.width = '';
-            abacusContainer.style.height = '';
-            abacusContainer.style.transform = 'none';
+                // Force recalculation
+                void existingAbacus.offsetHeight;
+                window.abacus?.calculateValue();
+            }
         };
 
-        // Clean up game container with transition
+        // Remove game container with proper cleanup sequence
         if (this.container) {
             this.container.classList.remove('active');
-            this.container.style.opacity = '0';
-
-            // Wait for transition and then clean up
+            
             setTimeout(() => {
+                restoreAbacus();
                 if (this.container && this.container.parentNode) {
                     this.container.parentNode.removeChild(this.container);
                 }
-
-                // Restore abacus after container is removed
-                requestAnimationFrame(() => {
-                    restoreAbacusContainer();
-
-                    // Force final value update
-                    setTimeout(() => {
-                        window.abacus?.calculateValue();
-                    }, 50);
-                });
+                // Reset game state
+                this.container = null;
+                this.contentContainer = null;
+                this.gameState = 'ready';
+                this.numberHistory = [];
+                this.currentLevel = 1;
+                this.score = 0;
+                
+                if (typeof callback === 'function') {
+                    callback();
+                }
             }, 300);
         } else {
-            restoreAbacusContainer();
-        }
-
-        // Reset all game state
-        this.container = null;
-        this.contentContainer = null;
-        this.gameState = 'ready';
-        this.numberHistory = [];
-        this.currentLevel = 1;
-        this.score = 0;
-
-        // Remove event listeners
-        window.removeEventListener('resize', this.handleResize);
-
-        // Ensure main abacus is visible and interactive
-        const mainAbacus = document.querySelector('.abacus');
-        if (mainAbacus) {
-            mainAbacus.style.display = 'flex';
-            mainAbacus.style.visibility = 'visible';
-            mainAbacus.style.opacity = '1';
-        }
-
-        // Watcher to reload abacus when game window is closed
-        const gameWindow = document.querySelector('.counting-game');
-        if (gameWindow) {
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.type === 'childList' && !gameWindow.contains(document.querySelector('.counting-game'))) {
-                        restoreAbacusContainer();
-                    }
-                });
-            });
-
-            observer.observe(document.body, { childList: true, subtree: true });
+            restoreAbacus();
+            if (typeof callback === 'function') {
+                callback();
+            }
         }
     }
 }

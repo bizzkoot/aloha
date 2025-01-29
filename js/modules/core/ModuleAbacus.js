@@ -247,13 +247,70 @@ class ModuleAbacus {
     }
 
     cleanup() {
-        // Remove all event listeners
-        this.valueChangeCallbacks.clear();
-        
-        // Remove all DOM elements
-        if (this.container) {
-            this.container.innerHTML = '';
+        // Clear observers
+        if (this.valueObserver) {
+            this.valueObserver.disconnect();
+            this.valueObserver = null;
         }
+
+        const abacusContainer = document.getElementById('abacusContainer');
+
+        // Reset abacus state first
+        this.resetAbacus();
+
+        // Function to restore abacus container
+        const restoreAbacusContainer = () => {
+            if (!abacusContainer) return;
+
+            // Remove game-specific classes
+            abacusContainer.classList.remove('game-active');
+
+            // Clear all inline styles
+            abacusContainer.removeAttribute('style');
+
+            // Force reflow
+            void abacusContainer.offsetHeight;
+
+            // Set transition for smooth restore
+            abacusContainer.style.transition = 'all 0.3s ease-out';
+
+            // Ensure proper display properties
+            abacusContainer.style.display = 'flex';
+            abacusContainer.style.visibility = 'visible';
+            abacusContainer.style.opacity = '1';
+            abacusContainer.style.width = '100%';
+            abacusContainer.style.height = '';
+
+            // Force final value update
+            requestAnimationFrame(() => {
+                window.abacus?.calculateValue();
+            });
+        };
+
+        // Clean up game container with transition
+        if (this.container) {
+            this.container.classList.remove('active');
+            this.container.style.opacity = '0';
+
+            // Wait for transition before cleanup
+            setTimeout(() => {
+                if (this.container && this.container.parentNode) {
+                    this.container.parentNode.removeChild(this.container);
+                }
+                // Restore abacus after container is removed
+                requestAnimationFrame(restoreAbacusContainer);
+            }, 300);
+        } else {
+            restoreAbacusContainer();
+        }
+
+        // Reset game state
+        this.container = null;
+        this.contentContainer = null;
+        this.gameState = 'ready';
+        this.numberHistory = [];
+        this.currentLevel = 1;
+        this.score = 0;
     }
 }
 

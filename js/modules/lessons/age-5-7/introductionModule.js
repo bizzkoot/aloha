@@ -616,43 +616,46 @@ class IntroductionModule {
     }
 
     startStandalonePractice() {
-        // Create practice mode container
+        // Store reference to original abacus and its container
+        const existingAbacus = document.querySelector('.abacus');
+        const originalParent = existingAbacus?.parentElement;
+        
+        // Create fullscreen container
         const container = document.createElement('div');
         container.className = 'practice-layout-container';
         document.body.appendChild(container);
 
-        // Create abacus panel and move existing abacus into it
+        // Create abacus panel
         const abacusPanel = document.createElement('div');
         abacusPanel.className = 'abacus-panel';
-        const existingAbacus = document.querySelector('.abacus');
+        container.appendChild(abacusPanel);
+
+        // Move abacus to game panel
         if (existingAbacus) {
             abacusPanel.appendChild(existingAbacus);
         }
-        container.appendChild(abacusPanel);
 
         // Create game panel
         const gamePanel = document.createElement('div');
         gamePanel.className = 'game-panel';
         container.appendChild(gamePanel);
 
-        // Initialize game in practice mode
+        // Initialize game
         this.game = new CountingGame(this.soundManager);
-        this.game.initialize(gamePanel, 'practice');
+        this.game.originalParent = originalParent;
+        this.game.initialize(gamePanel);
 
         // Add close button
         const closeButton = document.createElement('button');
         closeButton.className = 'close-practice-mode';
         closeButton.innerHTML = '&times;';
         closeButton.onclick = () => {
-            // Move abacus back to original position
-            const mainContent = document.querySelector('.main-content');
-            if (mainContent && existingAbacus) {
-                mainContent.insertBefore(existingAbacus, mainContent.firstChild);
+            if (this.game) {
+                this.game.cleanup(() => {
+                    container.remove();
+                    this.cleanupCurrentMode();
+                });
             }
-            // Remove practice container
-            container.remove();
-            // Cleanup
-            this.cleanupCurrentMode();
         };
         container.appendChild(closeButton);
     }

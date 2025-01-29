@@ -201,11 +201,13 @@ class ModuleManager {
                     bead.classList.remove('active');
                     bead.classList.remove('highlight');
                 });
-            }
-            // Update value display
-            const valueDisplay = document.getElementById('currentValue');
-            if (valueDisplay) {
-                valueDisplay.textContent = '0';
+                // Ensure abacus is visible in main container
+                const mainContent = document.querySelector('.main-content');
+                if (mainContent && !mainContent.contains(abacus)) {
+                    mainContent.insertBefore(abacus, mainContent.firstChild);
+                }
+                // Update value display
+                window.abacus?.calculateValue();
             }
         }
     }
