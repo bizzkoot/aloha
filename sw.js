@@ -55,6 +55,10 @@ const ASSETS = [
     `${BASE_PATH}subtraction.js`,
     `${BASE_PATH}tutorial.js`,
     `${BASE_PATH}translations.js`,
+    `${BASE_PATH}js/appVersion.js`,
+    `${BASE_PATH}js/updateChecker.js`,
+    `${BASE_PATH}js/changelog.js`,
+    `${BASE_PATH}js/changelogUI.js`,
     
     // Assets and Icons
     `${BASE_PATH}icons/icon-192x192.png`,

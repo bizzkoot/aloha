@@ -17,3 +17,15 @@ npm-debug.log*
 # Python server cache
 __pycache__/
 *.pyc
+
+# Capacitor / Android (APK sideload parity with Hand-Math)
+www/
+android/.gradle/
+android/local.properties
+android/app/src/main/assets/public/
+android/capacitor-cordova-android-plugins/
+*keystore.properties
+*.keystore
+*.jks
+*.apk
+*.aab

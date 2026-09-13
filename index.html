@@ -23,6 +23,7 @@
         <i class="fab fa-github"></i>
     </a>
     <span class="version-text" id="appVersionDisplay"></span>
+    <button class="changelog-link" data-aloha-changelog-open title="View changelog">Changelog</button>
     <div class="container">
         <h1>Soroban (Japanese Abacus)</h1>
         <div class="abacus">
@@ -62,6 +63,22 @@
 
     <!-- Finally load the main script -->
     <script src="script.js"></script>
+    <!-- APK sideload parity (Hand-Math approach): version truth + changelog data + update checker -->
+    <script src="js/appVersion.js"></script>
+    <script src="js/changelog.js"></script>
+    <script src="js/updateChecker.js"></script>
+    <script src="js/changelogUI.js"></script>
+    <!-- Changelog modal -->
+    <div class="aloha-modal" id="alohaChangelogModal" role="dialog" aria-modal="true" hidden>
+        <div class="aloha-modal-card">
+            <div class="aloha-modal-head"><h3>Changelog</h3></div>
+            <div class="aloha-modal-body" id="alohaChangelogList"></div>
+            <div class="aloha-modal-foot">
+                <button class="aloha-btn aloha-btn-primary" id="alohaBtnCheckUpdates" type="button">Check for updates</button>
+                <button class="aloha-btn" data-aloha-changelog-close type="button">Close</button>
+            </div>
+        </div>
+    </div>
     <!-- Add this before the service worker registration -->
     <script>
         navigator.serviceWorker.addEventListener('message', event => {
@@ -96,7 +113,10 @@
 
     <!-- Then the service worker registration -->
     <script>
-        if ('serviceWorker' in navigator) {
+        // Skip service-worker registration inside the native Capacitor APK:
+        // the APK serves bundled local assets with nothing to cache.
+        const isNativeApp = () => !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform());
+        if ('serviceWorker' in navigator && !isNativeApp()) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/aloha/sw.js', {
                     scope: '/aloha/'

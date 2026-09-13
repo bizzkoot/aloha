@@ -370,3 +370,117 @@
     color: #666;
     opacity: 0.7;
 }
+
+.changelog-link {
+    position: fixed;
+    top: 1.1rem;
+    right: 4rem;
+    font-size: 0.8rem;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.15rem 0.5rem;
+    cursor: pointer;
+    color: #4A90E2;
+}
+
+.aloha-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.aloha-modal[hidden] {
+    display: none;
+}
+
+.aloha-modal-card {
+    background: #fff;
+    border-radius: 8px;
+    max-width: 560px;
+    width: calc(100% - 2rem);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+}
+
+.aloha-modal-head {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.aloha-modal-head h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.aloha-modal-body {
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.aloha-modal-foot {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.aloha-btn {
+    border: 1px solid #ccc;
+    background: #f5f5f5;
+    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+.aloha-btn-primary {
+    background: #4A90E2;
+    border-color: #4A90E2;
+    color: #fff;
+}
+
+.aloha-update-versions {
+    font-weight: bold;
+}
+
+.aloha-update-ratelimited {
+    color: #8b4513;
+}
+
+.aloha-update-notes {
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 0.5rem;
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+.aloha-changelog-item {
+    border-bottom: 1px solid #eee;
+    padding: 0.5rem 0;
+}
+
+.aloha-changelog-head {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.aloha-changelog-body {
+    white-space: pre-wrap;
+    font-size: 0.8rem;
+    color: #444;
+    margin: 0.25rem 0 0;
+}
