@@ -7,4 +7,4 @@
  * from JS, so this constant is the single source of truth for the packaged
  * build (mirrors Hand-Math js/appVersion.js).
  */
-window.ALOHA_VERSION = '1.1.7';
+window.ALOHA_VERSION = '1.1.8';
