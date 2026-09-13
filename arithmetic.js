@@ -80,7 +80,7 @@ class ArithmeticMenu {
         }
     
         const modal = document.createElement('div');
-        modal.className = 'arithmetic-section modal draggable';
+        modal.className = 'arithmetic-section';
         modal.style.display = 'none';
     
         const translatedTexts = {
@@ -93,7 +93,6 @@ class ArithmeticMenu {
     
         modal.innerHTML = `
             <div class="tutorial-header">
-                <span class="tutorial-drag-handle">≡</span>
                 <h2 class="tutorial-title">${translatedTexts.arithmeticPractice}</h2>
                 <button class="tutorial-close">X</button>
             </div>
@@ -121,101 +120,22 @@ class ArithmeticMenu {
             </div>
         `;
     
-        const container = document.querySelector('.container');
-        if (!container) {
-            console.error('Container element not found');
+        const mountPoint = document.getElementById('arithmeticPractice');
+        if (!mountPoint) {
+            console.error('Arithmetic practice panel not found');
             return;
         }
-        container.appendChild(modal);
-
-        // Add this block:const header = modal.querySelector('.tutorial-header');
-        const header = modal.querySelector('.tutorial-header');
-        const closeButton = modal.querySelector('.tutorial-close');
-        let isDragging = false;
-        let initialX, initialY;
-
-        const dragStart = (e) => {
-            // Only initiate drag if clicking/touching the header (excluding close button)
-            if (e.target !== closeButton && (e.target === header || e.target.closest('.tutorial-header'))) {
-                if (e.type === "touchstart") {
-                    e.preventDefault();
-                }
-
-                const rect = modal.getBoundingClientRect();
-                initialX = e.type === "touchstart" ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-                initialY = e.type === "touchstart" ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
-                
-                isDragging = true;
-                modal.style.transform = 'none';
-                modal.offsetHeight; // Force reflow
-            }
-        };
-
-        const dragEnd = () => {
-            if (isDragging) {
-                isDragging = false;
-            }
-        };
-
-        const drag = (e) => {
-            if (!isDragging) return;
-            
-            e.preventDefault();
-            const currentX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-            const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-            
-            modal.style.left = `${currentX - initialX}px`;
-            modal.style.top = `${currentY - initialY}px`;
-            modal.style.bottom = 'auto';
-        };
+        mountPoint.appendChild(modal);
+        window.updateSidePanelVisibility?.();
 
         // Close button handling
+        const closeButton = modal.querySelector('.tutorial-close');
         closeButton.addEventListener('click', (e) => {
             e.stopPropagation();
             modal.style.display = 'none';
+            window.updateSidePanelVisibility?.();
         });
 
-        // Attach events only to header for drag functionality
-        header.addEventListener('mousedown', dragStart);
-        header.addEventListener('touchstart', dragStart, { passive: false });
-
-        // Move and end events on document only activate when dragging
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('mouseup', dragEnd);
-        document.addEventListener('touchmove', drag, { passive: false });
-        document.addEventListener('touchend', dragEnd);
-
-        // Set touch-action only on header
-        header.style.touchAction = 'none';
-
-        // Prevent default touch behavior on header
-        header.style.touchAction = 'none';
-
-        // Make inputs and select interactive
-        const inputs = modal.querySelectorAll('.arithmetic-input');
-        inputs.forEach(input => {
-            input.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-            input.addEventListener('mousedown', (e) => {
-                e.stopPropagation();
-            });
-        });
-    
-        const operatorSelect = modal.querySelector('.arithmetic-select');
-        operatorSelect.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-        operatorSelect.addEventListener('mousedown', (e) => {
-            e.stopPropagation();
-        });
-    
-        // Add close button functionality
-        const closeBtn = modal.querySelector('.tutorial-close');
-        closeBtn.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-    
         // Setup arithmetic functionality
         const calculateButton = modal.querySelector('#calculate');
         const guideButton = modal.querySelector('#guide');
@@ -285,31 +205,14 @@ class ArithmeticMenu {
             const modal = document.querySelector('.arithmetic-section');
             if (modal) {
                 const isHidden = modal.style.display === 'none' || modal.style.display === '';
-                
-                if (isHidden) {
-                    // First make the modal visible to get correct dimensions
-                    modal.style.display = 'block';
-                    
-                    // Remove transform before positioning
-                    modal.style.transform = 'none';
-                    
-                    // Calculate and set position
-                    const viewportHeight = window.innerHeight;
-                    const modalHeight = modal.offsetHeight;
-                    const centerX = (window.innerWidth - modal.offsetWidth) / 2;
-                    
-                    modal.style.top = `${viewportHeight - modalHeight - 40}px`;
-                    modal.style.left = `${centerX}px`;
-                    modal.style.bottom = 'auto';
-                } else {
-                    modal.style.display = 'none';
-                }
+                modal.style.display = isHidden ? 'block' : 'none';
+                window.updateSidePanelVisibility?.();
             }
         } catch (error) {
             console.error('Error toggling arithmetic modal:', error);
         }
     }
-    
+
     startPractice() {
         const modal = document.querySelector('.arithmetic-section');
         const num1Input = modal.querySelector('#num1');

@@ -35,6 +35,7 @@
             </button>
         </div>
     </nav>
+    <div class="app-layout">
     <div class="container">
         <h1>Soroban (Japanese Abacus)</h1>
         <div class="abacus">
@@ -53,10 +54,11 @@
             <button class="button-common" id="gameBtn" onclick="window.game?.showGameSetup()">Game</button>
         </div>
 
-        <!-- Add these practice containers here -->
+    </div>
+    <aside class="side-panel" id="sidePanel" aria-label="Practice and game panels">
         <div id="arithmeticPractice" class="arithmetic-practice-container"></div>
         <div id="gamePractice" class="game-practice-container"></div>
-        
+    </aside>
     </div>
     <script src="config.js"></script>
     <!-- First load core dependencies -->

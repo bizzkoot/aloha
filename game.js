@@ -108,8 +108,8 @@ window.ArithmeticGame = class ArithmeticGame {
         // Restore visibility if it was previously visible
         if (wasVisible) {
             modal.style.display = 'block';
-            this.positionModal(modal);
         }
+        window.updateSidePanelVisibility?.();
     
         // Update current game state if exists
         if (this.questions.length > 0) {
@@ -398,9 +398,9 @@ window.ArithmeticGame = class ArithmeticGame {
             }
         });
     
-        const container = document.querySelector('.container');
-        if (!container) {
-            console.error('Container element not found');
+        const mountPoint = document.getElementById('gamePractice');
+        if (!mountPoint) {
+            console.error('Game practice panel not found');
             return;
         }
     
@@ -414,7 +414,6 @@ window.ArithmeticGame = class ArithmeticGame {
         modal.className = 'game-section';
         modal.innerHTML = `
             <div class="tutorial-header">
-                <span class="tutorial-drag-handle">≡</span>
                 <h2 class="tutorial-title">${translatedTexts.settings}</h2>
                 <button class="tutorial-close">X</button>
             </div>
@@ -450,15 +449,12 @@ window.ArithmeticGame = class ArithmeticGame {
             </div>
         `;
     
-        // Add modal to container
-        container.appendChild(modal);
-    
-        // Initialize modal position and visibility
+        // Add modal to the game practice panel
+        mountPoint.appendChild(modal);
+        window.updateSidePanelVisibility?.();
+
+        // Hidden until the player opens the game
         modal.style.display = 'none';
-        this.positionModal(modal);
-    
-        // Setup drag functionality
-        this.setupDragFunctionality(modal);
         this.isModalCreated = true;
     
         // Add close button functionality
@@ -466,6 +462,7 @@ window.ArithmeticGame = class ArithmeticGame {
         if (closeButton) {
             closeButton.addEventListener('click', () => {
                 modal.style.display = 'none';
+                window.updateSidePanelVisibility?.();
             });
         }
     
@@ -637,40 +634,16 @@ window.ArithmeticGame = class ArithmeticGame {
                 const newModal = await this.createGameModal();
                 if (newModal) {
                     newModal.style.display = 'block';
-                    this.positionModal(newModal);
                 }
+            } else if (modal.style.display === 'none') {
+                modal.style.display = 'block';
             } else {
-                if (modal.style.display === 'none') {
-                    modal.style.display = 'block';
-                    this.positionModal(modal);
-                } else {
-                    modal.style.display = 'none';
-                }
+                modal.style.display = 'none';
             }
+            window.updateSidePanelVisibility?.();
         } catch (error) {
             console.error('Error showing game setup:', error);
         }
-    }
-
-    positionModal(modal) {
-        // Get viewport dimensions
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-
-        // Get modal dimensions
-        const modalRect = modal.getBoundingClientRect();
-        const modalWidth = modalRect.width;
-        const modalHeight = modalRect.height;
-
-        // Calculate centered position with padding
-        const padding = 20;
-        const left = Math.max(padding, Math.min(viewportWidth - modalWidth - padding, (viewportWidth - modalWidth) / 2));
-        const top = Math.max(padding, Math.min(viewportHeight - modalHeight - padding, (viewportHeight - modalHeight) / 2));
-
-        // Apply position
-        modal.style.left = `${left}px`;
-        modal.style.top = `${top}px`;
-        modal.style.transform = 'none';
     }
 
     async startGame() {
@@ -885,108 +858,6 @@ window.ArithmeticGame = class ArithmeticGame {
         await animateSteps();
     }
 
-    setupDragFunctionality(modal) {
-        // Window and modal dimension calculations
-        const windowHeight = window.innerHeight;
-        const windowWidth = window.innerWidth;
-        const modalHeight = modal.offsetHeight;
-        const modalWidth = modal.offsetWidth;
-    
-        // Center position calculations
-        const padding = 20;
-        const centerX = Math.max(
-            padding,
-            Math.min(
-                windowWidth - modalWidth - padding,
-                (windowWidth - modalWidth) / 2
-            )
-        );
-        const centerY = Math.max(
-            padding,
-            Math.min(
-                windowHeight - modalHeight - padding,
-                (windowHeight - modalHeight) / 2
-            )
-        );
-    
-        // Initial positioning
-        modal.style.left = `${centerX}px`;
-        modal.style.top = `${centerY}px`;
-    
-        // Setup drag functionality
-        const header = modal.querySelector('.tutorial-header');
-        const closeButton = modal.querySelector('.tutorial-close');
-        let isDragging = false;
-        let initialX;
-        let initialY;
-    
-        const dragStart = (e) => {
-            // Skip drag for close button
-            if (e.target === closeButton || e.target.closest('.tutorial-close')) {
-                return;
-            }
-    
-            // Handle touch events
-            if (e.type === "touchstart") {
-                e.preventDefault();
-            }
-    
-            const rect = modal.getBoundingClientRect();
-            initialX = e.type === "touchstart" ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
-            initialY = e.type === "touchstart" ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
-    
-            if (e.target === header || e.target.closest('.tutorial-header')) {
-                isDragging = true;
-                // Disable page scrolling during drag
-                document.body.style.touchAction = 'none';
-                document.body.style.overflow = 'hidden';
-            }
-        };
-    
-        const dragEnd = () => {
-            isDragging = false;
-            // Re-enable page scrolling
-            document.body.style.touchAction = '';
-            document.body.style.overflow = '';
-        };
-    
-        const drag = (e) => {
-            if (!isDragging) return;
-    
-            e.preventDefault();
-            e.stopPropagation();
-    
-            const currentClientX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-            const currentClientY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-    
-            // Update modal position
-            modal.style.left = `${currentClientX - initialX}px`;
-            modal.style.top = `${currentClientY - initialY}px`;
-        };
-    
-        // Close button specific handling
-        if (closeButton) {
-            closeButton.addEventListener('touchstart', (e) => {
-                e.stopPropagation();
-            }, { passive: true });
-            
-            closeButton.addEventListener('click', (e) => {
-                e.stopPropagation();
-                modal.style.display = 'none';
-            });
-        }
-    
-        // Event listeners for drag functionality
-        header.addEventListener('mousedown', dragStart);
-        header.addEventListener('touchstart', dragStart, { passive: false });
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('touchmove', drag, { passive: false });
-        document.addEventListener('mouseup', dragEnd);
-        document.addEventListener('touchend', dragEnd);
-    
-        // Prevent default touch behavior on header
-        header.style.touchAction = 'none';
-    }
 }
 
 

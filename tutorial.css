@@ -60,7 +60,8 @@
     color: #ff0000;
 }
 
-.tutorial-header {
+/* Scoped to the tutorial window so docked game panels don't inherit the drag cursor */
+.tutorial-container .tutorial-header {
     position: relative;
     background: #8b4513;
     color: white;

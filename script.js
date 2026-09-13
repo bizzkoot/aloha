@@ -342,58 +342,19 @@ class Abacus {
     }
 }
 
-// Add DraggableManager here
-class DraggableManager {
-    static initialize() {
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.classList && node.classList.contains('draggable')) {
-                        DraggableManager.makeDraggable(node);
-                    }
-                });
-            });
-        });
-
-        observer.observe(document.body, { childList: true, subtree: true });
+// Docked right panel: visible only while a game/practice window is open
+window.updateSidePanelVisibility = function () {
+    const panel = document.getElementById('sidePanel');
+    if (!panel) return;
+    const hasOpenWindow = Array.from(
+        panel.querySelectorAll('.arithmetic-section, .game-section')
+    ).some((el) => el.style.display !== 'none' && el.style.display !== '');
+    panel.classList.toggle('panel-active', hasOpenWindow);
+    // Re-fit the abacus: the main stage changes width when the panel opens.
+    if (hasOpenWindow && typeof window.__fitAbacus === 'function') {
+        window.__fitAbacus();
     }
-
-    static makeDraggable(element) {
-        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-        
-        const header = element.querySelector('.modal-header') || element;
-        header.onmousedown = dragMouseDown;
-        header.style.cursor = 'move';
-
-        function dragMouseDown(e) {
-            e.preventDefault();
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            document.onmouseup = closeDragElement;
-            document.onmousemove = elementDrag;
-        }
-
-        function elementDrag(e) {
-            e.preventDefault();
-            pos1 = pos3 - e.clientX;
-            pos2 = pos4 - e.clientY;
-            pos3 = e.clientX;
-            pos4 = e.clientY;
-            element.style.top = (element.offsetTop - pos2) + "px";
-            element.style.left = (element.offsetLeft - pos1) + "px";
-        }
-
-        function closeDragElement() {
-            document.onmouseup = null;
-            document.onmousemove = null;
-        }
-    }
-}
-
-// Then add this line right before your existing initialization code
-document.addEventListener('DOMContentLoaded', () => {
-    DraggableManager.initialize();
-});
+};
 
 // Initialize language state
 window.currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
@@ -481,6 +442,7 @@ window.initializeCore();
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM Content Loaded');
+    window.updateSidePanelVisibility();
     
     if (!localStorage.getItem('selectedLanguage')) {
         console.log('No language selected, showing language modal');

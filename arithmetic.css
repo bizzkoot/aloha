@@ -1,18 +1,13 @@
-/* Main container */
+/* Main container: docked inside the right-side panel */
 .arithmetic-section {
-    position: fixed;
-    width: clamp(280px, 90vw, 400px);
-    max-height: 40vh;
+    width: 100%;
     background: white;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    z-index: 1000;
-    overflow-y: auto;
+    border: 1px solid #d4c5b5;
     display: none;
     flex-direction: column;
-    left: 50%;
-    transform: translateX(-50%);
+    box-sizing: border-box;
 }
 
 /* Header styling */
@@ -22,7 +17,6 @@
     color: white;
     padding: 12px 15px;
     margin: -20px -20px 15px -20px;
-    cursor: move;
     display: flex;
     align-items: center;
     border-radius: 10px 10px 0 0;
@@ -36,7 +30,7 @@
     gap: clamp(8px, 2vw, 15px);
     align-items: center;
     justify-content: center;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     width: 100%;
 }
 
@@ -99,7 +93,9 @@
     font-size: clamp(14px, 2vw, 16px);
     border: 1px solid #ccc;
     border-radius: 5px;
-    width: clamp(60px, 20vw, 100px);
+    width: clamp(55px, 8vw, 90px);
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 /* Results and messages */
@@ -172,8 +168,6 @@
 /* Responsive design */
 @media screen and (max-width: 768px) {
     .arithmetic-section {
-        width: min(95vw, 450px);
-        max-height: clamp(350px, 70vh, 500px);
         padding: 15px;
     }
 
@@ -189,9 +183,7 @@
 
 @media screen and (max-width: 480px) {
     .arithmetic-section {
-        width: 95vw;
         padding: 15px;
-        max-height: clamp(300px, 60vh, 450px);
     }
 
     .arithmetic-content {
