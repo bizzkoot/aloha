@@ -1,34 +1,39 @@
 class Addition {
+    get currentLanguage() {
+        return localStorage.getItem('selectedLanguage') || window.tutorial?.currentLanguage || window.currentLanguage || 'en';
+    }
+
     async generateSteps(num1, num2) {
+        const lang = this.currentLanguage;
         const translatedMessages = {
-            step: await window.translationService.translate('Step', window.tutorial.currentLanguage),
-            setFirst: await window.translationService.translate('Set first number', window.tutorial.currentLanguage) + `: ${num1}`,
-            forAdding: await window.translationService.translate('For adding', window.tutorial.currentLanguage) + ` ${num2}`,
-            position: await window.translationService.translate('position', window.tutorial.currentLanguage),
-            currentValue: await window.translationService.translate('Current value:', window.tutorial.currentLanguage),
-            directAddition: await window.translationService.translate('direct addition', window.tutorial.currentLanguage),
-            add: await window.translationService.translate('add', window.tutorial.currentLanguage),
-            minus: await window.translationService.translate('minus', window.tutorial.currentLanguage),
-            stepNumber: await window.translationService.translate('Step ${number}:', window.tutorial.currentLanguage),
-            equation: await window.translationService.translate('X=${x}, Y=${y}: ${x}+${y}=${sum}', window.tutorial.currentLanguage),
-            stepPrefix: await window.translationService.translate('Step', window.tutorial.currentLanguage),
-            startingSmallest: await window.translationService.translate('Starting with smallest digit', window.tutorial.currentLanguage),
-            processingOnes: await window.translationService.translate('Processing ones position first', window.tutorial.currentLanguage),
-            movingToTens: await window.translationService.translate('Then moving to tens', window.tutorial.currentLanguage),
-            sinceSum: await window.translationService.translate('Since the sum is', window.tutorial.currentLanguage),
-            lessThan5: await window.translationService.translate('less than 5', window.tutorial.currentLanguage),
-            greaterOrEqual5: await window.translationService.translate('greater than or equal to 5', window.tutorial.currentLanguage),
-            use5Complement: await window.translationService.translate('we use the 5\'s complement (5 - Y)', window.tutorial.currentLanguage),
-            calculate: await window.translationService.translate('We calculate', window.tutorial.currentLanguage),
-            thisMeans: await window.translationService.translate('This means we add 5 and subtract', window.tutorial.currentLanguage),
-            use10Complement: await window.translationService.translate('we use the 10\'s complement (10 - Y)', window.tutorial.currentLanguage),
-            add10Subtract: await window.translationService.translate('This means we add 10 and subtract', window.tutorial.currentLanguage),
-            canAddDirectly: await window.translationService.translate('we can add directly', window.tutorial.currentLanguage),
-            andXIs: await window.translationService.translate('and X is', window.tutorial.currentLanguage),
-            lessThan5AndSumLessThan10: await window.translationService.translate('less than 5 and the sum is less than 10', window.tutorial.currentLanguage),
-            moveBeads: await window.translationService.translate('Move beads:', window.tutorial.currentLanguage),
-            addTop: await window.translationService.translate('Add top bead (5)', window.tutorial.currentLanguage),
-            removeBottom: await window.translationService.translate('Remove bottom beads', window.tutorial.currentLanguage)
+            step: await window.translationService.translate('Step', lang),
+            setFirst: await window.translationService.translate('Set first number', lang) + `: ${num1}`,
+            forAdding: await window.translationService.translate('For adding', lang) + ` ${num2}`,
+            position: await window.translationService.translate('position', lang),
+            currentValue: await window.translationService.translate('Current value:', lang),
+            directAddition: await window.translationService.translate('direct addition', lang),
+            add: await window.translationService.translate('add', lang),
+            minus: await window.translationService.translate('minus', lang),
+            stepNumber: await window.translationService.translate('Step ${number}:', lang),
+            equation: await window.translationService.translate('X=${x}, Y=${y}: ${x}+${y}=${sum}', lang),
+            stepPrefix: await window.translationService.translate('Step', lang),
+            startingSmallest: await window.translationService.translate('Starting with smallest digit', lang),
+            processingOnes: await window.translationService.translate('Processing ones position first', lang),
+            movingToTens: await window.translationService.translate('Then moving to tens', lang),
+            sinceSum: await window.translationService.translate('Since the sum is', lang),
+            lessThan5: await window.translationService.translate('less than 5', lang),
+            greaterOrEqual5: await window.translationService.translate('greater than or equal to 5', lang),
+            use5Complement: await window.translationService.translate('we use the 5\'s complement (5 - Y)', lang),
+            calculate: await window.translationService.translate('We calculate', lang),
+            thisMeans: await window.translationService.translate('This means we add 5 and subtract', lang),
+            use10Complement: await window.translationService.translate('we use the 10\'s complement (10 - Y)', lang),
+            add10Subtract: await window.translationService.translate('This means we add 10 and subtract', lang),
+            canAddDirectly: await window.translationService.translate('we can add directly', lang),
+            andXIs: await window.translationService.translate('and X is', lang),
+            lessThan5AndSumLessThan10: await window.translationService.translate('less than 5 and the sum is less than 10', lang),
+            moveBeads: await window.translationService.translate('Move beads:', lang),
+            addTop: await window.translationService.translate('Add top bead (5)', lang),
+            removeBottom: await window.translationService.translate('Remove bottom beads', lang)
         };
 
         const steps = [];
@@ -51,13 +56,13 @@ class Addition {
             const Y = Math.floor(value / placeValueBase);
             const sum = X + Y;
 
-            const positionName = await window.translationService.translate(this.getPositionName(placeValueBase), window.tutorial.currentLanguage);
-            stepMessage += `${index + 1}. ${await window.translationService.translate('In', window.tutorial.currentLanguage)} ${positionName} ${translatedMessages.position} X=${X}, Y=${Y}: ${X}+${Y}=${sum}<br>`;
+            const positionName = await this.getPositionName(placeValueBase);
+            stepMessage += `${index + 1}. ${await window.translationService.translate('In', lang)} ${positionName} ${translatedMessages.position} X=${X}, Y=${Y}: ${X}+${Y}=${sum}<br>`;
 
             let processMessage = '';
             let complement;
-            const doText = await window.translationService.translate('do', window.tutorial.currentLanguage);
-            const andText = await window.translationService.translate('and', window.tutorial.currentLanguage);
+            const doText = await window.translationService.translate('do', lang);
+            const andText = await window.translationService.translate('and', lang);
 
             if (sum === 5) {
                 complement = 5 - Y;
@@ -95,11 +100,12 @@ class Addition {
         return steps;
     }
     async getPositionName(base) {
+        const lang = this.currentLanguage;
         switch(base) {
-            case 1: return await window.translationService.translate('ones', window.tutorial.currentLanguage);
-            case 10: return await window.translationService.translate('tens', window.tutorial.currentLanguage);
-            case 100: return await window.translationService.translate('hundreds', window.tutorial.currentLanguage);
-            case 1000: return await window.translationService.translate('thousands', window.tutorial.currentLanguage);
+            case 1: return await window.translationService.translate('ones', lang);
+            case 10: return await window.translationService.translate('tens', lang);
+            case 100: return await window.translationService.translate('hundreds', lang);
+            case 1000: return await window.translationService.translate('thousands', lang);
             default: return '';
         }
     }

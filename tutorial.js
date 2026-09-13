@@ -208,58 +208,53 @@ class AbacusTutorial {
     }
 
     async setupTutorial() {
-        // Only create container without updating content
         await this.createTutorialContainer();
     }
 
-    startTutorial() {
-        this.currentStep = 0;
-        this.showTutorial();
-        // Now trigger content and demo updates
-        this.updateContent();
-        this.currentStep = 0;
-        this.showTutorial();
-        // Now trigger content and demo updates
-        this.updateContent();
-    }
-
     async createTutorialContainer() {
+        const existing = document.querySelector('.tutorial-section');
+        if (existing) existing.remove();
+
+        const mountPoint = document.getElementById('tutorialPractice');
         const container = document.createElement('div');
-        container.className = 'tutorial-container';
+        container.className = 'tutorial-section';
         container.style.display = 'none';
-        const tutorialTitle = await window.translationService.translate('Soroban Tutorial', this.currentLanguage);
-        const previousText = await window.translationService.translate('Previous', this.currentLanguage);
-        const repeatText = await window.translationService.translate('Repeat', this.currentLanguage);
-        const nextText = await window.translationService.translate('Next', this.currentLanguage);
 
         container.innerHTML = `
             <div class="tutorial-header">
-                <span class="tutorial-drag-handle">≡</span>
-                <h2 class="tutorial-title">${tutorialTitle}</h2>
+                <h2 class="tutorial-title">Soroban Tutorial</h2>
                 <button class="tutorial-close">X</button>
             </div>
             <div class="tutorial-content"></div>
             <div class="tutorial-navigation">
-                <button class="tutorial-prev">${previousText}</button>
-                <button class="tutorial-repeat">${repeatText}</button>
+                <button class="tutorial-prev button-common">Previous</button>
+                <button class="tutorial-repeat button-common">Repeat</button>
                 <div class="tutorial-progress"></div>
-                <button class="tutorial-next">${nextText}</button>
+                <button class="tutorial-next button-common">Next</button>
             </div>
         `;
 
-        document.body.appendChild(container);
-        this.makeDraggable(container);
-        
+        if (mountPoint) {
+            mountPoint.appendChild(container);
+        } else {
+            document.body.appendChild(container);
+        }
+
         container.querySelector('.tutorial-prev').onclick = () => this.previousStep();
         container.querySelector('.tutorial-next').onclick = () => this.nextStep();
         container.querySelector('.tutorial-repeat').onclick = () => this.repeatStep();
-        container.querySelector('.tutorial-close').onclick = () => this.hideTutorial();    }
+        container.querySelector('.tutorial-close').onclick = () => this.hideTutorial();
+        window.updateSidePanelVisibility?.();
+
+        this.updateNavigationButtons();
+    }
 
     async updateContent() {
         const step = this.steps[this.currentStep];
-        const container = document.querySelector('.tutorial-container');
+        const container = document.querySelector('.tutorial-section');
+        if (!container) return;
         
-        container.className = `tutorial-container tutorial-${step.position || 'right'}`;
+        container.className = `tutorial-section tutorial-${step.position || 'right'}`;
         
         const translatedTitle = await window.translationService.translate(step.title, this.currentLanguage);
         const translatedContent = await window.translationService.translate(step.content, this.currentLanguage);
@@ -278,7 +273,7 @@ class AbacusTutorial {
     }
 
     async updateNavigationButtons() {
-        const container = document.querySelector('.tutorial-container');
+        const container = document.querySelector('.tutorial-section');
         if (!container) return;
 
         const prevButton = container.querySelector('.tutorial-prev');
@@ -286,26 +281,16 @@ class AbacusTutorial {
         const nextButton = container.querySelector('.tutorial-next');
         const title = container.querySelector('.tutorial-title');
 
-        prevButton.textContent = await window.translationService.translate('Previous', this.currentLanguage);
-        repeatButton.textContent = await window.translationService.translate('Repeat', this.currentLanguage);
-        nextButton.textContent = await window.translationService.translate('Next', this.currentLanguage);
-        title.textContent = await window.translationService.translate('Soroban Tutorial', this.currentLanguage);
+        if (prevButton) prevButton.textContent = await window.translationService.translate('Previous', this.currentLanguage);
+        if (repeatButton) repeatButton.textContent = await window.translationService.translate('Repeat', this.currentLanguage);
+        if (nextButton) nextButton.textContent = await window.translationService.translate('Next', this.currentLanguage);
+        if (title) title.textContent = await window.translationService.translate('Soroban Tutorial', this.currentLanguage);
     }
 
     manageTutorialZIndex() {
-        const container = document.querySelector('.tutorial-container');
-        const header = container.querySelector('.tutorial-header');
-        
-        // Set high z-index for the entire tutorial container
-        container.style.zIndex = '2000';
-        
-        // Make header even higher to ensure it's always clickable
-        header.style.zIndex = '2001';
-        
-        // When highlighting elements, temporarily adjust their z-index
         const highlightedElements = document.querySelectorAll('.tutorial-highlight');
         highlightedElements.forEach(el => {
-            el.style.zIndex = '1999'; // Just below the tutorial container
+            el.style.zIndex = '10';
         });
     }    
 
@@ -347,7 +332,7 @@ class AbacusTutorial {
             this.currentStep = i;
             // Update text without triggering demos
             const step = this.steps[this.currentStep];
-            const container = document.querySelector('.tutorial-container');
+            const container = document.querySelector('.tutorial-section');
             if (container) {
                 const translatedTitle = await window.translationService.translate(step.title, this.currentLanguage);
                 const translatedContent = await window.translationService.translate(step.content, this.currentLanguage);
@@ -363,44 +348,34 @@ class AbacusTutorial {
     }
 
     startTutorial() {
+        // Close other panels so active workflow gets full focus
+        const arithModal = document.querySelector('.arithmetic-section');
+        if (arithModal) arithModal.style.display = 'none';
+        const gameModal = document.querySelector('.game-section');
+        if (gameModal) gameModal.style.display = 'none';
+
         this.currentStep = 0;
         this.showTutorial();
         this.updateContent();
     }
 
     showTutorial() {
-        const container = document.querySelector('.tutorial-container');
+        const container = document.querySelector('.tutorial-section');
         if (!container) return;
     
-        container.style.display = 'block';
-    
-        // Get viewport dimensions
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-    
-        // Get modal dimensions
-        const modalRect = container.getBoundingClientRect();
-        const modalWidth = modalRect.width;
-        const modalHeight = modalRect.height;
-    
-        // Calculate centered position with padding
-        const padding = 20;
-        const left = Math.max(padding, Math.min(viewportWidth - modalWidth - padding, (viewportWidth - modalWidth) / 2));
-        const top = Math.max(padding, Math.min(viewportHeight - modalHeight - padding, (viewportHeight - modalHeight) / 2));
-    
-        // Apply position
-        container.style.left = `${left}px`;
-        container.style.top = `${top}px`;
-        container.style.transform = 'none';
-    
-        // Ensure proper z-index hierarchy
+        container.style.display = 'flex';
+        window.updateSidePanelVisibility?.();
         this.manageTutorialZIndex();
     }
 
     hideTutorial() {
-        document.querySelector('.tutorial-container').style.display = 'none';
+        const container = document.querySelector('.tutorial-section');
+        if (container) {
+            container.style.display = 'none';
+        }
         this.removeHighlight();
         this.currentStep = 0; // Reset step counter when closing
+        window.updateSidePanelVisibility?.();
     }
 
     removeHighlight() {
@@ -425,61 +400,8 @@ class AbacusTutorial {
         }
     }
 
-    makeDraggable(element) {
-        const header = element.querySelector('.tutorial-header');
-        let isDragging = false;
-        let startX;
-        let startY;
-        let elementX;
-        let elementY;
-    
-        const dragStart = (e) => {
-            if (e.target === header || e.target.closest('.tutorial-header')) {
-                isDragging = true;
-                
-                // Get current element position
-                const rect = element.getBoundingClientRect();
-                elementX = rect.left;
-                elementY = rect.top;
-                
-                // Get starting mouse/touch position
-                startX = e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
-                startY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
-                
-                header.style.cursor = 'grabbing';
-            }
-        };
-    
-        const dragEnd = () => {
-            isDragging = false;
-            header.style.cursor = 'grab';
-        };
-    
-        const drag = (e) => {
-            if (!isDragging) return;
-            
-            e.preventDefault();
-            
-            // Get current mouse/touch position
-            const currentX = e.type === "touchmove" ? e.touches[0].clientX : e.clientX;
-            const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
-            
-            // Calculate distance moved
-            const deltaX = currentX - startX;
-            const deltaY = currentY - startY;
-            
-            // Set new position
-            element.style.left = `${elementX + deltaX}px`;
-            element.style.top = `${elementY + deltaY}px`;
-        };
-    
-        header.addEventListener('mousedown', dragStart);
-        document.addEventListener('mousemove', drag);
-        document.addEventListener('mouseup', dragEnd);
-        
-        header.addEventListener('touchstart', dragStart);
-        document.addEventListener('touchmove', drag);
-        document.addEventListener('touchend', dragEnd);
+    makeDraggable() {
+        // No-op: tutorial window is now docked inside the side panel
     }
 
     repeatStep() {

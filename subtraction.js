@@ -2,10 +2,15 @@ class Subtraction {
     constructor() {
     }
 
+    get currentLanguage() {
+        return localStorage.getItem('selectedLanguage') || window.tutorial?.currentLanguage || window.currentLanguage || 'en';
+    }
+
     async sorobanSubtract(num1, num2) {
+        const lang = this.currentLanguage;
         // First check if result would be negative
         if (num1 < num2) {
-            const errorMessage = await window.translationService.translate('Soroban cannot perform negative number calculations. Please enter a first number larger than the second number.', window.tutorial.currentLanguage);
+            const errorMessage = await window.translationService.translate('Soroban cannot perform negative number calculations. Please enter a first number larger than the second number.', lang);
             alert(errorMessage);
             document.getElementById('num1').value = '';
             document.getElementById('num2').value = '';
@@ -13,34 +18,34 @@ class Subtraction {
         }
     
         const translatedTexts = {
-            since: await window.translationService.translate('Since', window.tutorial.currentLanguage),
-            lessThan: await window.translationService.translate('less than', window.tutorial.currentLanguage),
-            currentValue: await window.translationService.translate('Current value:', window.tutorial.currentLanguage),
-            subtract: await window.translationService.translate('subtract', window.tutorial.currentLanguage),
-            directly: await window.translationService.translate('directly', window.tutorial.currentLanguage),
-            and: await window.translationService.translate('and', window.tutorial.currentLanguage),
-            borrowTen: await window.translationService.translate('We borrow 10 from the Left', window.tutorial.currentLanguage),
-            then: await window.translationService.translate('Then', window.tutorial.currentLanguage),
-            soWeAdd: await window.translationService.translate('So we add', window.tutorial.currentLanguage),
-            directSubtract: await window.translationService.translate('Direct subtraction', window.tutorial.currentLanguage),
-            inPosition: await window.translationService.translate('In position', window.tutorial.currentLanguage),
-            greaterThan: await window.translationService.translate('greater than', window.tutorial.currentLanguage),
-            equals: await window.translationService.translate('equals', window.tutorial.currentLanguage),
-            afterRemoving: await window.translationService.translate('after removing', window.tutorial.currentLanguage),
-            borrowFromNext: await window.translationService.translate('Borrow from next column and add complement', window.tutorial.currentLanguage),
+            since: await window.translationService.translate('Since', lang),
+            lessThan: await window.translationService.translate('less than', lang),
+            currentValue: await window.translationService.translate('Current value:', lang),
+            subtract: await window.translationService.translate('subtract', lang),
+            directly: await window.translationService.translate('directly', lang),
+            and: await window.translationService.translate('and', lang),
+            borrowTen: await window.translationService.translate('We borrow 10 from the Left', lang),
+            then: await window.translationService.translate('Then', lang),
+            soWeAdd: await window.translationService.translate('So we add', lang),
+            directSubtract: await window.translationService.translate('Direct subtraction', lang),
+            inPosition: await window.translationService.translate('In position', lang),
+            greaterThan: await window.translationService.translate('greater than', lang),
+            equals: await window.translationService.translate('equals', lang),
+            afterRemoving: await window.translationService.translate('after removing', lang),
+            borrowFromNext: await window.translationService.translate('Borrow from next column and add complement', lang),
             minus: '-', // Changed to symbol
             equalTo: '=', // Changed to symbol
-            directSubtraction: await window.translationService.translate('Direct subtraction', window.tutorial.currentLanguage),
-            enoughBottomBeads: await window.translationService.translate('and we have enough bottom beads to subtract directly.', window.tutorial.currentLanguage),
-            complementOf5: await window.translationService.translate('but we need to use the complement of 5 because we are subtracting from', window.tutorial.currentLanguage),
-            remove5AndAdd: await window.translationService.translate('Remove 5 and add', window.tutorial.currentLanguage),
-            addComplement: await window.translationService.translate('Add', window.tutorial.currentLanguage),
-            weNeedToBorrow: await window.translationService.translate('we need to borrow 10.', window.tutorial.currentLanguage),
-            sinceYLessThan5: await window.translationService.translate('Since Y < 5, we use the complement of 5.', window.tutorial.currentLanguage),
-            sinceYGreaterThanOrEqual5: await window.translationService.translate('Since Y >= 5, we use the complement of 10.', window.tutorial.currentLanguage),
-            step: await window.translationService.translate('Step', window.tutorial.currentLanguage),
-            useComplementOf5: await window.translationService.translate('Use complement of 5:', window.tutorial.currentLanguage),
-            forSubtracting: await window.translationService.translate('For subtracting', window.tutorial.currentLanguage)
+            directSubtraction: await window.translationService.translate('Direct subtraction', lang),
+            enoughBottomBeads: await window.translationService.translate('and we have enough bottom beads to subtract directly.', lang),
+            complementOf5: await window.translationService.translate('but we need to use the complement of 5 because we are subtracting from', lang),
+            remove5AndAdd: await window.translationService.translate('Remove 5 and add', lang),
+            addComplement: await window.translationService.translate('Add', lang),
+            weNeedToBorrow: await window.translationService.translate('we need to borrow 10.', lang),
+            sinceYLessThan5: await window.translationService.translate('Since Y < 5, we use the complement of 5.', lang),
+            sinceYGreaterThanOrEqual5: await window.translationService.translate('Since Y >= 5, we use the complement of 10.', lang),
+            step: await window.translationService.translate('Step', lang),
+            useComplementOf5: await window.translationService.translate('Use complement of 5:', lang),
+            forSubtracting: await window.translationService.translate('For subtracting', lang)
         };
     
         const placeValues = String(num2).split('').map(Number).reverse();
@@ -131,7 +136,7 @@ class Subtraction {
     
         const steps = [{
             value: num1,
-            message: `${await window.translationService.translate('Step', window.tutorial.currentLanguage)} 1: ${await window.translationService.translate('Set first number', window.tutorial.currentLanguage)}: ${num1}`
+            message: `${await window.translationService.translate('Step', this.currentLanguage)} 1: ${await window.translationService.translate('Set first number', this.currentLanguage)}: ${num1}`
         }, {
             value: num1 - num2,
             message: stepMessage,
@@ -155,11 +160,12 @@ class Subtraction {
     }
 
     async getPositionName(base) {
+        const lang = this.currentLanguage;
         switch(base) {
-            case 1: return await window.translationService.translate('ones', window.tutorial.currentLanguage);
-            case 10: return await window.translationService.translate('tens', window.tutorial.currentLanguage);
-            case 100: return await window.translationService.translate('hundreds', window.tutorial.currentLanguage);
-            case 1000: return await window.translationService.translate('thousands', window.tutorial.currentLanguage);
+            case 1: return await window.translationService.translate('ones', lang);
+            case 10: return await window.translationService.translate('tens', lang);
+            case 100: return await window.translationService.translate('hundreds', lang);
+            case 1000: return await window.translationService.translate('thousands', lang);
             default: return '';
         }
     }
@@ -185,10 +191,11 @@ class Subtraction {
         const steps = [];
         let currentValue = num1;
         
+        const lang = this.currentLanguage;
         const translatedTexts = {
-            initialNumber: await window.translationService.translate('Initial number', window.tutorial.currentLanguage),
-            borrowFromNext: await window.translationService.translate('Borrow from next column and add complement', window.tutorial.currentLanguage),
-            subtractFromPosition: await window.translationService.translate('Subtract from position', window.tutorial.currentLanguage)
+            initialNumber: await window.translationService.translate('Initial number', lang),
+            borrowFromNext: await window.translationService.translate('Borrow from next column and add complement', lang),
+            subtractFromPosition: await window.translationService.translate('Subtract from position', lang)
         };
         
         // Start with initial number
@@ -309,7 +316,7 @@ class Subtraction {
     async showSteps(num1, num2) {
         // First check if result would be negative
         if (num1 < num2) {
-            const errorMessage = await window.translationService.translate('Soroban cannot perform negative number calculations. Please enter a first number larger than the second number.', window.tutorial.currentLanguage);
+            const errorMessage = await window.translationService.translate('Soroban cannot perform negative number calculations. Please enter a first number larger than the second number.', this.currentLanguage);
             alert(errorMessage);
             // Reset or clear the input fields
             document.getElementById('num1').value = '';

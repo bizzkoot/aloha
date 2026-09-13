@@ -10,15 +10,18 @@ class ArithmeticMenu {
         // Update the event listener to use document instead of window
         document.addEventListener('languageChanged', (e) => {
             this.updateLanguage(e.detail.language);
-            this.createArithmeticModal(e.detail.language);
         });
+    }
+
+    get currentLanguage() {
+        return localStorage.getItem('selectedLanguage') || window.tutorial?.currentLanguage || window.currentLanguage || 'en';
     }
     async init() {
         // Wait for translation service to be fully loaded
         await window.translationService.ready;
         
         // Get current language after service is ready
-        const currentLanguage = window.tutorial.currentLanguage;
+        const currentLanguage = this.currentLanguage;
         
         // Remove any existing modal before creating a new one
         const existingModal = document.querySelector('.arithmetic-section');
@@ -37,12 +40,13 @@ class ArithmeticMenu {
         // Force close the modal first
         modal.style.display = 'none';
     
+        const lang = targetLanguage || this.currentLanguage;
         const translatedTexts = {
-            firstNumber: await window.translationService.translate('First number', language),
-            secondNumber: await window.translationService.translate('Second number', language),
-            calculate: await window.translationService.translate('Calculate', language),
-            guideMe: await window.translationService.translate('Guide Me', language),
-            arithmeticPractice: await window.translationService.translate('Arithmetic Practice', language) // Add this
+            firstNumber: await window.translationService.translate('First number', lang),
+            secondNumber: await window.translationService.translate('Second number', lang),
+            calculate: await window.translationService.translate('Calculate', lang),
+            guideMe: await window.translationService.translate('Guide Me', lang),
+            arithmeticPractice: await window.translationService.translate('Arithmetic Practice', lang)
         };
     
         // Update existing elements
@@ -114,7 +118,7 @@ class ArithmeticMenu {
                         <button class="button-common" id="calculate">${translatedTexts.calculate}</button>
                         <button class="button-common" id="guide">${translatedTexts.guideMe}</button>
                     </div>
-                    <div class="tutorial-section"></div>
+                    <div class="arithmetic-steps"></div>
                     <div class="expected-result"></div>
                 </div>
             </div>
@@ -142,33 +146,33 @@ class ArithmeticMenu {
     
         calculateButton.addEventListener('click', () => this.startPractice());
         guideButton.addEventListener('click', async () => {
+            const lang = this.currentLanguage;
             const translatedTexts = {
-                nextStep: await window.translationService.translate('Next Step', window.tutorial.currentLanguage),
-                repeat: await window.translationService.translate('Show Movement', window.tutorial.currentLanguage)
+                nextStep: await window.translationService.translate('Next Step', lang),
+                repeat: await window.translationService.translate('Show Movement', lang)
             };
         
             const num1 = parseInt(modal.querySelector('#num1').value);
             const num2 = parseInt(modal.querySelector('#num2').value);
             const operator = modal.querySelector('#operator').value;
         
-            // First, ensure we have a container for the tutorial
-            let tutorialContainer = modal.querySelector('.tutorial-section');
+            // First, ensure we have a container for the steps
+            let stepsContainer = modal.querySelector('.arithmetic-steps');
             
             // If no container exists, create one
-            if (!tutorialContainer) {
-                tutorialContainer = document.createElement('div');
-                tutorialContainer.className = 'tutorial-section';
-                // Insert after the button row
+            if (!stepsContainer) {
+                stepsContainer = document.createElement('div');
+                stepsContainer.className = 'arithmetic-steps';
                 const buttonRow = modal.querySelector('.button-row');
                 if (buttonRow) {
-                    buttonRow.insertAdjacentElement('afterend', tutorialContainer);
+                    buttonRow.insertAdjacentElement('afterend', stepsContainer);
                 } else {
-                    modal.querySelector('.arithmetic-content').appendChild(tutorialContainer);
+                    modal.querySelector('.arithmetic-content').appendChild(stepsContainer);
                 }
             }
         
-            // Now we can safely update the tutorial content
-            tutorialContainer.innerHTML = `
+            // Now we can safely update the steps content
+            stepsContainer.innerHTML = `
                 <div class="tutorial-content"></div>
                 <div class="tutorial-controls">
                     <button class="tutorial-repeat button-common">${translatedTexts.repeat}</button>
@@ -176,12 +180,12 @@ class ArithmeticMenu {
                 </div>
             `;
         
-            // Generate steps and continue with the tutorial
+            // Generate steps and continue with the steps
             this.currentStep = 0;
             this.steps = await this.generateSteps(num1, num2, operator);
         
-            const repeatBtn = tutorialContainer.querySelector('.tutorial-repeat');
-            const nextBtn = tutorialContainer.querySelector('.tutorial-next');
+            const repeatBtn = stepsContainer.querySelector('.tutorial-repeat');
+            const nextBtn = stepsContainer.querySelector('.tutorial-next');
         
             repeatBtn.onclick = () => this.repeatCurrentStep();
             nextBtn.onclick = () => {
@@ -205,6 +209,11 @@ class ArithmeticMenu {
             const modal = document.querySelector('.arithmetic-section');
             if (modal) {
                 const isHidden = modal.style.display === 'none' || modal.style.display === '';
+                if (isHidden) {
+                    window.tutorial?.hideTutorial();
+                    const gameModal = document.querySelector('.game-section');
+                    if (gameModal) gameModal.style.display = 'none';
+                }
                 modal.style.display = isHidden ? 'block' : 'none';
                 window.updateSidePanelVisibility?.();
             }
@@ -232,9 +241,10 @@ class ArithmeticMenu {
     async generateSteps(num1, num2, operator) {
         console.log('Generating steps for:', {num1, num2, operator});
         this.steps = [];
+        const lang = this.currentLanguage;
         const translatedTexts = {
-            step: await window.translationService.translate('Step', window.tutorial.currentLanguage),
-            setFirstNumber: await window.translationService.translate('Set first number:', window.tutorial.currentLanguage)
+            step: await window.translationService.translate('Step', lang),
+            setFirstNumber: await window.translationService.translate('Set first number:', lang)
         };
 
         switch(operator) {
@@ -249,12 +259,12 @@ class ArithmeticMenu {
                 this.steps = await this.subtraction.generateSteps(num1, num2);
                 break;
             case 'x':
-                const multiplyByText = await window.translationService.translate('Multiply by', window.tutorial.currentLanguage);
+                const multiplyByText = await window.translationService.translate('Multiply by', lang);
                 this.steps.push({ value: num1, message: `${translatedTexts.setFirstNumber} ${num1}` });
                 this.steps.push({ value: num1 * num2, message: `${multiplyByText} ${num2}` });
                 break;
             case '/':
-                const divideByText = await window.translationService.translate('Divide by', window.tutorial.currentLanguage);
+                const divideByText = await window.translationService.translate('Divide by', lang);
                 this.steps.push({ value: num1, message: `${translatedTexts.setFirstNumber} ${num1}` });
                 this.steps.push({ value: Math.floor(num1 / num2), message: `${divideByText} ${num2}` });
                 break;
@@ -354,7 +364,7 @@ class ArithmeticMenu {
         const num2 = parseInt(modal.querySelector('#num2').value);
         const operator = modal.querySelector('#operator').value;
         const result = this.calculateResult(num1, num2, operator);
-        const expectedResultText = await window.translationService.translate('Expected Result:', window.tutorial.currentLanguage);
+        const expectedResultText = await window.translationService.translate('Expected Result:', this.currentLanguage);
         modal.querySelector('.expected-result').textContent = `${expectedResultText} ${result}`;
     }
     calculateResult(num1, num2, operator) {

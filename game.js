@@ -631,11 +631,17 @@ window.ArithmeticGame = class ArithmeticGame {
             const modal = document.querySelector('.game-section');
     
             if (!modal) {
+                window.tutorial?.hideTutorial();
+                const arithModal = document.querySelector('.arithmetic-section');
+                if (arithModal) arithModal.style.display = 'none';
                 const newModal = await this.createGameModal();
                 if (newModal) {
                     newModal.style.display = 'block';
                 }
             } else if (modal.style.display === 'none') {
+                window.tutorial?.hideTutorial();
+                const arithModal = document.querySelector('.arithmetic-section');
+                if (arithModal) arithModal.style.display = 'none';
                 modal.style.display = 'block';
             } else {
                 modal.style.display = 'none';

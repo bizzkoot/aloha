@@ -1,47 +1,25 @@
-.tutorial-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+/* Tutorial section: docked inside the side panel */
+.tutorial-section {
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 100;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #d4c5b5;
     display: none;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-.tutorial-container {
-    position: fixed;
-    width: 300px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
-
-.tutorial-right {
-    right: 20px;
-    top: 50%;
-    /* Removed transform: translateY(-50%); */
-}
-
-.tutorial-left {
-    left: 20px;
-    top: 50%;
-    /* Removed transform: translateY(-50%); */
-}
-
-.tutorial-container {
-    position: fixed;
-    width: 300px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    z-index: 1000;
-    cursor: default;
-    user-select: none;
+.tutorial-section .tutorial-header {
+    position: relative;
+    background: #8b4513;
+    color: white;
+    padding: 12px 15px;
+    margin: -20px -20px 15px -20px;
+    display: flex;
+    align-items: center;
+    border-radius: 9px 9px 0 0;
 }
 
 .tutorial-close {
@@ -50,34 +28,16 @@
     top: 10px;
     background: none;
     border: none;
-    color: #333;
-    font-size: 20px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
     padding: 0 5px;
+    line-height: 1;
 }
 
 .tutorial-close:hover {
-    color: #ff0000;
-}
-
-/* Scoped to the tutorial window so docked game panels don't inherit the drag cursor */
-.tutorial-container .tutorial-header {
-    position: relative;
-    background: #8b4513;
-    color: white;
-    padding: 12px 15px;
-    margin: -20px -20px 15px -20px;
-    cursor: move;
-    display: flex;
-    align-items: center;
-    border-radius: 10px 10px 0 0;
-}
-
-.tutorial-drag-handle {
-    font-size: 20px;
-    margin-right: 15px;
-    cursor: move;
-    letter-spacing: -2px;
+    color: #ffcccc;
 }
 
 .tutorial-title {
@@ -91,15 +51,56 @@
     margin-bottom: 20px;
 }
 
+/* 2-Row Grid: Row 1 = full-width Step indicator, Row 2 = evenly distributed action buttons */
 .tutorial-navigation {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+        "progress progress progress"
+        "prev repeat next";
+    gap: 10px 8px;
     align-items: center;
+    margin-top: 12px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .tutorial-progress {
-    font-size: 14px;
+    grid-area: progress;
+    font-size: 13px;
     color: #666;
+    text-align: center;
+    font-weight: 500;
+    padding: 2px 4px;
+    line-height: 1.3;
+}
+
+.tutorial-navigation .button-common {
+    margin: 0;
+    padding: 7px 6px;
+    font-size: clamp(11px, 1.4vw, 13px);
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tutorial-navigation .tutorial-prev {
+    grid-area: prev;
+}
+
+.tutorial-navigation .tutorial-repeat {
+    grid-area: repeat;
+}
+
+.tutorial-navigation .tutorial-next {
+    grid-area: next;
 }
 
 .tutorial-highlight {
@@ -171,6 +172,7 @@
     background: #8b4513;
 }
 
+.tutorial-section.demonstrating .tutorial-navigation,
 .tutorial-container.demonstrating .tutorial-navigation {
     opacity: 0.5;
     pointer-events: none;

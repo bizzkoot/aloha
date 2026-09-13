@@ -114,14 +114,14 @@ class LanguageSelectionModal {
         
         window.languageManager = new LanguageManager();
         window.abacus = new Abacus();
+        window.tutorial = new AbacusTutorial();
         window.arithmetic = new ArithmeticMenu();
         window.game = new ArithmeticGame();
-        window.tutorial = new AbacusTutorial();
 
         window.languageManager.subscribe(window.abacus);
+        window.languageManager.subscribe(window.tutorial);
         window.languageManager.subscribe(window.arithmetic);
         window.languageManager.subscribe(window.game);
-        window.languageManager.subscribe(window.tutorial);
 
         await window.languageManager.changeLanguage(this.selectedLang);
     }
@@ -220,6 +220,11 @@ class Abacus {
         if (headerLangText) {
             const langLabels = { en: 'Language', ms: 'Bahasa', zh: '语言', ta: 'மொழி' };
             headerLangText.textContent = langLabels[this.currentLanguage] || 'Language';
+        }
+
+        const quickReset = document.getElementById('quickResetBtn');
+        if (quickReset) {
+            quickReset.onclick = () => this.resetAbacus();
         }
 
         // Add event listeners for the arithmetic and game buttons
@@ -342,16 +347,17 @@ class Abacus {
     }
 }
 
-// Docked right panel: visible only while a game/practice window is open
+// Docked right panel: visible only while a tutorial/game/practice window is open
 window.updateSidePanelVisibility = function () {
     const panel = document.getElementById('sidePanel');
     if (!panel) return;
     const hasOpenWindow = Array.from(
-        panel.querySelectorAll('.arithmetic-section, .game-section')
+        panel.querySelectorAll('.tutorial-section, .arithmetic-section, .game-section')
     ).some((el) => el.style.display !== 'none' && el.style.display !== '');
     panel.classList.toggle('panel-active', hasOpenWindow);
-    // Re-fit the abacus: the main stage changes width when the panel opens.
-    if (hasOpenWindow && typeof window.__fitAbacus === 'function') {
+    document.body.classList.toggle('has-active-panel', hasOpenWindow);
+    // Re-fit the abacus: the stage layout changes when the panel opens/closes.
+    if (typeof window.__fitAbacus === 'function') {
         window.__fitAbacus();
     }
 };
@@ -460,21 +466,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.abacus = new Abacus();
         console.log('Abacus created');
 
+        window.tutorial = new AbacusTutorial();
+        console.log('Tutorial created');
+
         window.arithmetic = new ArithmeticMenu();
         console.log('Arithmetic menu created');
 
         window.game = new ArithmeticGame();
         console.log('Game created');
 
-        window.tutorial = new AbacusTutorial();
-        console.log('Tutorial created');
-
         // Log subscriptions
         console.log('Setting up component subscriptions');
         window.languageManager.subscribe(window.abacus);
+        window.languageManager.subscribe(window.tutorial);
         window.languageManager.subscribe(window.arithmetic);
         window.languageManager.subscribe(window.game);
-        window.languageManager.subscribe(window.tutorial);
 
         const savedLanguage = localStorage.getItem('selectedLanguage');
         console.log('Changing language to:', savedLanguage);
