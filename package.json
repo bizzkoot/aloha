@@ -7,6 +7,7 @@
     "generate-changelog": "node scripts/generateChangelog.js",
     "predeploy": "npm run sync-version && npm run generate-changelog",
     "cap:prepare": "npm run generate-changelog && node scripts/prepare-www.js",
+    "generate-android-icons": "node scripts/generateAndroidAssets.js",
     "cap:sync": "npm run cap:prepare && cap sync android",
     "android:apk": "npm run cap:sync && cd android && JAVA_HOME=\"$(ls -d /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home 2>/dev/null || /usr/libexec/java_home -v 21 2>/dev/null || echo \"$JAVA_HOME\")\" ./gradlew assembleDebug",
     "android:apk-release": "npm run cap:sync && cd android && JAVA_HOME=\"$(ls -d /opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home 2>/dev/null || /usr/libexec/java_home -v 21 2>/dev/null || echo \"$JAVA_HOME\")\" ./gradlew assembleRelease"
