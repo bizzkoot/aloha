@@ -16,14 +16,25 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Abacus">
-    <meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 </head>
 <body>
-    <a href="https://github.com/bizzkoot/aloha" class="github-link" title="View on GitHub" target="_blank">
-        <i class="fab fa-github"></i>
-    </a>
-    <span class="version-text" id="appVersionDisplay"></span>
-    <button class="changelog-link" data-aloha-changelog-open title="View changelog">Changelog</button>
+    <nav class="top-nav" aria-label="App Navigation">
+        <div class="top-nav-left">
+            <a href="https://github.com/bizzkoot/aloha" class="github-link" title="View on GitHub" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i>
+            </a>
+            <span class="version-badge" id="appVersionDisplay"></span>
+        </div>
+        <div class="top-nav-right">
+            <button class="top-nav-btn changelog-link" data-aloha-changelog-open type="button" title="View changelog">
+                <i class="fas fa-scroll"></i> <span>Changelog</span>
+            </button>
+            <button class="top-nav-btn language-button" id="headerLanguageBtn" type="button" title="Change language">
+                <i class="fas fa-globe"></i> <span id="headerLanguageText">Language</span>
+            </button>
+        </div>
+    </nav>
     <div class="container">
         <h1>Soroban (Japanese Abacus)</h1>
         <div class="abacus">
@@ -68,10 +79,14 @@
     <script src="js/changelog.js"></script>
     <script src="js/updateChecker.js"></script>
     <script src="js/changelogUI.js"></script>
+    <script src="js/fitAbacus.js"></script>
     <!-- Changelog modal -->
     <div class="aloha-modal" id="alohaChangelogModal" role="dialog" aria-modal="true" hidden>
         <div class="aloha-modal-card">
-            <div class="aloha-modal-head"><h3>Changelog</h3></div>
+            <div class="aloha-modal-head">
+                <h3>Changelog</h3>
+                <button class="aloha-modal-close" data-aloha-changelog-close type="button" aria-label="Close">&times;</button>
+            </div>
             <div class="aloha-modal-body" id="alohaChangelogList"></div>
             <div class="aloha-modal-foot">
                 <button class="aloha-btn aloha-btn-primary" id="alohaBtnCheckUpdates" type="button">Check for updates</button>

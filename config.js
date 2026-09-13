@@ -1,5 +1,5 @@
 const APP_CONFIG = {
-    VERSION: '1.1.6',
+    VERSION: '1.1.7',
     checkVersion: async () => {
         const response = await fetch('version.json?' + Date.now());
         const data = await response.json();

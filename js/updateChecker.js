@@ -191,6 +191,7 @@
 
   AlohaUpdateChecker.prototype._ensureModal = function () {
     if (this._modal) return this._modal;
+    var self = this;
     var modal = document.createElement('div');
     modal.className = 'aloha-modal';
     modal.id = 'alohaUpdateModal';
@@ -199,10 +200,25 @@
     modal.hidden = true;
     modal.innerHTML =
       '<div class="aloha-modal-card">' +
-      '<div class="aloha-modal-head"><h3 id="alohaUpdateTitle"></h3></div>' +
+      '<div class="aloha-modal-head">' +
+      '<h3 id="alohaUpdateTitle"></h3>' +
+      '<button class="aloha-modal-close" type="button" aria-label="Close">&times;</button>' +
+      '</div>' +
       '<div class="aloha-modal-body" id="alohaUpdateBody"></div>' +
       '<div class="aloha-modal-foot" id="alohaUpdateFoot"></div>' +
       '</div>';
+    
+    var closeBtn = modal.querySelector('.aloha-modal-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () { self._close(); });
+    }
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) self._close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.hidden) self._close();
+    });
+
     document.body.appendChild(modal);
     this._modal = modal;
     return modal;

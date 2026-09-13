@@ -59,6 +59,7 @@ const ASSETS = [
     `${BASE_PATH}js/updateChecker.js`,
     `${BASE_PATH}js/changelog.js`,
     `${BASE_PATH}js/changelogUI.js`,
+    `${BASE_PATH}js/fitAbacus.js`,
     
     // Assets and Icons
     `${BASE_PATH}icons/icon-192x192.png`,

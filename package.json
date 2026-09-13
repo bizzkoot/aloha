@@ -1,6 +1,6 @@
 {
   "name": "aloha-abacus",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Interactive abacus simulator for learning arithmetic calculations",
   "scripts": {
     "sync-version": "node sync-version.js",

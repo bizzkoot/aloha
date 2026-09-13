@@ -86,11 +86,26 @@ class LanguageSelectionModal {
         });
 
         const confirmBtn = modal.querySelector('#confirmLanguageBtn');
+        const isExistingUser = !!localStorage.getItem('selectedLanguage');
+        
         confirmBtn.addEventListener('click', async () => {
             localStorage.setItem('selectedLanguage', this.selectedLang);
             modal.remove();
-            await this.initializeApp();
+            if (isExistingUser) {
+                if (window.languageManager) {
+                    await window.languageManager.changeLanguage(this.selectedLang);
+                }
+            } else {
+                await this.initializeApp();
+            }
         });
+
+        // Allow dismissing by clicking the backdrop if user already configured language
+        if (isExistingUser) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+        }
     }
 
     async initializeApp() {
@@ -185,8 +200,7 @@ class Abacus {
             this.createButton('Reset Abacus', () => this.resetAbacus()),
             this.createButton('Start Tutorial', () => window.tutorial.startTutorial()),
             this.createButton('Arithmetic Practice', () => window.arithmetic.toggleModal()),
-            this.createButton('Practice Game', () => window.game.showGameSetup()),
-            this.createButton('Change Language', () => window.languageManager.showLanguageSelector())
+            this.createButton('Practice Game', () => window.game.showGameSetup())
         ]);
 
         buttons.forEach(button => buttonContainer.appendChild(button));
@@ -196,6 +210,17 @@ class Abacus {
             existingContainer.remove();
         }
         document.querySelector('.container').appendChild(buttonContainer);
+
+        // Wire top nav language button
+        const headerLangBtn = document.getElementById('headerLanguageBtn');
+        if (headerLangBtn) {
+            headerLangBtn.onclick = () => window.languageManager.showLanguageSelector();
+        }
+        const headerLangText = document.getElementById('headerLanguageText');
+        if (headerLangText) {
+            const langLabels = { en: 'Language', ms: 'Bahasa', zh: '语言', ta: 'மொழி' };
+            headerLangText.textContent = langLabels[this.currentLanguage] || 'Language';
+        }
 
         // Add event listeners for the arithmetic and game buttons
         const additionBtn = document.getElementById('additionBtn');
@@ -212,14 +237,7 @@ class Abacus {
 
     async createButton(textKey, clickHandler) {
         const button = document.createElement('button');
-        
-        // Special styling for language button
-        if (textKey === 'Change Language') {
-            button.className = 'language-button';
-        } else {
-            button.className = 'button-common';
-        }
-        
+        button.className = 'button-common';
         const translatedText = await window.translationService.translate(textKey, this.currentLanguage);
         button.textContent = translatedText;
         button.addEventListener('click', clickHandler);
@@ -228,10 +246,16 @@ class Abacus {
 
     async updateButtonTexts(newLanguage) {
         const buttons = document.querySelectorAll('.button-container .button-common');
-        const texts = ['Reset Abacus', 'Start Tutorial', 'Arithmetic Practice', 'Practice Game', 'Change Language'];
+        const texts = ['Reset Abacus', 'Start Tutorial', 'Arithmetic Practice', 'Practice Game'];
         
-        for (let i = 0; i < buttons.length; i++) {
+        for (let i = 0; i < buttons.length && i < texts.length; i++) {
             buttons[i].textContent = await window.translationService.translate(texts[i], newLanguage);
+        }
+
+        const headerLangText = document.getElementById('headerLanguageText');
+        if (headerLangText) {
+            const langLabels = { en: 'Language', ms: 'Bahasa', zh: '语言', ta: 'மொழி' };
+            headerLangText.textContent = langLabels[newLanguage] || 'Language';
         }
     }
 

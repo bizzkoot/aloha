@@ -22,10 +22,29 @@
       item.className = 'aloha-changelog-item';
       var head = document.createElement('div');
       head.className = 'aloha-changelog-head';
-      head.textContent = (c.hash || '') + ' · ' + (c.date || '') + ' · ' + (c.subject || '');
+
+      if (c.hash) {
+        var tag = document.createElement('span');
+        tag.className = 'aloha-changelog-tag';
+        tag.textContent = c.hash;
+        head.appendChild(tag);
+      }
+
+      if (c.date) {
+        var dt = document.createElement('span');
+        dt.className = 'aloha-changelog-date';
+        dt.textContent = c.date + ' · ';
+        head.appendChild(dt);
+      }
+
+      var subj = document.createElement('span');
+      subj.className = 'aloha-changelog-subj';
+      subj.textContent = c.subject || '';
+      head.appendChild(subj);
+
       item.appendChild(head);
       if (c.body) {
-        var body = document.createElement('pre');
+        var body = document.createElement('div');
         body.className = 'aloha-changelog-body';
         body.textContent = c.body;
         item.appendChild(body);
@@ -42,6 +61,16 @@
   }
 
   function init() {
+    var modal = document.getElementById('alohaChangelogModal');
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) toggleChangelog(false);
+      });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') toggleChangelog(false);
+    });
+
     var openBtns = document.querySelectorAll('[data-aloha-changelog-open]');
     openBtns.forEach(function (b) {
       b.addEventListener('click', function () { toggleChangelog(true); });
