@@ -102,12 +102,12 @@ window.ArithmeticGame = class ArithmeticGame {
         if (resultsSection) resultsSection.remove();
     
         // Recreate the modal content with new language
-        await this.createGameModal();
+        const newModal = await this.createGameModal();
         this.setupEventListeners();
     
         // Restore visibility if it was previously visible
-        if (wasVisible) {
-            modal.style.display = 'block';
+        if (wasVisible && newModal) {
+            newModal.style.display = 'block';
         }
         window.updateSidePanelVisibility?.();
     
@@ -116,13 +116,13 @@ window.ArithmeticGame = class ArithmeticGame {
             this.questions = [];
             this.currentQuestionIndex = 0;
     
-            const newSetupContent = modal.querySelector('.game-setup-content');
+            const newSetupContent = newModal?.querySelector('.game-setup-content');
             if (newSetupContent) {
                 newSetupContent.style.display = 'flex';
             }
     
-            const newQuestionSection = modal.querySelector('.game-question-section');
-            const newResultsSection = modal.querySelector('.game-results');
+            const newQuestionSection = newModal?.querySelector('.game-question-section');
+            const newResultsSection = newModal?.querySelector('.game-results');
     
             if (this.currentQuestionIndex >= this.questions.length) {
                 if (newQuestionSection) newQuestionSection.style.display = 'none';
@@ -192,28 +192,27 @@ window.ArithmeticGame = class ArithmeticGame {
 
         if (guideMeBtn) {
             guideMeBtn.onclick = async () => {
+                await window.translationService.ready;
+                const lang = window.translationService.currentLanguage || 'en';
                 const translatedTexts = {
-                    nextStep: await this.translateText('Next Step'),
-                    repeat: await this.translateText('Show Movement')
+                    nextStep: await window.translationService.translate('Next Step', lang),
+                    repeat: await window.translationService.translate('Show Movement', lang)
                 };
                 
-                await window.translationService.ready;
-                const questionSection = modal.querySelector('.game-question-section'); // Get the game question section
-                
+                const currentModal = document.querySelector('.game-section') || modal;
+                const questionSection = currentModal?.querySelector('.game-question-section');
                 if (!questionSection) {
                     console.error('Question section not found');
                     return;
                 }
         
-                // Remove any existing tutorial sections
-                const existingTutorial = questionSection.querySelector('.tutorial-section');
-                if (existingTutorial) {
-                    existingTutorial.remove();
-                }
+                // Remove any existing step sections
+                const existingSteps = currentModal.querySelectorAll('.game-steps');
+                existingSteps.forEach(el => el.remove());
         
-                // Create fresh tutorial content container
+                // Create fresh guidance content container
                 const tutorialSection = document.createElement('div');
-                tutorialSection.className = 'tutorial-section';
+                tutorialSection.className = 'game-steps';
                 tutorialSection.innerHTML = `
                     <div class="tutorial-content"></div>
                     <div class="tutorial-controls">
@@ -222,112 +221,54 @@ window.ArithmeticGame = class ArithmeticGame {
                     </div>
                 `;
                 
-                const questionDisplay = questionSection.querySelector('.question-display');
-                if (questionDisplay) {
-                    questionDisplay.appendChild(tutorialSection);
-                } else {
-                    questionSection.appendChild(tutorialSection);
-                }
+                questionSection.appendChild(tutorialSection);
                 this.guidedQuestions.add(this.currentQuestionIndex);
                 
                 const currentQuestion = this.questions[this.currentQuestionIndex];
-                let steps;
-                let operationInstance;
-                
-                try {
-                    switch (currentQuestion.operator) {
-                        case '+':
-                            if (!this.addition) {
-                                this.addition = new Addition();
-                            }
-                            operationInstance = this.addition;
-                            steps = await this.addition.generateSteps(currentQuestion.num1, currentQuestion.num2);
-                            break;
-                        case '-':
-                            if (!this.subtraction) {
-                                this.subtraction = new Subtraction();
-                            }
-                            operationInstance = this.subtraction;
-                            steps = await this.subtraction.generateSteps(currentQuestion.num1, currentQuestion.num2);
-                            break;
-                    }
-                } catch (error) {
-                    console.error('Error generating steps:', error);
-                    return;
-                }
-                
-                if (!steps || steps.length === 0) {
-                    steps = [
-                        {
-                            value: currentQuestion.num1,
-                            message: await this.translateText(`Starting with ${currentQuestion.num1}`),
-                            isComplement: false
-                        },
-                        {
-                            value: this.calculateExpectedValue(currentQuestion),
-                            message: await this.translateText(`Final result: ${this.calculateExpectedValue(currentQuestion)}`),
-                            isComplement: false
-                        }
-                    ];
-                }
+                const steps = await this.generateGameSteps(currentQuestion);
+                if (!steps || steps.length === 0) return;
                 
                 let currentStepIndex = 0;
+                const tutorialContent = tutorialSection.querySelector('.tutorial-content');
+                const repeatBtn = tutorialSection.querySelector('.tutorial-repeat');
+                const nextBtn = tutorialSection.querySelector('.tutorial-next');
                 
-                const displayStep = async () => {
-                    if (!steps || currentStepIndex < 0 || currentStepIndex >= steps.length) {
-                        return;
+                const showStep = async (index) => {
+                    if (index < 0 || index >= steps.length) return;
+                    currentStepIndex = index;
+                    const step = steps[currentStepIndex];
+                    
+                    tutorialContent.innerHTML = step.message;
+                    nextBtn.disabled = currentStepIndex >= steps.length - 1;
+                    
+                    if (step.isComplement) {
+                        repeatBtn.onclick = () => {
+                            if (currentQuestion.operator === '+') {
+                                this.addition.repeatComplementStep(step.complementValue, step.value, currentQuestion.num1, currentQuestion.num2);
+                            } else if (currentQuestion.operator === '-') {
+                                this.subtraction.repeatComplementStep(step.complementValue, step.value, currentQuestion.num1, currentQuestion.num2);
+                            }
+                        };
+                        // Automatically animate the step-by-step complement bead movement
+                        if (currentQuestion.operator === '+') {
+                            this.addition.repeatComplementStep(step.complementValue, step.value, currentQuestion.num1, currentQuestion.num2);
+                        } else if (currentQuestion.operator === '-') {
+                            this.subtraction.repeatComplementStep(step.complementValue, step.value, currentQuestion.num1, currentQuestion.num2);
+                        }
+                    } else {
+                        repeatBtn.onclick = () => this.repeatCurrentStep(step);
+                        window.abacus?.resetAbacus();
+                        this.displayStep(step);
                     }
-                    const tutorialContent = tutorialSection.querySelector('.tutorial-content');
-                    tutorialContent.innerHTML = steps[currentStepIndex].message;
-                    window.abacus.resetAbacus();
-                    await this.displayNumberWithHighlights(
-                        Array.from(document.querySelectorAll('.column')).reverse(),
-                        steps[currentStepIndex].value
-                    );
                 };
                 
-                await displayStep();
+                nextBtn.onclick = () => {
+                    if (currentStepIndex < steps.length - 1) {
+                        showStep(currentStepIndex + 1);
+                    }
+                };
                 
-                // Initialize tutorial controls with fresh event listeners
-                const tutorialControls = tutorialSection.querySelector('.tutorial-controls');
-                if (tutorialControls) {
-                    const repeatBtn = tutorialControls.querySelector('.tutorial-repeat');
-                    const nextBtn = tutorialControls.querySelector('.tutorial-next');
-                    
-                    // Clear existing listeners and create fresh buttons
-                    const newRepeatBtn = repeatBtn.cloneNode(true);
-                    const newNextBtn = nextBtn.cloneNode(true);
-                    repeatBtn.replaceWith(newRepeatBtn);
-                    nextBtn.replaceWith(newNextBtn);
-                    
-                    // Add new event listeners
-                    newRepeatBtn.onclick = async () => {
-                        // Get the current step, even if we're at the end
-                        const currentStep = steps[Math.min(currentStepIndex, steps.length - 1)];
-                        if (currentStep) {
-                            if (currentStep.isComplement) {
-                                await this.repeatComplementStep(currentStep.complementValue, currentStep.value);
-                            } else {
-                                await this.displayNumberWithHighlights(
-                                    Array.from(document.querySelectorAll('.column')).reverse(),
-                                    currentStep.value
-                                );
-                            }
-                        }
-                    };
-                    
-                    newNextBtn.onclick = async () => {
-                        currentStepIndex++;
-                        if (currentStepIndex < steps.length) {
-                            await displayStep();
-                        } else {
-                            newNextBtn.disabled = true;
-                            // Keep the last step accessible for the Show Movement button
-                            currentStepIndex = steps.length - 1;
-                        }
-                    };
-                }
-                // Disable Guide Me button after starting tutorial
+                await showStep(0);
                 guideMeBtn.disabled = true;
             };
         }
@@ -424,7 +365,7 @@ window.ArithmeticGame = class ArithmeticGame {
                     <option value="999">${translatedTexts.tripleDigits}</option>
                 </select>
                 <div class="operators-selection">
-                    <label><input type="checkbox" value="+"> ${translatedTexts.addition}</label>
+                    <label><input type="checkbox" value="+" checked> ${translatedTexts.addition}</label>
                     <label><input type="checkbox" value="-"> ${translatedTexts.subtraction}</label>
                     <label><input type="checkbox" value="x"> ${translatedTexts.multiplication}</label>
                     <label><input type="checkbox" value="/"> ${translatedTexts.division}</label>
@@ -684,8 +625,10 @@ window.ArithmeticGame = class ArithmeticGame {
             return;
         }
         
-        // Reset the abacus for the new question
+        // Reset the abacus and clean up any guidance steps for the new question
         window.abacus.resetAbacus();
+        const existingSteps = modal.querySelector('.game-steps, .tutorial-section');
+        if (existingSteps) existingSteps.remove();
         
         const question = this.questions[this.currentQuestionIndex];
         if (!question) {
@@ -734,134 +677,99 @@ window.ArithmeticGame = class ArithmeticGame {
         })).then(results => results.join(''));
     }
 
-    async displayNumberWithHighlights(columns, number, beadMovements) {
-        try {
-            columns.forEach(column => {
-                column.querySelectorAll('.bead').forEach(bead => {
-                    bead.classList.remove('active', 'tutorial-highlight');
-                });
-            });
+    displayStep(step) {
+        if (!step) return;
+        const columns = Array.from(document.querySelectorAll('.column')).reverse();
+        document.querySelectorAll('.tutorial-highlight').forEach(el => el.classList.remove('tutorial-highlight'));
+        columns.forEach(column => BeadMovements.setValue(column, 0));
 
-            if (beadMovements) {
-                beadMovements.forEach(movement => {
-                    const column = columns[movement.columnIndex];
-                    if (!column) return;
-
-                    const bead = column.querySelector(`.${movement.beadType}`);
-                    if (bead) {
-                        const isActive = movement.direction === 'add';
-                        bead.classList.toggle('active', isActive);
-                        bead.classList.toggle('tutorial-highlight', isActive);
-                    }
-                });
+        let remainingValue = step.value;
+        for (let i = 0; i < columns.length && remainingValue > 0; i++) {
+            const digit = remainingValue % 10;
+            const column = columns[i];
+            
+            if (digit >= 5) {
+                column.querySelector('.top-bead')?.classList.add('tutorial-highlight');
             }
-
-            let remaining = number;
-            for (let i = 0; i < columns.length && remaining > 0; i++) {
-                const digit = remaining % 10;
-                const column = columns[i];
-
-                if (digit >= 5) {
-                    const topBead = column.querySelector('.top-bead');
-                    if (topBead) {
-                        topBead.classList.add('active', 'tutorial-highlight');
-                    }
-                }
-
-                const bottomCount = digit % 5;
-                for (let j = 0; j < bottomCount; j++) {
-                    const bottomBead = column.querySelector(`.bottom-bead-${4 - j}`);
-                    if (bottomBead) {
-                        bottomBead.classList.add('active', 'tutorial-highlight');
-                    }
-                }
-
-                remaining = Math.floor(remaining / 10);
+            for (let j = 0; j < digit % 5; j++) {
+                column.querySelector(`.bottom-bead-${4-j}`)?.classList.add('tutorial-highlight');
             }
-            window.abacus.calculateValue();
-
-            return new Promise(resolve => setTimeout(resolve, 500));
-        } catch (error) {
-            console.error('Error in displayNumberWithHighlights:', error);
+            
+            BeadMovements.setValue(column, digit);
+            remainingValue = Math.floor(remainingValue / 10);
         }
+        window.abacus?.calculateValue();
     }
 
-    async repeatComplementStep(complement, finalValue) {
+    async repeatCurrentStep(step) {
+        if (!step) return;
+        window.abacus?.resetAbacus();
+        this.displayStep(step);
+        
         const columns = Array.from(document.querySelectorAll('.column')).reverse();
-        const currentQuestion = this.questions[this.currentQuestionIndex];
-        const num1 = currentQuestion.num1;
-        const num2 = currentQuestion.num2;
-        const isSubtraction = currentQuestion.operator === '-';
+        columns.forEach(column => {
+            const activeBeads = column.querySelectorAll('.active');
+            activeBeads.forEach(bead => {
+                bead.classList.add('tutorial-highlight');
+                setTimeout(() => bead.classList.remove('tutorial-highlight'), 500);
+            });
+        });
+    }
 
-        const steps = [];
-        let currentValue = num1;
+    async generateGameSteps(question) {
+        if (!question) return [];
+        const { num1, num2, operator } = question;
+        const lang = window.translationService?.currentLanguage || 'en';
+        let steps = [];
 
-        for (let i = 0; i < columns.length; i++) {
-            const placeValue = Math.pow(10, i);
-            const currentDigit = Math.floor((currentValue / placeValue) % 10);
-            const operandDigit = Math.floor((num2 / placeValue) % 10);
-            const beadMovements = [];
-
-            if (operandDigit > 0) {
-                if (isSubtraction) {
-                    if (currentDigit < operandDigit) {
-                        const complement = 10 - operandDigit;
-                        currentValue = currentValue - Math.pow(10, i + 1) + (complement * placeValue);
-                        steps.push({
-                            value: currentValue,
-                            desc: `Borrow from next column and subtract ${operandDigit}`,
-                            beadMovements: beadMovements
-                        });
-                    } else {
-                        currentValue -= operandDigit * placeValue;
-                        if (currentDigit >= 5) {
-                            beadMovements.push({columnIndex: i, beadType: 'top-bead', direction: 'remove'});
-                            for (let j = 0; j < operandDigit; j++) {
-                                beadMovements.push({columnIndex: i, beadType: `bottom-bead-${4-j}`, direction: 'remove'});
-                            }
-                        } else {
-                            for (let j = 0; j < operandDigit; j++) {
-                                beadMovements.push({columnIndex: i, beadType: `bottom-bead-${4-j}`, direction: 'remove'});
-                            }
-                        }
-                        steps.push({
-                            value: currentValue,
-                            desc: `Subtract ${operandDigit} directly`,
-                            beadMovements: beadMovements
-                        });
-                    }
-                } else {
-                    if (currentDigit + operandDigit >= 10) {
-                        const complement = 10 - operandDigit;
-                        currentValue = currentValue + (placeValue * 10) - (complement * placeValue);
-                        steps.push({
-                            value: currentValue,
-                            desc: `Add 10 and subtract complement ${complement}`,
-                            beadMovements: beadMovements
-                        });
-                    } else {
-                        currentValue += operandDigit * placeValue;
-                        steps.push({
-                            value: currentValue,
-                            desc: `Add ${operandDigit} directly`,
-                            beadMovements: beadMovements
-                        });
-                    }
+        try {
+            switch (operator) {
+                case '+':
+                    if (!this.addition) this.addition = new Addition();
+                    steps = await this.addition.generateSteps(num1, num2);
+                    break;
+                case '-':
+                    if (!this.subtraction) this.subtraction = new Subtraction();
+                    steps = await this.subtraction.generateSteps(num1, num2);
+                    break;
+                case 'x': {
+                    const stepText = await window.translationService.translate('Step', lang);
+                    const setFirst = await window.translationService.translate('Set first number', lang);
+                    const multiplyByText = await window.translationService.translate('Multiply by', lang);
+                    steps = [
+                        { value: num1, message: `${stepText} 1: ${setFirst}: ${num1}` },
+                        { value: num1 * num2, message: `${stepText} 2: ${multiplyByText} ${num2} = ${num1 * num2}` }
+                    ];
+                    break;
+                }
+                case '/': {
+                    const stepText = await window.translationService.translate('Step', lang);
+                    const setFirst = await window.translationService.translate('Set first number', lang);
+                    const divideByText = await window.translationService.translate('Divide by', lang);
+                    const quotient = Math.floor(num1 / num2);
+                    steps = [
+                        { value: num1, message: `${stepText} 1: ${setFirst}: ${num1}` },
+                        { value: quotient, message: `${stepText} 2: ${divideByText} ${num2} = ${quotient}` }
+                    ];
+                    break;
                 }
             }
+        } catch (error) {
+            console.error('Error generating game steps:', error);
         }
 
-        const animateSteps = async () => {
-            window.abacus.resetAbacus();
-            await this.displayNumberWithHighlights(columns, num1);
+        if (!steps || steps.length === 0) {
+            const stepText = await window.translationService.translate('Step', lang);
+            const setFirst = await window.translationService.translate('Set first number', lang);
+            const resultText = await window.translationService.translate('Result:', lang);
+            const expected = this.calculateExpectedValue(question);
+            steps = [
+                { value: question.num1, message: `${stepText} 1: ${setFirst}: ${question.num1}` },
+                { value: expected, message: `${resultText} ${expected}` }
+            ];
+        }
 
-            for (const step of steps) {
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                await this.displayNumberWithHighlights(columns, step.value, step.beadMovements);
-            }
-        };
-
-        await animateSteps();
+        return steps;
     }
 
 }

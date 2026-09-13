@@ -290,10 +290,12 @@ class ArithmeticMenu {
                 if (step.isComplement) {
                     repeatBtn.onclick = () => {
                         const operator = modal.querySelector('#operator').value;
+                        const num1 = parseInt(modal.querySelector('#num1').value);
+                        const num2 = parseInt(modal.querySelector('#num2').value);
                         if (operator === '+') {
-                            this.addition.repeatComplementStep(step.complementValue, step.value);
+                            this.addition.repeatComplementStep(step.complementValue, step.value, num1, num2);
                         } else {
-                            this.subtraction.repeatComplementStep(step.complementValue, step.value);
+                            this.subtraction.repeatComplementStep(step.complementValue, step.value, num1, num2);
                         }
                     };
                     repeatBtn.style.display = 'block';
@@ -310,8 +312,19 @@ class ArithmeticMenu {
             }
     
             // Display current step on abacus
-            window.abacus.resetAbacus();
-            await this.displayStep(step);
+            if (step.isComplement) {
+                const operator = modal.querySelector('#operator').value;
+                const num1 = parseInt(modal.querySelector('#num1').value);
+                const num2 = parseInt(modal.querySelector('#num2').value);
+                if (operator === '+') {
+                    this.addition.repeatComplementStep(step.complementValue, step.value, num1, num2);
+                } else {
+                    this.subtraction.repeatComplementStep(step.complementValue, step.value, num1, num2);
+                }
+            } else {
+                window.abacus.resetAbacus();
+                await this.displayStep(step);
+            }
         }
     }
 

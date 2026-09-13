@@ -126,13 +126,15 @@ class Addition {
         return values;
     }
     
-    repeatComplementStep(complement, finalValue) {
+    repeatComplementStep(complement, finalValue, num1, num2) {
         const columns = Array.from(document.querySelectorAll('.column')).reverse();
-        const initialNum = parseInt(document.getElementById('num1').value);
-        const numToAdd = parseInt(document.getElementById('num2').value);
+        const initialNum = num1 !== undefined ? num1 : parseInt(document.getElementById('num1')?.value);
+        const numToAdd = num2 !== undefined ? num2 : parseInt(document.getElementById('num2')?.value);
+        if (isNaN(initialNum) || isNaN(numToAdd)) return;
         const placeValues = this.getPlaceValues(numToAdd);
         
         this.displayNumberWithHighlights(columns, initialNum);
+        window.abacus?.calculateValue();
         
         let currentSum = initialNum;
         // Process values from right to left (reverse the array)
@@ -141,8 +143,8 @@ class Addition {
             setTimeout(() => {
                 currentSum += placeValue;
                 this.displayNumberWithHighlights(columns, currentSum);
-                window.abacus.calculateValue();
-            }, 2000 * (index + 1));
+                window.abacus?.calculateValue();
+            }, 1200 * (index + 1));
         });
     }
     
@@ -161,15 +163,16 @@ class Addition {
             const column = columns[i]; // Already in right-to-left order
             
             if (digit >= 5) {
-                column.querySelector('.top-bead').classList.add('tutorial-highlight');
+                column.querySelector('.top-bead')?.classList.add('tutorial-highlight');
             }
             for (let j = 0; j < digit % 5; j++) {
-                column.querySelector(`.bottom-bead-${4-j}`).classList.add('tutorial-highlight');
+                column.querySelector(`.bottom-bead-${4-j}`)?.classList.add('tutorial-highlight');
             }
             
             BeadMovements.setValue(column, digit);
             remaining = Math.floor(remaining / 10);
         }
+        window.abacus?.calculateValue();
     }
 
     showSteps(num1, num2) {

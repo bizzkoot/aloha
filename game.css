@@ -174,35 +174,39 @@
     padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2vw, 12px);
 }
 
-.tutorial-section {
+.game-steps {
     margin-top: 15px;
-    padding: 10px;
+    padding: 12px;
     background: #f5f5f5;
-    border-radius: 5px;
+    border-radius: 8px;
     width: 100%;
     box-sizing: border-box;
+    display: block;
 }
 
-.tutorial-content {
+.game-steps .tutorial-content {
     margin-bottom: 10px;
     font-size: clamp(14px, 2vw, 16px);
     line-height: 1.4;
     text-align: center;
     padding: 0 10px;
+    color: #2f1810;
 }
 
-.tutorial-controls {
+.game-steps .tutorial-controls {
     display: flex;
     gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
 }
 
-.tutorial-controls button {
+.game-steps .tutorial-controls button {
     min-width: 120px;
+    background-color: #8b4513;
+    color: white;
 }
 
-.tutorial-controls button:disabled {
+.game-steps .tutorial-controls button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }

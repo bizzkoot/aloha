@@ -182,14 +182,15 @@ class Subtraction {
         }
     }
 
-    async repeatComplementStep(complement, finalValue) {
+    async repeatComplementStep(complement, finalValue, num1, num2) {
         const columns = Array.from(document.querySelectorAll('.column')).reverse();
-        const num1 = parseInt(document.getElementById('num1').value);
-        const num2 = parseInt(document.getElementById('num2').value);
+        const initialNum = num1 !== undefined ? num1 : parseInt(document.getElementById('num1')?.value);
+        const numToSubtract = num2 !== undefined ? num2 : parseInt(document.getElementById('num2')?.value);
+        if (isNaN(initialNum) || isNaN(numToSubtract)) return;
         
         // Calculate all intermediate steps
         const steps = [];
-        let currentValue = num1;
+        let currentValue = initialNum;
         
         const lang = this.currentLanguage;
         const translatedTexts = {
@@ -202,7 +203,7 @@ class Subtraction {
         steps.push({value: currentValue, desc: translatedTexts.initialNumber});
         
         // Process each digit from right to left
-        const num2Digits = String(num2).split('').map(Number).reverse();
+        const num2Digits = String(numToSubtract).split('').map(Number).reverse();
         for(let i = 0; i < num2Digits.length; i++) {
             const placeValue = Math.pow(10, i);
             const currentDigit = Math.floor((currentValue / placeValue) % 10);
@@ -210,11 +211,11 @@ class Subtraction {
             
             if(currentDigit < subtractDigit) {
                 // Need to borrow
-                const complement = 10 - subtractDigit;
-                currentValue = currentValue - Math.pow(10, i + 1) + (complement * placeValue);
+                const comp = 10 - subtractDigit;
+                currentValue = currentValue - Math.pow(10, i + 1) + (comp * placeValue);
                 steps.push({
                     value: currentValue,
-                    desc: `${translatedTexts.borrowFromNext} ${complement}`
+                    desc: `${translatedTexts.borrowFromNext} ${comp}`
                 });
             } else {
                 // Direct subtraction
@@ -230,16 +231,16 @@ class Subtraction {
         const animate = () => {
             if (stepIndex < steps.length) {
                 this.displayNumberWithHighlights(columns, steps[stepIndex].value);
-                window.abacus.calculateValue();
+                window.abacus?.calculateValue();
                 stepIndex++;
-                setTimeout(() => requestAnimationFrame(animate), 2000);
+                setTimeout(() => requestAnimationFrame(animate), 1200);
             }
         };
         
-        this.displayNumberWithHighlights(columns, num1);
+        this.displayNumberWithHighlights(columns, initialNum);
+        window.abacus?.calculateValue();
         requestAnimationFrame(animate);
     }
-
     
 
 
@@ -252,47 +253,25 @@ class Subtraction {
                 });
             });
     
-            // Handle sequential bead movements
-            if (beadMovements) {
-                beadMovements.forEach(movement => {
-                    const column = columns[movement.columnIndex];
-                    if (!column) return;
-                    
-                    const bead = column.querySelector(`.${movement.beadType}`);
-                    if (bead) {
-                        // Set bead state
-                        const isActive = movement.direction === 'add';
-                        bead.classList.toggle('active', isActive);
-                        bead.classList.toggle('tutorial-highlight', isActive);
-                    }
-                });
-            }
-    
-            // Set final number display
+            // Set final number display using BeadMovements for correct bead positioning
+            columns.forEach(column => BeadMovements.setValue(column, 0));
             let remaining = number;
             for (let i = 0; i < columns.length && remaining > 0; i++) {
                 const digit = remaining % 10;
                 const column = columns[i];
                 
-                // Set top bead if needed
                 if (digit >= 5) {
-                    const topBead = column.querySelector('.top-bead');
-                    if (topBead) {
-                        topBead.classList.add('active', 'tutorial-highlight');
-                    }
+                    column.querySelector('.top-bead')?.classList.add('tutorial-highlight');
                 }
-                
-                // Set bottom beads
                 const bottomCount = digit % 5;
                 for (let j = 0; j < bottomCount; j++) {
-                    const bottomBead = column.querySelector(`.bottom-bead-${4-j}`);
-                    if (bottomBead) {
-                        bottomBead.classList.add('active', 'tutorial-highlight');
-                    }
+                    column.querySelector(`.bottom-bead-${4-j}`)?.classList.add('tutorial-highlight');
                 }
                 
+                BeadMovements.setValue(column, digit);
                 remaining = Math.floor(remaining / 10);
             }
+            window.abacus?.calculateValue();
         } catch (error) {
             console.error('Error in displayNumberWithHighlights:', error);
         }
