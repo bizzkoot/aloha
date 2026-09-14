@@ -332,6 +332,7 @@ window.ArithmeticGame = class ArithmeticGame {
         modal.innerHTML = `
             <div class="tutorial-header">
                 <h2 class="tutorial-title">${translatedTexts.settings}</h2>
+                <button class="tutorial-minimize" title="Minimize">_</button>
                 <button class="tutorial-close">X</button>
             </div>
             <div class="game-setup-content">
@@ -376,15 +377,14 @@ window.ArithmeticGame = class ArithmeticGame {
         modal.style.display = 'none';
         this.isModalCreated = true;
     
-        // Add close button functionality
+        // Add close button functionality (X resets so reopen starts fresh)
         const closeButton = modal.querySelector('.tutorial-close');
         if (closeButton) {
-            closeButton.addEventListener('click', () => {
-                this.cancelAutoCheck();
-                this.cancelAutoNext();
-                modal.style.display = 'none';
-                window.updateSidePanelVisibility?.();
-            });
+            closeButton.addEventListener('click', () => this.closeGame());
+        }
+        const minimizeButton = modal.querySelector('.tutorial-minimize');
+        if (minimizeButton) {
+            minimizeButton.addEventListener('click', () => this.minimizeGame());
         }
     
         // Process any pending language updates
@@ -601,6 +601,21 @@ window.ArithmeticGame = class ArithmeticGame {
         }
     }
 
+    minimizeGame() {
+        this.cancelAutoCheck();
+        this.cancelAutoNext();
+        const modal = document.querySelector('.game-section');
+        if (modal) modal.style.display = 'none';
+        window.updateSidePanelVisibility?.();
+    }
+
+    closeGame() {
+        this.resetGame();
+        const modal = document.querySelector('.game-section');
+        if (modal) modal.style.display = 'none';
+        window.updateSidePanelVisibility?.();
+    }
+
     resetGame() {
         this.cancelAutoCheck();
         this.cancelAutoNext();
@@ -643,7 +658,7 @@ window.ArithmeticGame = class ArithmeticGame {
                 if (arithModal) arithModal.style.display = 'none';
                 modal.style.display = 'flex';
             } else {
-                modal.style.display = 'none';
+                this.minimizeGame();
             }
             window.updateSidePanelVisibility?.();
         } catch (error) {

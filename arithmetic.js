@@ -98,6 +98,7 @@ class ArithmeticMenu {
         modal.innerHTML = `
             <div class="tutorial-header">
                 <h2 class="tutorial-title">${translatedTexts.arithmeticPractice}</h2>
+                <button class="tutorial-minimize" title="Minimize">_</button>
                 <button class="tutorial-close">X</button>
             </div>
             <div class="arithmetic-content-wrapper">
@@ -132,12 +133,16 @@ class ArithmeticMenu {
         mountPoint.appendChild(modal);
         window.updateSidePanelVisibility?.();
 
-        // Close button handling
+        // Close button handling (X clears progression so reopen starts fresh)
         const closeButton = modal.querySelector('.tutorial-close');
         closeButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            modal.style.display = 'none';
-            window.updateSidePanelVisibility?.();
+            this.closeArithmetic();
+        });
+        const minimizeButton = modal.querySelector('.tutorial-minimize');
+        minimizeButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.minimizeArithmetic();
         });
 
         // Setup arithmetic functionality
@@ -212,6 +217,33 @@ class ArithmeticMenu {
         });
     }    
         
+    minimizeArithmetic() {
+        const modal = document.querySelector('.arithmetic-section');
+        if (modal) modal.style.display = 'none';
+        window.updateSidePanelVisibility?.();
+    }
+
+    closeArithmetic() {
+        const modal = document.querySelector('.arithmetic-section');
+        this.steps = [];
+        this.currentStep = 0;
+        window.abacus?.resetAbacus();
+        if (modal) {
+            const stepsContainer = modal.querySelector('.arithmetic-steps');
+            if (stepsContainer) stepsContainer.innerHTML = '';
+            const expectedResult = modal.querySelector('.expected-result');
+            if (expectedResult) expectedResult.innerHTML = '';
+            const num1Input = modal.querySelector('#num1');
+            if (num1Input) num1Input.value = '';
+            const num2Input = modal.querySelector('#num2');
+            if (num2Input) num2Input.value = '';
+            const operatorSelect = modal.querySelector('#operator');
+            if (operatorSelect) operatorSelect.value = '+';
+            modal.style.display = 'none';
+        }
+        window.updateSidePanelVisibility?.();
+    }
+
     toggleModal() {
         try {
             const modal = document.querySelector('.arithmetic-section');

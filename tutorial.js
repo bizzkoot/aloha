@@ -2,6 +2,7 @@
 class AbacusTutorial {
     constructor() {
         this.currentStep = 0;
+        this.minimized = false; // true while minimized: reopen resumes instead of restarting
         this.currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
         this.ready = Promise.resolve(); // Add this line
     
@@ -223,6 +224,7 @@ class AbacusTutorial {
         container.innerHTML = `
             <div class="tutorial-header">
                 <h2 class="tutorial-title">Soroban Tutorial</h2>
+                <button class="tutorial-minimize" title="Minimize">_</button>
                 <button class="tutorial-close">X</button>
             </div>
             <div class="tutorial-content"></div>
@@ -244,6 +246,7 @@ class AbacusTutorial {
         container.querySelector('.tutorial-next').onclick = () => this.nextStep();
         container.querySelector('.tutorial-repeat').onclick = () => this.repeatStep();
         container.querySelector('.tutorial-close').onclick = () => this.hideTutorial();
+        container.querySelector('.tutorial-minimize').onclick = () => this.minimizeTutorial();
         window.updateSidePanelVisibility?.();
 
         this.updateNavigationButtons();
@@ -354,7 +357,10 @@ class AbacusTutorial {
         const gameModal = document.querySelector('.game-section');
         if (gameModal) gameModal.style.display = 'none';
 
-        this.currentStep = 0;
+        if (!this.minimized) {
+            this.currentStep = 0;
+        }
+        this.minimized = false;
         this.showTutorial();
         this.updateContent();
     }
@@ -368,6 +374,15 @@ class AbacusTutorial {
         this.manageTutorialZIndex();
     }
 
+    minimizeTutorial() {
+        const container = document.querySelector('.tutorial-section');
+        if (container) {
+            container.style.display = 'none';
+        }
+        this.minimized = true;
+        window.updateSidePanelVisibility?.();
+    }
+
     hideTutorial() {
         const container = document.querySelector('.tutorial-section');
         if (container) {
@@ -375,6 +390,7 @@ class AbacusTutorial {
         }
         this.removeHighlight();
         this.currentStep = 0; // Reset step counter when closing
+        this.minimized = false;
         window.updateSidePanelVisibility?.();
     }
 
