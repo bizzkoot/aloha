@@ -118,8 +118,8 @@ class ArithmeticMenu {
                         <button class="button-common" id="calculate">${translatedTexts.calculate}</button>
                         <button class="button-common" id="guide">${translatedTexts.guideMe}</button>
                     </div>
-                    <div class="arithmetic-steps"></div>
                     <div class="expected-result"></div>
+                    <div class="arithmetic-steps"></div>
                 </div>
             </div>
         `;
@@ -155,6 +155,14 @@ class ArithmeticMenu {
             const num1 = parseInt(modal.querySelector('#num1').value);
             const num2 = parseInt(modal.querySelector('#num2').value);
             const operator = modal.querySelector('#operator').value;
+            if (isNaN(num1) || isNaN(num2)) {
+                alert('Please enter both numbers');
+                return;
+            }
+            if (operator === '/' && num2 === 0) {
+                alert('Cannot divide by zero');
+                return;
+            }
         
             // First, ensure we have a container for the steps
             let stepsContainer = modal.querySelector('.arithmetic-steps');
@@ -214,7 +222,7 @@ class ArithmeticMenu {
                     const gameModal = document.querySelector('.game-section');
                     if (gameModal) gameModal.style.display = 'none';
                 }
-                modal.style.display = isHidden ? 'block' : 'none';
+                modal.style.display = isHidden ? 'flex' : 'none';
                 window.updateSidePanelVisibility?.();
             }
         } catch (error) {
@@ -232,6 +240,14 @@ class ArithmeticMenu {
             const num1 = parseInt(num1Input.value);
             const num2 = parseInt(num2Input.value);
             const operator = operatorSelect.value;
+            if (isNaN(num1) || isNaN(num2)) {
+                alert('Please enter both numbers');
+                return;
+            }
+            if (operator === '/' && num2 === 0) {
+                alert('Cannot divide by zero');
+                return;
+            }
             this.generateSteps(num1, num2, operator);
             this.showExpectedResult();
         } catch (error) {

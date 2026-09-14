@@ -8,6 +8,12 @@
     display: none;
     flex-direction: column;
     box-sizing: border-box;
+    min-height: 0;
+}
+
+/* Passthrough so content participates in the section flex chain */
+.arithmetic-content-wrapper {
+    display: contents;
 }
 
 /* Header styling */
@@ -34,20 +40,19 @@
     width: 100%;
 }
 
-/* Button row - New section */
+/* Button row - one line always; labels wrap to 2 lines when narrow */
 .button-row {
     display: flex;
     gap: clamp(8px, 2vw, 15px);
     justify-content: center;
     margin-top: 10px;
     width: 100%;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .button-row .button-common {
-    flex: 1;
-    min-width: 120px;
-    max-width: 150px;
+    flex: 1 1 0;
+    min-width: 0;
     padding: 8px 15px;
     font-size: clamp(14px, 2vw, 16px);
     background-color: #8b4513;
@@ -56,6 +61,8 @@
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: normal;
+    line-height: 1.25;
 }
 
 .button-row .button-common:hover {
@@ -73,6 +80,8 @@
     gap: clamp(8px, 2vw, 15px);
     align-items: center;
     width: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 /* Input controls */
@@ -107,7 +116,6 @@
     font-weight: bold;
     color: #2f1810;
     font-size: clamp(14px, 2vw, 16px);
-    order: 4; /* Ensures result appears at the bottom */
 }
 
 .mental-process {
@@ -118,7 +126,7 @@
     border-radius: 3px;
 }
 
-/* Arithmetic guided steps section */
+/* Arithmetic guided steps section: fills parent, scrolls internally */
 .arithmetic-steps {
     margin-top: 15px;
     padding: 15px;
@@ -126,7 +134,26 @@
     border-radius: 5px;
     width: 100%;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    order: 3; /* Ensures steps appear after inputs but before result */
+    flex: 1 1 auto;
+    min-height: 80px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #8b4513 #e8e8e8;
+    box-sizing: border-box;
+}
+
+.arithmetic-steps::-webkit-scrollbar {
+    width: 8px;
+}
+
+.arithmetic-steps::-webkit-scrollbar-track {
+    background: #e8e8e8;
+    border-radius: 4px;
+}
+
+.arithmetic-steps::-webkit-scrollbar-thumb {
+    background: #8b4513;
+    border-radius: 4px;
 }
 
 .tutorial-content {
@@ -180,6 +207,28 @@
     .button-common {
         padding: 8px 12px;
         font-size: 0.9rem;
+    }
+
+    /* Phone: input row pinned, buttons + steps scroll together via panel */
+    body.has-active-panel .side-panel .arithmetic-section {
+        flex: none; /* full content height: header sticky holds to the end */
+    }
+    body.has-active-panel .side-panel .arithmetic-content-wrapper {
+        display: block; /* real box = full content height, so sticky input holds to the end */
+    }
+    body.has-active-panel .side-panel .arithmetic-content .input-row {
+        position: sticky;
+        top: 36px;
+        z-index: 10;
+        background: #fff;
+        padding: 6px 0;
+    }
+    body.has-active-panel .side-panel .arithmetic-section .button-row {
+        position: static;
+    }
+    body.has-active-panel .side-panel .arithmetic-steps {
+        flex: none;
+        overflow: visible;
     }
 }
 
