@@ -45,7 +45,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: max(0.75rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0 max(1rem, env(safe-area-inset-left));
+    padding: max(0.75rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) 0.75rem max(1rem, env(safe-area-inset-left));
     width: 100%;
     box-sizing: border-box;
     position: relative;
@@ -219,6 +219,111 @@ body {
     display: flex;
 }
 
+/* All screens: slim sticky header + sticky footer buttons so only the middle
+   content scrolls; visible scrollbar shows there is more below. */
+.side-panel .tutorial-section .tutorial-header,
+.side-panel .game-section .tutorial-header,
+.side-panel .arithmetic-section .tutorial-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 8px 12px;
+    min-height: 0;
+}
+.side-panel .tutorial-title {
+    font-size: 15px;
+}
+.side-panel .tutorial-navigation,
+.side-panel .tutorial-controls,
+.side-panel .game-steps .tutorial-controls,
+.side-panel .arithmetic-section .button-row {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: #fff;
+    padding: 6px 0 2px;
+}
+.side-panel .game-question-actions {
+    display: flex;
+    gap: 8px;
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    background: #fff;
+    padding: 6px 0 2px;
+}
+.side-panel .game-question-actions .button-common {
+    flex: 1 1 0;
+    min-width: 0;
+    white-space: normal;
+    line-height: 1.25;
+}
+.side-panel .tutorial-navigation .button-common,
+.side-panel .tutorial-controls button,
+.side-panel .game-question-section .button-common,
+.side-panel .arithmetic-section .button-row .button-common {
+    padding: 6px 8px;
+    font-size: 13px;
+    min-height: 0;
+    margin-top: 0;
+}
+.side-panel {
+    scrollbar-width: thin;
+    scrollbar-color: #8b4513 #f1f1f1;
+    scrollbar-gutter: stable;
+}
+.side-panel::-webkit-scrollbar {
+    width: 8px;
+    -webkit-appearance: none;
+}
+.side-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.side-panel::-webkit-scrollbar-thumb {
+    background: #8b4513;
+    border-radius: 4px;
+}
+
+/* Constant small header: fixed height, single-line title, X always centered */
+.side-panel .tutorial-section .tutorial-header,
+.side-panel .game-section .tutorial-header,
+.side-panel .arithmetic-section .tutorial-header {
+    min-height: 36px;
+    height: 36px;
+    box-sizing: border-box;
+    align-items: center;
+}
+.side-panel .tutorial-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 32px;
+}
+.side-panel .tutorial-close {
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    padding: 4px 8px;
+    line-height: 1;
+}
+
+/* Sections fill the panel height: mounts vanish (display:contents) so the
+   visible card is the flex item; panel stretches to the row height. */
+.side-panel {
+    align-self: stretch;
+}
+.side-panel #tutorialPractice,
+.side-panel #arithmeticPractice,
+.side-panel #gamePractice {
+    display: contents;
+}
+.side-panel .tutorial-section,
+.side-panel .game-section,
+.side-panel .arithmetic-section {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
 @media screen and (max-width: 768px) {
     .app-layout {
         flex-direction: column;
@@ -282,10 +387,67 @@ body {
         height: auto;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-        margin: 0 clamp(0.4rem, 1.5vw, 0.75rem) max(0.4rem, env(safe-area-inset-bottom));
+        width: 100%;
+        margin: 0 0 max(0.4rem, env(safe-area-inset-bottom));
         padding: clamp(0.5rem, 1.5vw, 0.85rem);
-        border-radius: 12px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+    }
+}
+
+/* Phone active panel: flush header to panel top (sticky/chrome now global). */
+@media screen and (max-width: 768px) {
+    /* Flush header to panel top: kill top padding + flex gap + section chrome */
+    body.has-active-panel .side-panel {
+        padding-top: 0;
+        gap: 0;
+    }
+    body.has-active-panel .tutorial-section,
+    body.has-active-panel .game-section,
+    body.has-active-panel .arithmetic-section {
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        border-radius: 0;
+    }
+    /* Phone: actions scroll together with the steps via the panel scroller */
+    body.has-active-panel .side-panel .game-question-actions {
+        position: static;
+        z-index: auto;
+    }
+    body.has-active-panel .side-panel .game-steps {
+        flex: none;
+        overflow: visible;
+    }
+    /* Phone: question stays docked at the top of its own scroller */
+    body.has-active-panel .side-panel .question-display {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: #fff;
+        margin: 0;
+        padding: 0 0 12px;
+    }
+    /* Phone: only actions + steps scroll, inside a contained scroller so the
+       header/question can never be chained away at the bottom */
+    body.has-active-panel .side-panel .game-section {
+        display: flex;
+        flex-direction: column;
+        overflow: clip; /* never scrollable: header can't be offset by trapped scroll */
+        min-height: 0;
+    }
+    /* Phone: match header bleed to 15px section padding (no clipped edges) */
+    body.has-active-panel .side-panel .game-section .tutorial-header,
+    body.has-active-panel .side-panel .arithmetic-section .tutorial-header {
+        margin: -15px -15px 12px;
+    }
+    body.has-active-panel .side-panel .game-question-section {
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: #8b4513 #f1f1f1;
     }
 }
 
@@ -471,7 +633,14 @@ body {
     gap: clamp(0.5rem, 2vw, 1rem); /* Dynamic gap based on viewport width */
     justify-content: center;
     margin: clamp(1rem, 3vw, 2rem) 0;
-    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    flex-wrap: nowrap; /* Keep all 4 buttons in 1 line; text wraps instead */
+}
+
+.button-container .button-common {
+    flex: 1 1 0;
+    min-width: 0;
+    white-space: normal;
+    line-height: 1.25;
 }
 .language-select-modal {
     position: fixed;
@@ -547,12 +716,13 @@ body {
 @media screen and (max-width: 768px) {
 
     .button-container {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: nowrap;
         align-items: stretch;
     }
 
-    .button-common {
-        width: 100%;
+    .button-container .button-common {
+        width: auto;
         margin-top: 0.5rem;
     }
 

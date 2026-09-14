@@ -14,6 +14,10 @@ window.ArithmeticGame = class ArithmeticGame {
         this.pendingLanguageUpdate = null;
         this.isInitializing = true;  // Add this
         this.hasInitialized = false; // Add this
+        this.autoCheckInterval = null;
+        this._abacusHooked = false;
+        this.autoNextInterval = null;
+        this._autoNextCancel = null;
         this.ready = this.init();
     }
 
@@ -58,6 +62,7 @@ window.ArithmeticGame = class ArithmeticGame {
             console.log('Dependencies loaded, creating modal...');
             await this.createGameModal();
             this.setupEventListeners();
+            this.hookAbacusAutoCheck();
             this.hasInitialized = true;
             this.isInitializing = false;
             console.log('Game initialization complete');
@@ -90,7 +95,7 @@ window.ArithmeticGame = class ArithmeticGame {
         }
     
         // Store current display state
-        const wasVisible = modal.style.display === 'block';
+        const wasVisible = modal.style.display === 'flex';
     
         // Remove existing content sections
         const setupContent = modal.querySelector('.game-setup-content');
@@ -107,7 +112,7 @@ window.ArithmeticGame = class ArithmeticGame {
     
         // Restore visibility if it was previously visible
         if (wasVisible && newModal) {
-            newModal.style.display = 'block';
+            newModal.style.display = 'flex';
         }
         window.updateSidePanelVisibility?.();
     
@@ -132,7 +137,7 @@ window.ArithmeticGame = class ArithmeticGame {
                 }
             } else {
                 if (newQuestionSection) {
-                    newQuestionSection.style.display = 'block';
+                    newQuestionSection.style.display = 'flex';
                 }
                 if (newResultsSection) newResultsSection.style.display = 'none';
                 await this.showCurrentQuestion();
@@ -172,7 +177,7 @@ window.ArithmeticGame = class ArithmeticGame {
                 const questionSection = modal.querySelector('.game-question-section');
                 
                 if (setupContent) setupContent.style.display = 'none';
-                if (questionSection) questionSection.style.display = 'block';
+                if (questionSection) questionSection.style.display = 'flex';
                 
                 // Initialize game state
                 this.currentQuestionIndex = 0;
@@ -192,6 +197,8 @@ window.ArithmeticGame = class ArithmeticGame {
 
         if (guideMeBtn) {
             guideMeBtn.onclick = async () => {
+                this.cancelAutoCheck();
+                this.cancelAutoNext();
                 await window.translationService.ready;
                 const lang = window.translationService.currentLanguage || 'en';
                 const translatedTexts = {
@@ -274,38 +281,7 @@ window.ArithmeticGame = class ArithmeticGame {
         }
 
         if (nextQuestionBtn) {
-            nextQuestionBtn.onclick = () => {
-                if (!this.userAnswers[this.currentQuestionIndex]) {
-                    const currentValue = window.abacus.value;
-                    const currentQuestion = this.questions[this.currentQuestionIndex];
-                    if (currentQuestion) {
-                        const expectedValue = this.calculateExpectedValue(currentQuestion);
-                        this.userAnswers.push({
-                            question: currentQuestion,
-                            userAnswer: currentValue,
-                            expectedAnswer: expectedValue,
-                            isGuided: this.guidedQuestions.has(this.currentQuestionIndex)
-                        });
-                    }
-                }
-
-                this.cleanupTutorial();
-                this.currentQuestionIndex++;
-
-                if (this.currentQuestionIndex < this.questions.length) {
-                    const checkAnswerBtn = modal.querySelector('.check-answer');
-                    if (checkAnswerBtn) checkAnswerBtn.disabled = false;
-                    this.showCurrentQuestion();
-                } else {
-                    const questionSection = modal.querySelector('.game-question-section');
-                    const resultsSection = modal.querySelector('.game-results');
-                    if (questionSection) questionSection.style.display = 'none';
-                    if (resultsSection) {
-                        resultsSection.style.display = 'block';
-                        this.showResults();
-                    }
-                }
-            };
+            nextQuestionBtn.onclick = () => this.goNext();
         }
     }
     async createGameModal() {
@@ -379,9 +355,11 @@ window.ArithmeticGame = class ArithmeticGame {
             </div>
             <div class="game-question-section">
                 <div class="question-display"></div>
-                <button class="check-answer button-common">${translatedTexts.checkAnswer}</button>
-                <button class="guide-me button-common">${translatedTexts.guideMe}</button>
-                <button class="next-question button-common">${translatedTexts.next}</button>
+                <div class="game-question-actions">
+                    <button class="check-answer button-common">${translatedTexts.checkAnswer}</button>
+                    <button class="guide-me button-common">${translatedTexts.guideMe}</button>
+                    <button class="next-question button-common">${translatedTexts.next}</button>
+                </div>
             </div>
             <div class="game-results">
                 <h3>${translatedTexts.results}</h3>
@@ -402,6 +380,8 @@ window.ArithmeticGame = class ArithmeticGame {
         const closeButton = modal.querySelector('.tutorial-close');
         if (closeButton) {
             closeButton.addEventListener('click', () => {
+                this.cancelAutoCheck();
+                this.cancelAutoNext();
                 modal.style.display = 'none';
                 window.updateSidePanelVisibility?.();
             });
@@ -461,6 +441,16 @@ window.ArithmeticGame = class ArithmeticGame {
                 } else {
                     validQuestion = true;
                 }
+
+                // No zero-answer questions (0 - 0, 0 + 0, 5 - 5, ...):
+                // the board starts at 0, so they need no bead movement.
+                if (validQuestion) {
+                    const expected = operator === '+' ? num1 + num2
+                        : operator === '-' ? num1 - num2
+                        : operator === 'x' ? num1 * num2
+                        : Math.floor(num1 / num2);
+                    validQuestion = expected !== 0;
+                }
             }
 
             this.questions.push({ num1, num2, operator });
@@ -469,6 +459,8 @@ window.ArithmeticGame = class ArithmeticGame {
     }
 
     async checkAnswer() {
+        this.cancelAutoCheck();
+        this.cancelAutoNext();
         const modal = document.querySelector('.game-section');
         if (!modal) {
             console.error('Game modal not found.');
@@ -508,6 +500,70 @@ window.ArithmeticGame = class ArithmeticGame {
 
         const checkAnswerBtn = modal.querySelector('.check-answer');
         if (checkAnswerBtn) checkAnswerBtn.disabled = true;
+        if (isCorrect) this.startAutoNext();
+    }
+
+    goNext() {
+        this.cancelAutoNext();
+        this.cancelAutoCheck();
+        const modal = document.querySelector('.game-section');
+        if (!modal) return;
+        if (!this.userAnswers[this.currentQuestionIndex]) {
+            const currentValue = window.abacus.value;
+            const currentQuestion = this.questions[this.currentQuestionIndex];
+            if (currentQuestion) {
+                this.userAnswers.push({
+                    question: currentQuestion,
+                    userAnswer: currentValue,
+                    expectedAnswer: this.calculateExpectedValue(currentQuestion),
+                    isGuided: this.guidedQuestions.has(this.currentQuestionIndex)
+                });
+            }
+        }
+        this.cleanupTutorial();
+        this.currentQuestionIndex++;
+        if (this.currentQuestionIndex < this.questions.length) {
+            const checkAnswerBtn = modal.querySelector('.check-answer');
+            if (checkAnswerBtn) checkAnswerBtn.disabled = false;
+            this.showCurrentQuestion();
+        } else {
+            const questionSection = modal.querySelector('.game-question-section');
+            const resultsSection = modal.querySelector('.game-results');
+            if (questionSection) questionSection.style.display = 'none';
+            if (resultsSection) { resultsSection.style.display = 'block'; this.showResults(); }
+        }
+    }
+
+    // Auto-press Next on GOOD: 5s countdown, touch anywhere / mouse move cancels.
+    startAutoNext() {
+        this.cancelAutoNext();
+        let s = 5;
+        const toast = document.createElement('div');
+        toast.className = 'auto-next-toast';
+        document.body.appendChild(toast);
+        const cancel = () => this.cancelAutoNext();
+        this._autoNextCancel = cancel;
+        window.addEventListener('touchstart', cancel, { passive: true });
+        window.addEventListener('mousemove', cancel);
+        const tick = () => {
+            if (!toast.isConnected) { this.cancelAutoNext(); return; }
+            toast.textContent = s > 0
+                ? `Good! Next question in ${s}\u2026 touch anywhere or move mouse to cancel`
+                : 'Next\u2026';
+            if (s-- <= 0) { this.cancelAutoNext(); this.goNext(); return; }
+        };
+        tick();
+        this.autoNextInterval = setInterval(tick, 1000);
+    }
+
+    cancelAutoNext() {
+        if (this.autoNextInterval) { clearInterval(this.autoNextInterval); this.autoNextInterval = null; }
+        if (this._autoNextCancel) {
+            window.removeEventListener('touchstart', this._autoNextCancel);
+            window.removeEventListener('mousemove', this._autoNextCancel);
+            this._autoNextCancel = null;
+        }
+        document.querySelector('.auto-next-toast')?.remove();
     }
     async showResults() {
         const modal = document.querySelector('.game-section');
@@ -546,6 +602,8 @@ window.ArithmeticGame = class ArithmeticGame {
     }
 
     resetGame() {
+        this.cancelAutoCheck();
+        this.cancelAutoNext();
         const modal = document.querySelector('.game-section');
         if (!modal) {
             console.error('Game modal not found.');
@@ -577,13 +635,13 @@ window.ArithmeticGame = class ArithmeticGame {
                 if (arithModal) arithModal.style.display = 'none';
                 const newModal = await this.createGameModal();
                 if (newModal) {
-                    newModal.style.display = 'block';
+                    newModal.style.display = 'flex';
                 }
             } else if (modal.style.display === 'none') {
                 window.tutorial?.hideTutorial();
                 const arithModal = document.querySelector('.arithmetic-section');
                 if (arithModal) arithModal.style.display = 'none';
-                modal.style.display = 'block';
+                modal.style.display = 'flex';
             } else {
                 modal.style.display = 'none';
             }
@@ -612,7 +670,7 @@ window.ArithmeticGame = class ArithmeticGame {
         const setupContent = modal.querySelector('.game-setup-content');
         const questionSection = modal.querySelector('.game-question-section');
         if (setupContent) setupContent.style.display = 'none';
-        if (questionSection) questionSection.style.display = 'block';
+        if (questionSection) questionSection.style.display = 'flex';
         this.currentQuestionIndex = 0;
         this.showCurrentQuestion();
     }
@@ -626,6 +684,8 @@ window.ArithmeticGame = class ArithmeticGame {
         }
         
         // Reset the abacus and clean up any guidance steps for the new question
+        this.cancelAutoCheck();
+        this.cancelAutoNext();
         window.abacus.resetAbacus();
         const existingSteps = modal.querySelector('.game-steps, .tutorial-section');
         if (existingSteps) existingSteps.remove();
@@ -654,8 +714,58 @@ window.ArithmeticGame = class ArithmeticGame {
         console.log('Question displayed:', display.textContent);
     }
 
-    calculateExpectedValue(question) {
-        switch (question.operator) {
+    // Auto-press Check Answer: when board already shows the right answer,
+    // count down 5s then auto-check. Any bead move away cancels.
+    hookAbacusAutoCheck() {
+        if (this._abacusHooked || !window.abacus) return;
+        const orig = window.abacus.calculateValue.bind(window.abacus);
+        window.abacus.calculateValue = (...a) => { orig(...a); this.onAbacusValueChange(); };
+        this._abacusHooked = true;
+    }
+
+    onAbacusValueChange() {
+        const modal = document.querySelector('.game-section');
+        const qSection = modal?.querySelector('.game-question-section');
+        if (!modal || !qSection || qSection.style.display === 'none') { this.cancelAutoCheck(); return; }
+        if (modal.querySelector('.game-steps')) { this.cancelAutoCheck(); return; } // guiding: board is demo, not an answer
+        if (this.userAnswers[this.currentQuestionIndex]) { this.cancelAutoCheck(); return; }
+        const q = this.questions[this.currentQuestionIndex];
+        if (!q) return;
+        if (window.abacus.value === this.calculateExpectedValue(q)) this.startAutoCheck();
+        else this.cancelAutoCheck();
+    }
+
+    autoCheckEl() {
+        const qSection = document.querySelector('.game-section .game-question-section');
+        if (!qSection) return null;
+        let el = qSection.querySelector('.auto-check-countdown');
+        if (!el) {
+            el = document.createElement('div');
+            el.className = 'auto-check-countdown';
+            qSection.appendChild(el);
+        }
+        return el;
+    }
+
+    startAutoCheck() {
+        if (this.autoCheckInterval) return;
+        let s = 5;
+        const el = this.autoCheckEl();
+        const tick = () => {
+            if (!el.isConnected) { this.cancelAutoCheck(); return; }
+            el.textContent = s > 0 ? `Correct! Auto-check in ${s}\u2026 (move a bead to cancel)` : 'Checking\u2026';
+            if (s-- <= 0) { this.cancelAutoCheck(); this.checkAnswer(); }
+        };
+        tick();
+        this.autoCheckInterval = setInterval(tick, 1000);
+    }
+
+    cancelAutoCheck() {
+        if (this.autoCheckInterval) { clearInterval(this.autoCheckInterval); this.autoCheckInterval = null; }
+        document.querySelector('.auto-check-countdown')?.remove();
+    }
+
+    calculateExpectedValue(question) {        switch (question.operator) {
             case '+': return question.num1 + question.num2;
             case '-': return question.num1 - question.num2;
             case 'x': return question.num1 * question.num2;
